@@ -1,7 +1,4 @@
-import 'dart:html';
-
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:smartlogproject/Components/menu/itemMenu.dart';
 
 class Menu extends StatefulWidget {
@@ -18,24 +15,58 @@ class _MenuState extends State<Menu> {
       color: Colors.white,
       width: 250,
       child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            ItemMenu(
-              icon: FontAwesomeIcons.truck,
-              title: 'Frota',
-              onPress: () {
-                print('Cliquei frota');
-              },
-            ),
-            ItemMenu(
-              icon: FontAwesomeIcons.moneyBill,
-              title: 'Entrega',
-              onPress: () {
-                print('Cliquei parâmetros');
-              },
-            )
-          ],
-        ),
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          ItemMenu(
+            icon: Icons.content_paste,
+            title: 'Frota',
+            onPress: () {
+            },
+            arrowIcon: Icons.arrow_forward_ios,
+          ),
+          ItemMenu(
+            icon: Icons.shop_two,
+            title: 'Pedidos',
+            onPress: () {
+              print('Cliquei pedidos');
+            },
+            arrowIcon: Icons.arrow_forward_ios,
+          ),
+          ItemMenu(
+            icon: Icons.local_shipping,
+            title: 'Carga',
+            onPress: () {
+              print('Cliquei carga');
+            },
+            arrowIcon: Icons.arrow_forward_ios,
+          ),
+          ItemMenu(
+            icon: Icons.map,
+            title: 'Viagem',
+            onPress: () {
+              print('Cliquei viagem');
+            },
+            arrowIcon: Icons.arrow_forward_ios,
+          ),
+          ItemMenu(
+            icon: Icons.info,
+            title: 'Relatórios',
+            onPress: () {
+              print('Cliquei relatórios');
+            },
+            arrowIcon: Icons.arrow_forward_ios,
+          ),
+        ],
+      ),
     );
   }
 }
+
+  /*void clickButton (){
+    setState(() {
+      shape = RoundedRectangleBorder(
+          borderRadius: new BorderRadius.circular(18.0),
+          side: BorderSide(color: Colors.red));
+    });
+  }*/
+
