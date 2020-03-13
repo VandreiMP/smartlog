@@ -9,6 +9,7 @@ class _BodyState extends State<Body> {
   @override
   Widget build(BuildContext context) {
     return Container(
+      color: Colors.red,
       alignment: Alignment.center,
     );
   }

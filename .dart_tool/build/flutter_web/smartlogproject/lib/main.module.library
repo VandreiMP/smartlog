@@ -1,0 +1,1 @@
+{"isEntrypoint":true,"deps":["flutter|lib/material.dart","smartlogproject|lib/Components/login.dart","smartlogproject|lib/Components/body.dart","smartlogproject|lib/Components/menu/menu.dart","google_fonts|lib/google_fonts.dart"],"parts":[],"conditionalDeps":[],"sdkDeps":[],"hasMain":true}

@@ -33,7 +33,7 @@ class ItemMenu extends StatelessWidget {
                 child: Icon(
                   icon,
                   color: Colors.blueGrey,
-                  size: 35,
+                  size: 20,
                 ),
               ),
               Padding(
@@ -51,7 +51,7 @@ class ItemMenu extends StatelessWidget {
                 child: Icon(
                   arrowIcon,
                   color: Colors.blueGrey,
-                  size: 20,
+                  size: 15,
                 ),
               ),
             ],

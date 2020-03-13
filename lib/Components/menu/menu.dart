@@ -1,15 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:smartlogproject/Components/menu/itemMenu.dart';
 
-class Menu extends StatefulWidget {
+class Menu extends StatelessWidget {
   const Menu({Key key}) : super(key: key);
 
-  @override
-  _MenuState createState() => _MenuState();
-}
-
-class _MenuState extends State<Menu> {
-  @override
   Widget build(BuildContext context) {
     return Container(
       color: Colors.white,
@@ -42,9 +36,9 @@ class _MenuState extends State<Menu> {
           ),
           ItemMenu(
             icon: Icons.map,
-            title: 'Viagem',
+            title: 'Rotas',
             onPress: () {
-              print('Cliquei viagem');
+              print('Cliquei rotas');
             },
             arrowIcon: Icons.arrow_forward_ios,
           ),
