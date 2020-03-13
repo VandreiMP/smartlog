@@ -1,0 +1,1 @@
+{"isEntrypoint":false,"deps":["path_provider_platform_interface|lib/src/enums.dart","flutter|lib/services.dart","meta|lib/meta.dart","path_provider_platform_interface|lib/path_provider_platform_interface.dart","platform|lib/platform.dart"],"parts":[],"conditionalDeps":[],"sdkDeps":["async"],"hasMain":false}
