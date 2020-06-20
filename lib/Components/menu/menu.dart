@@ -1,36 +1,106 @@
 import 'package:flutter/material.dart';
 import 'package:smartlogproject/Components/menu/itemMenu.dart';
+import 'package:smartlogproject/Components/menu/subMenu.dart';
+import 'package:smartlogproject/Components/scroll/scroll.dart';
 
-class Menu extends StatefulWidget {
+class Menu extends StatelessWidget {
   const Menu({Key key}) : super(key: key);
 
-  @override
-  _MenuState createState() => _MenuState();
-}
-
-class _MenuState extends State<Menu> {
-  @override
   Widget build(BuildContext context) {
-    return Container(
+    return Scroll(
       color: Colors.white,
-      width: 250,
+      height: double.infinity,
+      width: 200,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           ItemMenu(
             icon: Icons.content_paste,
-            title: 'Frota',
-            onPress: () {
-            },
+            title: 'Cadastros',
+            onPress: () {},
+            subMenu: Column(
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    border: Border(
+                      bottom: BorderSide(color: Colors.grey[300], width: 1),
+                    ),
+                  ),
+                  child: SubMenu(
+                    title: 'Empresa',
+                    onPress: () {
+                      Navigator.of(context).pushNamed('/FormularioEmpresa');
+                    },
+                    arrowIcon: Icons.arrow_forward_ios,
+                  ),
+                ),
+                Container(
+                  decoration: BoxDecoration(
+                    border: Border(
+                      bottom: BorderSide(color: Colors.grey[300], width: 1),
+                    ),
+                  ),
+                  child: SubMenu(
+                    title: 'Usuário',
+                    onPress: () {
+                      Navigator.of(context).pushNamed('/FormularioUsuario');
+                    },
+                    arrowIcon: Icons.arrow_forward_ios,
+                  ),
+                ),
+                Container(
+                  decoration: BoxDecoration(
+                    border: Border(
+                      bottom: BorderSide(color: Colors.grey[300], width: 1),
+                    ),
+                  ),
+                  child: SubMenu(
+                    title: 'Embalagem',
+                    onPress: () {
+                      Navigator.of(context).pushNamed('/FormularioEmbalagem');
+                    },
+                    arrowIcon: Icons.arrow_forward_ios,
+                  ),
+                ),
+                Container(
+                  decoration: BoxDecoration(
+                    border: Border(
+                        bottom: BorderSide(color: Colors.grey[300], width: 1)),
+                  ),
+                  child: SubMenu(
+                    title: 'Frota',
+                    onPress: () {
+                      Navigator.of(context).pushNamed('/FormularioCaminhao');
+                    },
+                    arrowIcon: Icons.arrow_forward_ios,
+                  ),
+                ),
+                Container(
+                  child: SubMenu(
+                    title: 'Custos',
+                    onPress: () {
+                      Navigator.of(context).pushNamed('/FormularioCustos');
+                    },
+                    arrowIcon: Icons.arrow_forward_ios,
+                  ),
+                ),
+              ],
+            ),
             arrowIcon: Icons.arrow_forward_ios,
+            colorMenu: Colors.blueGrey[600],
+            colorMenuSelected: Colors.white,
+            fontWeight: FontWeight.normal,
           ),
           ItemMenu(
-            icon: Icons.shop_two,
+            icon: Icons.shopping_cart,
             title: 'Pedidos',
             onPress: () {
               print('Cliquei pedidos');
             },
             arrowIcon: Icons.arrow_forward_ios,
+            colorMenu: Colors.blueGrey[600],
+            colorMenuSelected: Colors.white,
+            fontWeight: FontWeight.normal,
           ),
           ItemMenu(
             icon: Icons.local_shipping,
@@ -39,34 +109,45 @@ class _MenuState extends State<Menu> {
               print('Cliquei carga');
             },
             arrowIcon: Icons.arrow_forward_ios,
+            colorMenu: Colors.blueGrey[600],
+            colorMenuSelected: Colors.white,
+            fontWeight: FontWeight.normal,
           ),
           ItemMenu(
             icon: Icons.map,
-            title: 'Viagem',
+            title: 'Rotas',
             onPress: () {
-              print('Cliquei viagem');
+              print('Cliquei rotas');
             },
             arrowIcon: Icons.arrow_forward_ios,
+            colorMenu: Colors.blueGrey[600],
+            colorMenuSelected: Colors.white,
+            fontWeight: FontWeight.normal,
+          ),
+          ItemMenu(
+            icon: Icons.trending_up,
+            title: 'Relatórios',
+            onPress: () {
+              print('Relatórios');
+            },
+            arrowIcon: Icons.arrow_forward_ios,
+            colorMenu: Colors.blueGrey[600],
+            colorMenuSelected: Colors.white,
+            fontWeight: FontWeight.normal,
           ),
           ItemMenu(
             icon: Icons.info,
-            title: 'Relatórios',
+            title: 'Info',
             onPress: () {
-              print('Cliquei relatórios');
+              print('Info');
             },
             arrowIcon: Icons.arrow_forward_ios,
+            colorMenu: Colors.blueGrey[600],
+            colorMenuSelected: Colors.white,
+            fontWeight: FontWeight.normal,
           ),
         ],
       ),
     );
   }
 }
-
-  /*void clickButton (){
-    setState(() {
-      shape = RoundedRectangleBorder(
-          borderRadius: new BorderRadius.circular(18.0),
-          side: BorderSide(color: Colors.red));
-    });
-  }*/
-
