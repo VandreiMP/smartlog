@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:smartlogproject/login/login.dart';
-import 'package:smartlogproject/screen/screenAtalhoUser.dart';
-import 'package:smartlogproject/screen/screenCaminhao.dart';
-import 'package:smartlogproject/screen/screenCaminhaoDetalhes.dart';
-import 'package:smartlogproject/screen/screenCustos.dart';
-import 'package:smartlogproject/screen/screenEmbalagem.dart';
-import 'package:smartlogproject/screen/screenEmpresa.dart';
-import 'package:smartlogproject/screen/screenResponsavelEmpresa.dart';
-import 'package:smartlogproject/screen/screenUser.dart';
-import 'package:smartlogproject/screen/visaoGeral.dart';
+import 'package:smartlogproject/src/grids/gridUser.dart';
+
+import 'src/login/login.dart';
+import 'src/screen/screenCaminhao.dart';
+import 'src/screen/screenCaminhaoDetalhes.dart';
+import 'src/screen/screenCustos.dart';
+import 'src/screen/screenEmbalagem.dart';
+import 'src/screen/screenEmpresa.dart';
+import 'src/screen/screenResponsavelEmpresa.dart';
+import 'src/screen/screenUser.dart';
+import 'src/screen/visaoGeral.dart';
 
 void main() => runApp(Main());
 
@@ -21,8 +22,8 @@ class Main extends StatelessWidget {
       routes: {
         '/': (context) => Login(),
         '/VisaoGeral': (context) => VisaoGeral(),
-        '/Atalho': (context) => ScreenAtalhoCadastros(),
         '/FormularioUsuario': (context) => ScreenUser(),
+        '/ListaUsuario' : (context) => DataTableUser(),
         '/FormularioEmbalagem': (context) => ScreenEmbalagem(),
         '/FormularioCaminhao': (context) => ScreenCaminhao(),
         '/FormularioCaminhaoDetalhes': (context) => ScreenCaminhaoDetalhes(),
