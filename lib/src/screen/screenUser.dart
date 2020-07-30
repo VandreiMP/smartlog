@@ -6,7 +6,7 @@ import 'package:smartlogproject/src/Entidades/user/user.dart';
 import '../constantes/mascaras.dart';
 import '../funcoes/appText.dart';
 import '../funcoes/appTextField.dart';
-import '../funcoes/criaCardAuxiliar.dart';
+import '../Cards/Widgets/criaCardAuxiliar.dart';
 import '../funcoes/criaLista.dart';
 import '../funcoes/requiredLabel.dart';
 import 'screenPattern.dart';
@@ -265,16 +265,17 @@ Widget criaCardFormulario({String caminhoImagem, String nomeFormulario}) {
                                       MainAxisAlignment.spaceBetween,
                                   children: <Widget>[
                                     Container(
-                                        child: constroiCampo(
-                                      labelCampo: 'Telefone',
-                                      largura: 110,
-                                      altura: 30,
-                                      obrigaCampo: false,
-                                      controller: tTelefone,
-                                      mascara: new MaskedTextController(
-                                        mask: mascaraTelefone,
+                                      child: constroiCampo(
+                                        labelCampo: 'Telefone',
+                                        largura: 110,
+                                        altura: 30,
+                                        obrigaCampo: false,
+                                        controller: tTelefone,
+                                        mascara: new MaskedTextController(
+                                          mask: mascaraTelefone,
+                                        ),
                                       ),
-                                    )),
+                                    ),
                                     Padding(
                                       padding:
                                           const EdgeInsets.only(left: 20.0),

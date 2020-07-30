@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'appText.dart';
+import '../../funcoes/appText.dart';
 
 class CriaCardAjudaCustos extends StatelessWidget {
   Widget build(BuildContext context) {

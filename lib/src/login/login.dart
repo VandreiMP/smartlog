@@ -4,6 +4,10 @@ import 'package:flutter/material.dart';
 import 'constroiFormLogin.dart';
 import 'constroiFormaCircular.dart';
 
+/*
+Componente depreciado. Foi criado um novo componente de Login.
+*/
+
 class Login extends StatefulWidget {
   @override
   _LoginState createState() => _LoginState();

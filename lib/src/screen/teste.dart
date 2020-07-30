@@ -1,8 +1,8 @@
 
 // import 'package:firebase/firestore.dart';
-// import 'package:flutter/cupertino.dart';
+// import 'package:smartlogproject/src/screen/teste2.dart';
+// import 'package:flutter/material.dart';
 
-// import 'service.dart';
 
 // class CarrosFavoritosPage extends StatefulWidget {
 //   final String userDocId;
@@ -19,7 +19,7 @@
 
 //   @override
 //   void initState() {
-//     super.initState();
+//     var initState = super.initState();
 //   }
 
 //   @override
@@ -33,9 +33,9 @@
 //     return StreamBuilder(
 //       stream: _firebaseService.getStreamCarros(widget.userDocId),
 //       builder: (context, snapshot) {
-//         if (snapshot.hasError) {
-//           return TextError("Não foi possível buscar os carros");
-//         }
+//         // if (snapshot.hasError) {
+//         //   return print("Não foi possível buscar os carros");
+//         // }
 
 //         if (!snapshot.hasData) {
 //           return Center(
@@ -145,7 +145,7 @@
 //     } else {
 //       push(context, CarroPage(c));
 //     }
-//   }  
+//   }
 
 //   Future<void> _onRefresh() {
 //    return null;

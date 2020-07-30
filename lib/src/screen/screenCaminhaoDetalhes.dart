@@ -3,7 +3,7 @@ import 'package:flutter_masked_text/flutter_masked_text.dart';
 import '../constantes/mascaras.dart';
 import '../funcoes/appText.dart';
 import '../funcoes/appTextField.dart';
-import '../funcoes/criaCardAuxiliar.dart';
+import '../Cards/Widgets/criaCardAuxiliar.dart';
 import 'screenPattern.dart';
 
 class ScreenCaminhaoDetalhes extends StatefulWidget {

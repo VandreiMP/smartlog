@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
+import '../../funcoes/appText.dart';
 
-import 'appText.dart';
-
-class CriaCardAjudaAdicionais extends StatelessWidget {
+class CriaCardAjudaEmpresa extends StatelessWidget {
   Widget build(BuildContext context) {
     return Visibility(
       visible: true,
@@ -39,7 +38,7 @@ class CriaCardAjudaAdicionais extends StatelessWidget {
                   height: 7.0,
                 ),
                 AppText(
-                  '* Para acessar as informações adicionais do veículo favor utilizar os botões ao lado da descrição.',
+                  '* Para acessar as informações do responsável pela empresa favor utilizar o botão de atalho ao lado do Nome Fantasia.',
                   color: Colors.black,
                   bold: true,
                 ),

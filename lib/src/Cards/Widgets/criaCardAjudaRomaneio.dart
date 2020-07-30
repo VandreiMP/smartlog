@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'appText.dart';
+import 'package:smartlogproject/src/funcoes/appText.dart';
 
-class CriaCardAjudaEmpresa extends StatelessWidget {
+class CriaCardAjudaRomaneio extends StatelessWidget {
   Widget build(BuildContext context) {
     return Visibility(
       visible: true,
@@ -38,7 +38,7 @@ class CriaCardAjudaEmpresa extends StatelessWidget {
                   height: 7.0,
                 ),
                 AppText(
-                  '* Para acessar as informações do responsável pela empresa favor utilizar o botão de atalho ao lado do Nome Fantasia.',
+                  '* Para gerar a rota de entrega da carga favor utilizar o botão ao lado da informação da cidade.',
                   color: Colors.black,
                   bold: true,
                 ),

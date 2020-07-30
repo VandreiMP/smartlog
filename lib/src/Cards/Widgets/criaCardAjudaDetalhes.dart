@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'appText.dart';
+import '../../funcoes/appText.dart';
 
-class CriaCardAjuda extends StatelessWidget {
+class CriaCardAjudaCaminhaoDetalhes extends StatelessWidget {
   Widget build(BuildContext context) {
     return Visibility(
       visible: true,
@@ -31,6 +31,14 @@ class CriaCardAjuda extends StatelessWidget {
                 ),
                 AppText(
                   '* Para retornar à página anterior favor utilizar a seta invertida.',
+                  color: Colors.black,
+                  bold: true,
+                ),
+                SizedBox(
+                  height: 7.0,
+                ),
+                AppText(
+                  '* Para realizar o agendamento é necessário preencher as datas da última manutenção e também da próxima.',
                   color: Colors.black,
                   bold: true,
                 ),

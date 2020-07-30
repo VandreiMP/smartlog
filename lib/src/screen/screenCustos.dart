@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
+import 'package:smartlogproject/src/Components/scroll/scroll.dart';
 import '../constantes/mascaras.dart';
 import '../funcoes/appText.dart';
 import '../funcoes/appTextField.dart';
-import '../funcoes/criaCardAuxiliar.dart';
+import '../Cards/Widgets/criaCardAuxiliar.dart';
 import '../funcoes/criaLista.dart';
 import '../funcoes/requiredLabel.dart';
 import 'screenPattern.dart';
@@ -34,17 +35,20 @@ class _BodyState extends State<Body> {
       padding: EdgeInsets.only(top: 4.0, left: 4.0),
       child: Row(
         children: <Widget>[
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
-              CriaCardAuxiliar(
-                caminhoImagem: "Images/money.png",
-                nomeFormulario: "Cadastro de Custos",
-                origem: 'CUSTOS',
-              ),
-              // CriaCardAjuda(),
-            ],
+          Scroll(
+            height: double.infinity,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                CriaCardAuxiliar(
+                  caminhoImagem: "Images/money.png",
+                  nomeFormulario: "Cadastro de Custos",
+                  origem: 'CUSTOS',
+                ),
+                // CriaCardAjuda(),
+              ],
+            ),
           ),
           criaCardFormulario()
         ],

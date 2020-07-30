@@ -4,7 +4,7 @@ import 'package:flutter_masked_text/flutter_masked_text.dart';
 import '../constantes/mascaras.dart';
 import '../funcoes/appText.dart';
 import '../funcoes/appTextField.dart';
-import '../funcoes/criaCardAuxiliar.dart';
+import '../Cards/Widgets/criaCardAuxiliar.dart';
 import '../funcoes/criaLista.dart';
 import '../funcoes/requiredLabel.dart';
 import 'screenPattern.dart';
@@ -201,6 +201,7 @@ class CriaCardFormulario extends StatelessWidget {
                                       altura: 30,
                                       obrigaCampo: true,
                                     ),
+
                                     Padding(
                                       padding: const EdgeInsets.all(20.0),
                                       child: Container(
@@ -279,6 +280,7 @@ class CriaCardFormulario extends StatelessWidget {
                                         ),
                                       ),
                                     )
+                                    
                                   ],
                                 ),
                                 Row(

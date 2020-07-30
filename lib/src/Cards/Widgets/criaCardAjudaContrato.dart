@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'appText.dart';
+import '../../funcoes/appText.dart';
 
-class CriaCardAjudaCaminhaoDetalhes extends StatelessWidget {
+class CriaCardAjudaContrato extends StatelessWidget {
   Widget build(BuildContext context) {
     return Visibility(
       visible: true,
@@ -38,7 +38,15 @@ class CriaCardAjudaCaminhaoDetalhes extends StatelessWidget {
                   height: 7.0,
                 ),
                 AppText(
-                  '* Para realizar o agendamento é necessário preencher as datas da última manutenção e também da próxima.',
+                  '* Para acessar as despesas adicionais do contrato, favor selecionar o botão ao lado da situação da entrega.',
+                  color: Colors.black,
+                  bold: true,
+                ),
+                SizedBox(
+                  height: 7.0,
+                ),
+                AppText(
+                  '* No campo "Total Contrato" estão inclusos os valores com as despesas adicionais.',
                   color: Colors.black,
                   bold: true,
                 ),

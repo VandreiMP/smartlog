@@ -4,7 +4,7 @@ import '../Components/scroll/scroll.dart';
 import '../constantes/mascaras.dart';
 import '../funcoes/appText.dart';
 import '../funcoes/appTextField.dart';
-import '../funcoes/criaCardAuxiliar.dart';
+import '../Cards/Widgets/criaCardAuxiliar.dart';
 import 'screenPattern.dart';
 
 class ScreenRespEmpresa extends StatefulWidget {

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../constantes/mascaras.dart';
 import '../funcoes/appText.dart';
 import '../funcoes/appTextField.dart';
-import '../funcoes/criaCardAuxiliar.dart';
+import '../Cards/Widgets/criaCardAuxiliar.dart';
 import '../funcoes/criaLista.dart';
 import '../funcoes/requiredLabel.dart';
 import 'screenPattern.dart';
