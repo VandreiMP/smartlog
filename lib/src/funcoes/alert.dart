@@ -28,7 +28,8 @@ alert(BuildContext context, String texto, String msg, {Function callback}) {
   );
 }
 
-alertConfirm(BuildContext context, String texto, String msg, {Function confirmCallback}) {
+alertConfirm(BuildContext context, String texto, String msg,
+    {Function confirmCallback}) {
   showDialog(
     context: context,
     barrierDismissible: false,

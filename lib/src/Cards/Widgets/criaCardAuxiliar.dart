@@ -2,7 +2,6 @@ import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:smartlogproject/src/Cards/Bloc/card-ajuda-bloc.dart';
-import 'package:smartlogproject/src/Entidades/user/user.dart';
 import '../../screen/screenUser.dart';
 import '../../funcoes/appText.dart';
 import 'criaCardAjuda.dart';

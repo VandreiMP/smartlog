@@ -5,6 +5,7 @@ import 'package:smartlogproject/src/screen/screenCarga.dart';
 import 'package:smartlogproject/src/screen/screenContrato.dart';
 import 'package:smartlogproject/src/screen/screenDespesasContrato.dart';
 import 'package:smartlogproject/src/screen/screenRomaneio.dart';
+import 'package:smartlogproject/src/screen/teste2.dart';
 
 import 'src/login/login.dart';
 import 'src/screen/screenCaminhao.dart';
@@ -23,9 +24,10 @@ class Main extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      initialRoute: '/',
+      initialRoute: '/AcessoSistema',
       routes: {
-        '/': (context) => AcessoSistemaWidget(),
+        // '/AcessoSistema': (context) => HomePage(),
+        '/AcessoSistema': (context) => AcessoSistemaWidget(),
         '/VisaoGeral': (context) => VisaoGeral(),
         '/FormularioUsuario': (context) => ScreenUser(),
         // '/ListaUsuario': (context) => DataTableUser(),
@@ -38,7 +40,7 @@ class Main extends StatelessWidget {
         '/FormularioContrato': (context) => ScreenContrato(),
         '/FormularioDespesasContrato': (context) => ScreenDespesasContrato(),
         '/FormularioCarga': (context) => ScreenCarga(),
-        '/FormularioRomaneio': (context) => ScreenRomaneio(),        
+        '/FormularioRomaneio': (context) => ScreenRomaneio(),
       },
     );
   }

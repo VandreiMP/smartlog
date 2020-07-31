@@ -29,13 +29,18 @@ class AcessoSistemaWidget extends StatelessWidget {
 
 class _FormularioLogin extends StatelessWidget {
   /*
-    Controllers
-    */
-  TextEditingController _tUsuario;
-  TextEditingController _tSenha;
+  Controllers
+  */
+  final tUsuario = TextEditingController();
+  final tSenha = TextEditingController();
+
+ 
+
 
   String caminhoImagem = 'Images/login.png';
   String nomeFormulario = 'Autenticação do Sistema';
+
+  bool escondeSenha = true;
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +49,7 @@ class _FormularioLogin extends StatelessWidget {
       width: double.infinity,
       child: Container(
         padding:
-            EdgeInsets.only(top: 70.0, bottom: 70.0, left: 250.0, right: 250.0),
+            EdgeInsets.only(top: 100.0, bottom: 60.0, left: 270.0, right: 270.0),
         child: Scroll(
           width: double.infinity,
           child: Card(
@@ -110,7 +115,7 @@ class _FormularioLogin extends StatelessWidget {
                           height: 30,
                           child: Form(
                             child: TextFormField(
-                              controller: _tUsuario,
+                              controller: tUsuario,
                               enabled: true,
                               decoration: InputDecoration(
                                 fillColor: Colors.black,
@@ -126,27 +131,32 @@ class _FormularioLogin extends StatelessWidget {
                         /*
                         Campo Senha
                         */
-                        Padding(
-                          padding: const EdgeInsets.only(top: 30.0),
-                          child: Container(
-                            width: 350,
-                            height: 30,
-                            child: Form(
-                              child: TextFormField(
-                                controller: _tSenha,
-                                obscureText: true,
-                                enabled: true,
-                                decoration: InputDecoration(
-                                  icon: Icon(
-                                    FontAwesomeIcons.key,
-                                    color: Colors.black,
+                        StreamBuilder<Object>(
+                            stream: blocAcesso.outSelecionaCheckBox,
+                            builder:
+                                (BuildContext context, AsyncSnapshot snapshot) {
+                              return Padding(
+                                padding: const EdgeInsets.only(top: 30.0),
+                                child: Container(
+                                  width: 350,
+                                  height: 30,
+                                  child: Form(
+                                    child: TextFormField(
+                                      controller: tSenha,
+                                      obscureText: escondeSenha,
+                                      //   enabled: true,
+                                      decoration: InputDecoration(
+                                        icon: Icon(
+                                          FontAwesomeIcons.key,
+                                          color: Colors.black,
+                                        ),
+                                        enabled: true,
+                                      ),
+                                    ),
                                   ),
-                                  enabled: true,
                                 ),
-                              ),
-                            ),
-                          ),
-                        ),
+                              );
+                            }),
                         /*
                         Checkbox Senha
                         */
@@ -171,8 +181,9 @@ class _FormularioLogin extends StatelessWidget {
                                             horizontal: 2.0, vertical: 2.0),
                                         value: snapshot.data,
                                         onChanged: (bool novoValor) {
-                                          blocAcesso
-                                              .eventoCliqueCheckBox(novoValor);
+                                          blocAcesso.eventoCliqueCheckBox(
+                                              novoValor, tSenha);
+                                          escondeSenha = snapshot.data;
                                         },
                                       ),
                                     ),
@@ -201,7 +212,7 @@ class _FormularioLogin extends StatelessWidget {
                         Botão de Acesso
                         */
                         StreamBuilder<Object>(
-                          stream: blocAcesso.outCarregamento,
+                          stream: blocAcesso.outValidaAcesso,
                           initialData: false,
                           builder:
                               (BuildContext context, AsyncSnapshot snapshot) {
@@ -213,7 +224,12 @@ class _FormularioLogin extends StatelessWidget {
                                   color: Colors.blueAccent[700],
                                   icon: Icon(FontAwesomeIcons.unlock),
                                   label: Text('Liberar Acesso'),
-                                  onPressed: blocAcesso.eventoCliqueBotaoAcesso,
+                                  onPressed: () {
+                                    // blocAcesso.eventoCliqueBotaoAcesso;
+                                    // print(tSenha);
+                                    blocAcesso.validaAcessoUsuario(
+                                        tUsuario, tSenha);
+                                  },
                                 ),
                               ),
                               secondChild: Padding(
