@@ -18,10 +18,6 @@ class AcessoSistemaBloc extends BlocBase {
 
   AcessoSistemaBloc(this.contextoAplicacao);
 
-  // Future<void> eventoCliqueBotaoAcesso() async {
-
-  //   );
-  // }
 
   Future<void> eventoCliqueCheckBox(
       bool valor, TextEditingController senha) async {
@@ -42,6 +38,7 @@ class AcessoSistemaBloc extends BlocBase {
       alert(contextoAplicacao, 'Inconsistência na validação',
           'Para efetuar o acesso ao sistema é necessário preencher o usuário e a senha. Favor verificar!');
     } else {
+
       /*
       Autenticação do usuário feita via e-mail e senha que devem criados pelo administrador
       do sistema.
@@ -52,7 +49,7 @@ class AcessoSistemaBloc extends BlocBase {
       /*
       Passa "false" para o último parâmetro da classe de autenticação de modo 
       que só acesse o sistema, caso o usuário seja validado com sucesso pelo Firebase,
-      onde o parâmetro será retornado com o valor "true"
+      onde o parâmetro será retornado com o valor "true". 
       */
 
       try {

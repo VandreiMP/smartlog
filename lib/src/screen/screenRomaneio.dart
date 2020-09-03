@@ -315,8 +315,10 @@ class CriaCardFormulario extends StatelessWidget {
                                                 CrossAxisAlignment.start,
                                             children: [
                                               GestureDetector(
+                                                //aqui deve gerar a rota de entrega.
                                                 onTap: () {
-                                                  //aqui deve gerar a rota de entrega.
+                                                  Navigator.of(context).pushNamed(
+                                                      '/FormularioRotaRomaneio');
                                                 },
                                                 child: Container(
                                                   decoration: BoxDecoration(

@@ -1,11 +1,19 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:smartlogproject/src/AcessoSistema/Widget/acesso-sistema-widget.dart';
-import 'package:smartlogproject/src/grids/gridUser.dart';
+import 'package:smartlogproject/src/funcoes/buscaEmbalagens.dart';
 import 'package:smartlogproject/src/screen/screenCarga.dart';
 import 'package:smartlogproject/src/screen/screenContrato.dart';
 import 'package:smartlogproject/src/screen/screenDespesasContrato.dart';
+import 'package:smartlogproject/src/screen/screenManutencao.dart';
 import 'package:smartlogproject/src/screen/screenRomaneio.dart';
+import 'package:smartlogproject/src/screen/screenAbastecimento.dart';
+import 'package:smartlogproject/src/screen/screenTrocaOleo.dart';
 import 'package:smartlogproject/src/screen/teste2.dart';
+import 'package:smartlogproject/src/tabelas/Widget/tabelaCustos.dart';
+import 'package:smartlogproject/src/tabelas/Widget/tabelaEmbalagem.dart';
+import 'package:smartlogproject/src/tabelas/Widget/tabelaFuncionario.dart';
 
 import 'src/login/login.dart';
 import 'src/screen/screenCaminhao.dart';
@@ -17,7 +25,7 @@ import 'src/screen/screenResponsavelEmpresa.dart';
 import 'src/screen/screenUser.dart';
 import 'src/screen/visaoGeral.dart';
 
-void main() => runApp(Main());
+void main() async => runApp(Main());
 
 class Main extends StatelessWidget {
   @override
@@ -26,11 +34,12 @@ class Main extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       initialRoute: '/AcessoSistema',
       routes: {
-        // '/AcessoSistema': (context) => HomePage(),
         '/AcessoSistema': (context) => AcessoSistemaWidget(),
         '/VisaoGeral': (context) => VisaoGeral(),
+        '/ListaFuncionarios': (context) => ListaFuncionarios(),
+        '/ListaEmbalagens' : (context) => ListaEmbalagens(),
+        '/ListaCustos' : (context) => ListaCustos(),
         '/FormularioUsuario': (context) => ScreenUser(),
-        // '/ListaUsuario': (context) => DataTableUser(),
         '/FormularioEmbalagem': (context) => ScreenEmbalagem(),
         '/FormularioCaminhao': (context) => ScreenCaminhao(),
         '/FormularioCaminhaoDetalhes': (context) => ScreenCaminhaoDetalhes(),
@@ -41,6 +50,9 @@ class Main extends StatelessWidget {
         '/FormularioDespesasContrato': (context) => ScreenDespesasContrato(),
         '/FormularioCarga': (context) => ScreenCarga(),
         '/FormularioRomaneio': (context) => ScreenRomaneio(),
+        '/FormularioAbastecimento': (context) => ScreenAbastecimento(),
+        '/FormularioTrocaDeOleo': (context) => ScreenTrocaOleo(),
+        '/FormularioManutencao': (context) => ScreenManutencao(),
       },
     );
   }

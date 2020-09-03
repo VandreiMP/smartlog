@@ -27,87 +27,98 @@ class ConstroiMenu extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          Center(
-            child: ItemMenu(
-              icon: Icons.content_paste,
-              title: 'Cadastros',
-              onPress: () {},
-              subMenu: Column(
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      border: Border(
-                        bottom: BorderSide(color: Colors.grey[300], width: 1),
-                      ),
+          StreamBuilder<Object>(
+              stream: blocMenu.outMenu,
+              builder: (BuildContext context, AsyncSnapshot snapshot) {
+                return Center(
+                  child: ItemMenu(
+                    icon: Icons.content_paste,
+                    title: 'Cadastros',
+                    onPress: () {},
+                    subMenu: Column(
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
+                            border: Border(
+                              bottom:
+                                  BorderSide(color: Colors.grey[300], width: 1),
+                            ),
+                          ),
+                          child: SubMenu(
+                            title: 'Empresa',
+                            onPress: () {
+                              Navigator.of(context)
+                                  .pushNamed('/FormularioEmpresa');
+                            },
+                            arrowIcon: Icons.arrow_forward_ios,
+                          ),
+                        ),
+                        Container(
+                          decoration: BoxDecoration(
+                            border: Border(
+                              bottom:
+                                  BorderSide(color: Colors.grey[300], width: 1),
+                            ),
+                          ),
+                          child: SubMenu(
+                            title: 'Usuário',
+                            onPress: () {
+                              blocMenu.eventoCliqueMenu(
+                                  context, '/ListaFuncionarios');
+                            },
+                            arrowIcon: Icons.arrow_forward_ios,
+                          ),
+                        ),
+                        Container(
+                          decoration: BoxDecoration(
+                            border: Border(
+                              bottom:
+                                  BorderSide(color: Colors.grey[300], width: 1),
+                            ),
+                          ),
+                          child: SubMenu(
+                            title: 'Embalagem',
+                            onPress: () {
+                              blocMenu.eventoCliqueMenu(
+                                  context, '/ListaEmbalagens');
+                            },
+                            arrowIcon: Icons.arrow_forward_ios,
+                          ),
+                        ),
+                        Container(
+                          decoration: BoxDecoration(
+                            border: Border(
+                                bottom: BorderSide(
+                                    color: Colors.grey[300], width: 1)),
+                          ),
+                          child: SubMenu(
+                            title: 'Frota',
+                            onPress: () {
+                              Navigator.of(context)
+                                  .pushNamed('/FormularioCaminhao');
+                            },
+                            arrowIcon: Icons.arrow_forward_ios,
+                          ),
+                        ),
+                        Container(
+                          child: SubMenu(
+                            title: 'Custos',
+                            onPress: () {
+                              Navigator.of(context)
+                                  .pushNamed('/ListaCustos');
+                            },
+                            arrowIcon: Icons.arrow_forward_ios,
+                          ),
+                        ),
+                      ],
                     ),
-                    child: SubMenu(
-                      title: 'Empresa',
-                      onPress: () {
-                        Navigator.of(context).pushNamed('/FormularioEmpresa');
-                      },
-                      arrowIcon: Icons.arrow_forward_ios,
-                    ),
+                    arrowIcon: Icons.arrow_forward_ios,
+                    colorMenu: Colors.blueGrey[600],
+                    colorMenuSelected: Colors.white,
+                    fontWeight: FontWeight.normal,
                   ),
-                  Container(
-                    decoration: BoxDecoration(
-                      border: Border(
-                        bottom: BorderSide(color: Colors.grey[300], width: 1),
-                      ),
-                    ),
-                    child: SubMenu(
-                      title: 'Usuário',
-                      onPress: () {
-                        Navigator.of(context).pushNamed('/FormularioUsuario');
-                        // Navigator.of(context).pushNamed('/ListaUsuario');
-                      },
-                      arrowIcon: Icons.arrow_forward_ios,
-                    ),
-                  ),
-                  Container(
-                    decoration: BoxDecoration(
-                      border: Border(
-                        bottom: BorderSide(color: Colors.grey[300], width: 1),
-                      ),
-                    ),
-                    child: SubMenu(
-                      title: 'Embalagem',
-                      onPress: () {
-                        Navigator.of(context).pushNamed('/FormularioEmbalagem');
-                      },
-                      arrowIcon: Icons.arrow_forward_ios,
-                    ),
-                  ),
-                  Container(
-                    decoration: BoxDecoration(
-                      border: Border(
-                          bottom:
-                              BorderSide(color: Colors.grey[300], width: 1)),
-                    ),
-                    child: SubMenu(
-                      title: 'Frota',
-                      onPress: () {
-                        Navigator.of(context).pushNamed('/FormularioCaminhao');
-                      },
-                      arrowIcon: Icons.arrow_forward_ios,
-                    ),
-                  ),
-                  Container(
-                    child: SubMenu(
-                      title: 'Custos',
-                      onPress: () {
-                        Navigator.of(context).pushNamed('/FormularioCustos');
-                      },
-                      arrowIcon: Icons.arrow_forward_ios,
-                    ),
-                  ),
-                ],
-              ),
-              arrowIcon: Icons.arrow_forward_ios,
-              colorMenu: Colors.blueGrey[600],
-              colorMenuSelected: Colors.white,
-              fontWeight: FontWeight.normal,
-            ),
-          ),
+                );
+              }),
           ItemMenu(
             icon: Icons.shopping_cart,
             title: 'Contratos',
@@ -130,28 +141,73 @@ class ConstroiMenu extends StatelessWidget {
             colorMenuSelected: Colors.white,
             fontWeight: FontWeight.normal,
           ),
-          // ItemMenu(
-          //   icon: Icons.map,
-          //   title: 'Rotas',
-          //   onPress: () {
-          //     print('Cliquei rotas');
-          //   },
-          //   arrowIcon: Icons.arrow_forward_ios,
-          //   colorMenu: Colors.blueGrey[600],
-          //   colorMenuSelected: Colors.white,
-          //   fontWeight: FontWeight.normal,
-          // ),
-          ItemMenu(
-            icon: Icons.trending_up,
-            title: 'Relatórios',
-            onPress: () {
-              print('Relatórios');
-            },
-            arrowIcon: Icons.arrow_forward_ios,
-            colorMenu: Colors.blueGrey[600],
-            colorMenuSelected: Colors.white,
-            fontWeight: FontWeight.normal,
-          ),
+          StreamBuilder<Object>(
+              stream: blocMenu.outMenu,
+              builder: (BuildContext context, AsyncSnapshot snapshot) {
+                return Center(
+                  child: ItemMenu(
+                    icon: Icons.settings,
+                    title: 'Solic.',
+                    onPress: () {},
+                    subMenu: Column(
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
+                            border: Border(
+                              bottom:
+                                  BorderSide(color: Colors.grey[300], width: 1),
+                            ),
+                          ),
+                          child: SubMenu(
+                            title: 'Abastecimento',
+                            onPress: () {
+                              Navigator.of(context)
+                                  .pushNamed('/FormularioAbastecimento');
+                            },
+                            arrowIcon: Icons.arrow_forward_ios,
+                          ),
+                        ),
+                        Container(
+                          decoration: BoxDecoration(
+                            border: Border(
+                              bottom:
+                                  BorderSide(color: Colors.grey[300], width: 1),
+                            ),
+                          ),
+                          child: SubMenu(
+                            title: 'Troca de Óleo',
+                            onPress: () {
+                              Navigator.of(context)
+                                  .pushNamed('/FormularioTrocaDeOleo');
+                            },
+                            arrowIcon: Icons.arrow_forward_ios,
+                          ),
+                        ),
+                        Container(
+                          decoration: BoxDecoration(
+                            border: Border(
+                              bottom:
+                                  BorderSide(color: Colors.grey[300], width: 1),
+                            ),
+                          ),
+                          child: SubMenu(
+                            title: 'Manut. Geral',
+                            onPress: () {
+                              Navigator.of(context)
+                                  .pushNamed('/FormularioManutencao');
+                            },
+                            arrowIcon: Icons.arrow_forward_ios,
+                          ),
+                        ),
+                      ],
+                    ),
+                    arrowIcon: Icons.arrow_forward_ios,
+                    colorMenu: Colors.blueGrey[600],
+                    colorMenuSelected: Colors.white,
+                    fontWeight: FontWeight.normal,
+                  ),
+                );
+              }),
           ItemMenu(
             icon: Icons.info,
             title: 'Info',
@@ -163,21 +219,17 @@ class ConstroiMenu extends StatelessWidget {
             colorMenuSelected: Colors.white,
             fontWeight: FontWeight.normal,
           ),
-          StreamBuilder<Object>(
-              stream: blocMenu.outMenu,
-              builder: (BuildContext context, AsyncSnapshot snapshot) {
-                return ItemMenu(
-                  icon: Icons.exit_to_app,
-                  title: 'Sair',
-                  onPress: () {
-                    blocMenu.eventoCliquemenu(context, null);
-                  },
-                  arrowIcon: Icons.arrow_forward_ios,
-                  colorMenu: Colors.blueGrey[600],
-                  colorMenuSelected: Colors.white,
-                  fontWeight: FontWeight.normal,
-                );
-              }),
+          ItemMenu(
+            icon: Icons.exit_to_app,
+            title: 'Sair',
+            onPress: () {
+              blocMenu.eventoCliqueSair(context, null);
+            },
+            arrowIcon: Icons.arrow_forward_ios,
+            colorMenu: Colors.blueGrey[600],
+            colorMenuSelected: Colors.white,
+            fontWeight: FontWeight.normal,
+          )
         ],
       ),
     );

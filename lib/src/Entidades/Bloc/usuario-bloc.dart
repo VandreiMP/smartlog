@@ -1,7 +1,11 @@
 import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:smartlogproject/src/Entidades/usuario/usuario.dart';
+import 'package:smartlogproject/src/Entidades/classes/usuario.dart';
+import 'package:smartlogproject/src/funcoes/alert.dart';
+import 'package:smartlogproject/src/funcoes/alertErro.dart';
 
 class UsuarioBloc extends BlocBase {
   String _documentId;
@@ -11,30 +15,29 @@ class UsuarioBloc extends BlocBase {
   String _email;
   String _telefone;
   String _celular;
-  int _ramal;
+  String _ramal;
+  BuildContext contextoAplicacao;
 
-  UsuarioBloc() {
-    _nomeController.listen((value) => _nome = value);
-    _tpUsuarioController.listen((value) => _tpUsuario = value);
-    _emailController.listen((value) => _email = value);
-    _senhaController.listen((value) => _senha = value);
-    _telefoneController.listen((value) => _email = value);
-    _celularController.listen((value) => _telefone = value);
-    _ramalController.listen((value) => _ramal = value);
-  }
+  UsuarioBloc(BuildContext contextoAplicacao);
 
+  /*
+  Aqui seta os valores recebidos no formulário para os controllers.
+  */
+
+  void setId(String value) => _idController.sink.add(value);
   void setNome(String value) => _nomeController.sink.add(value);
   void setTpUsuario(String value) => _tpUsuarioController.sink.add(value);
   void setSenha(String value) => _senhaController.sink.add(value);
   void setEmail(String value) => _emailController.sink.add(value);
+  void setEmailLogin(String value) => _emailLoginController.sink.add(value);
   void setTelefone(String value) => _telefoneController.sink.add(value);
   void setCelular(String value) => _celularController.sink.add(value);
-  void setRamal(int value) => _ramalController.sink.add(value);
+  void setRamal(String value) => _ramalController.sink.add(value);
 
   void setUsuario(Usuario usuario) {
-    _documentId = usuario.documentId();
     setNome(usuario.nome);
     setTpUsuario(usuario.tpUsuario);
+    setEmailLogin(usuario.emailLogin);
     setSenha(usuario.senha);
     setEmail(usuario.email);
     setTelefone(usuario.telefone);
@@ -42,8 +45,12 @@ class UsuarioBloc extends BlocBase {
     setRamal(usuario.ramal);
   }
 
-  var _idController = BehaviorSubject<int>();
-  Stream<int> get outId => _idController.stream;
+  /*
+  Aqui seta os valores dos controllers para as variáveis de saída do BLOC.
+  */
+
+  var _idController = BehaviorSubject<String>();
+  Stream<String> get outId => _idController.stream;
 
   var _nomeController = BehaviorSubject<String>();
   Stream<String> get outName => _nomeController.stream;
@@ -54,6 +61,9 @@ class UsuarioBloc extends BlocBase {
   var _emailController = BehaviorSubject<String>();
   Stream<String> get outEmail => _emailController.stream;
 
+  var _emailLoginController = BehaviorSubject<String>();
+  Stream<String> get outEmailLogin => _emailLoginController.stream;
+
   var _senhaController = BehaviorSubject<String>();
   Stream<String> get outSenha => _senhaController.stream;
 
@@ -63,32 +73,172 @@ class UsuarioBloc extends BlocBase {
   var _celularController = BehaviorSubject<String>();
   Stream<String> get outCelular => _celularController.stream;
 
-  var _ramalController = BehaviorSubject<int>();
-  Stream<int> get outRamal => _ramalController.stream;
+  var _ramalController = BehaviorSubject<String>();
+  Stream<String> get outRamal => _ramalController.stream;
 
-   insertOrUpdate() {
-    var usuario = Usuario()
-      ..nome = _nome
-      ..tpUsuario = _tpUsuario
-      ..email = _email
-      ..senha = _senha
-      ..telefone = _telefone
-      ..celular = _celular
-      ..ramal = _ramal;
+  /*
+  Controller com os resultados da consulta na tabela
+  */
 
-    Firestore.instance
-        .collection('user')
-        .document('104')
-        .updateData({'ramal': usuario.ramal});
+  var _controllerFuncionario = BehaviorSubject<QuerySnapshot>();
 
-    // if (_documentId?.isEmpty ?? true) {
-    //   Firestore.instance.collection('user').document(_documentId).setData;
-    // } else {
-    //   _repository.update(_documentId, usuario);
+  Stream<QuerySnapshot> get outFuncionario => _controllerFuncionario.stream;
+
+  /*
+  Método que insere os dados do formulário na tabela do Firebase.
+  Primeiro busca os valores inseridos nos controllers e seta os mesmos
+  no objeto, que por sua vez, vai ser inserido na tabela pelo método do Firebase "setaData"
+  sempre usando a identificação como PK.
+  */
+
+  Future<void> insereDados(BuildContext contextoAplicacao) async {
+    var usuario = Usuario();
+
+    usuario.identificacao = _idController.value;
+    usuario.nome = _nomeController.value;
+    usuario.tpUsuario = _tpUsuarioController.value;
+    usuario.email = _emailController.value;
+    usuario.emailLogin = _emailLoginController.value;
+    usuario.senha = _senhaController.value;
+    usuario.telefone = _telefoneController.value;
+    usuario.celular = _celularController.value;
+    usuario.ramal = _ramalController.value;
+
+    /*
+    Aqui realiza a validação dos campos obrigatórios.
+    */
+
+    if (usuario.nome == null) {
+      alert(contextoAplicacao, 'Campo Obrigatório',
+          'Para gravar o usuário no sistema, o campo "Nome" deve ser preenchido. Favor verificar!');
+    }
+
+    if (usuario.identificacao == null) {
+      alert(contextoAplicacao, 'Campo Obrigatório',
+          'Para gravar o usuário no sistema, o campo "Identificação" deve ser preenchido. Favor verificar!');
+    }
+
+    // if (usuario.tpUsuario == null) {
+    //   alert(contextoAplicacao, 'Campo Obrigatório',
+    //       'Para gravar o usuário no sistema, o campo "Tipo Usuário" deve ser preenchido. Favor verificar!');
     // }
 
-    return true;
+    if (usuario.emailLogin == null) {
+      alert(contextoAplicacao, 'Campo Obrigatório',
+          'Para gravar o usuário no sistema, o campo "E-Mail Acesso" deve ser preenchido. Favor verificar!');
+    }
+
+    if (usuario.senha == null) {
+      alert(contextoAplicacao, 'Campo Obrigatório',
+          'Para gravar o usuário no sistema, o campo "Senha" deve ser preenchido. Favor verificar!');
+    }
+
+    final instanciaFirebaseAuth = FirebaseAuth.instance;
+
+    try {
+      await Firestore.instance
+          .collection('usuario')
+          .document(usuario.identificacao)
+          .setData({
+            'identificacao': usuario.identificacao,
+            'nome': usuario.nome,
+            // 'tipoUsuario': usuario.tpUsuario,
+            'email': usuario.email,
+            'emailLogin': usuario.emailLogin,
+            'senha': usuario.senha,
+            'telefone': usuario.telefone,
+            'celular': usuario.celular,
+            'ramal': usuario.ramal
+          })
+          .then((value) async => await alert(
+              contextoAplicacao,
+              'Notificação de Sucesso',
+              'Os dados do formulário foram salvos com sucesso no banco de dados!'))
+          .whenComplete(() async => await instanciaFirebaseAuth
+                  .createUserWithEmailAndPassword(
+                      email: usuario.emailLogin, password: usuario.senha)
+                  .whenComplete(() async {
+                await alert(contextoAplicacao, 'Notificação de Sucesso',
+                    'As credenciais de acesso ao sistema foram criadas para o usuário informado. Para realizar o acesso devem ser informados o E-Mail Acesso e a Senha na tela de Autenticação.');
+              }));
+      //   try {
+
+      //   } catch (on) {
+      //     alert(
+      //       contextoAplicacao,
+      //       'Inconsistência na validação',
+      //       'Erro ao efetuar a criação das credenciais de acesso ao sistema para o usuário informado!',
+      //     );
+      //   }
+      // } catch (on) {
+      //   alert(contextoAplicacao, 'Inconsistência na Validação',
+      //       'Erro ao salvar os dados do formulário no banco de dados!');
+      // }
+    } catch (on) {
+      TextError('Erro ao salvar os dados do formulário no banco de dados!');
+    }
   }
+
+  /*
+  Método que apaga os dados do formulário na tabela do Firebase.
+  Primeiro busca a identificação informada no formulário através dos controllers,
+  para depois excluir o registro na tabela do Firebase filtrando pela
+  identificação, que é a PK desta tabela.
+  */
+
+  Future<void> apagarDados(BuildContext contextoAplicacao) async {
+    var usuario = Usuario();
+
+    usuario.identificacao = _idController.value;
+
+    try {
+      await Firestore.instance
+          .collection('usuario')
+          .document(usuario.identificacao)
+          .delete()
+          .then(
+            (value) => alert(contextoAplicacao, 'Notificação de Sucesso',
+                'Os dados do formulário foram apagados com sucesso no banco de dados!'),
+          )
+          .catchError((ErrorAndStacktrace erro) {
+        print(erro.error);
+      });
+    } catch (on) {
+      alert(contextoAplicacao, 'Inconsistência na Validação',
+          'Erro ao apagar os dados do formulário no banco de dados!');
+    }
+  }
+
+  Future<Usuario> consultarDado(String identificaoFuncionario) async {
+    
+    // DocumentReference referenciaFuncionario = Firestore.instance
+    //     .collection('usuario')
+    //     .document(identificaoFuncionario);
+
+    // DocumentSnapshot consultaFuncionario = await referenciaFuncionario.get();
+    
+    // Usuario funcionario = Usuario.fromMap(consultaFuncionario);
+    // print('usuario_bloc antes');
+    // print(funcionario.nome);
+    // print('usuario_bloc depois');
+    // return funcionario;
+    return null;
+  }
+
+Usuario getFuncionario(String identificaoFuncionario){
+
+  // Usuario funcionario;
+
+  
+  // print('antes de consultar os dados ${identificaoFuncionario}');
+  // consultarDado(identificaoFuncionario).then((value) => funcionario);
+  // print('usuario_bloc 2 antes');
+  // print(funcionario.nome);
+  // print('usuario_bloc 2 depois');
+  // return funcionario;
+  return null;
+
+}
 
   @override
   void dispose() {}

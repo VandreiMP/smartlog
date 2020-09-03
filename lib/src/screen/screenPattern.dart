@@ -2,7 +2,6 @@ import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:smartlogproject/src/Components/menu/menu.dart';
-import 'package:smartlogproject/src/screen/Bloc/app-bar-bloc.dart';
 
 class ScreenPattern extends StatelessWidget {
   const ScreenPattern({
@@ -39,14 +38,8 @@ class ScreenPattern extends StatelessWidget {
 class BotaoSair extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    AppBarBloc blocAppBar = BlocProvider.of<AppBarBloc>(context);
-    return StreamBuilder<Object>(
-      stream: blocAppBar.outSairSistema,
-      builder: (BuildContext context, AsyncSnapshot snapshot) {
-        return GestureDetector(
-          child: Icon(Icons.exit_to_app, color: Colors.white),
-        );
-      },
+    return GestureDetector(
+      child: Icon(Icons.exit_to_app, color: Colors.white),
     );
   }
 }

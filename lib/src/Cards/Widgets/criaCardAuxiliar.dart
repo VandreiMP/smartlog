@@ -29,7 +29,7 @@ class CriaCardAuxiliar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<CardAjudaBloc>(
-      bloc: CardAjudaBloc(context, origem),
+      bloc: CardAjudaBloc(context, origem, origemDado),
       child: CardAjuda(caminhoImagem, nomeFormulario, origem, origemDado),
     );
   }
@@ -124,6 +124,10 @@ class CardAjuda extends StatelessWidget {
                                 ),
                               ),
                               GestureDetector(
+                                onTap: () {
+                                  print('salvar');
+                                  blocAjuda.eventoCliqueBotaoSalvar();
+                                },
                                 child: Padding(
                                   padding: const EdgeInsets.all(1.0),
                                   child: Container(
@@ -184,13 +188,47 @@ class CardAjuda extends StatelessWidget {
                                       ),
                                     ),
                                     child: GestureDetector(
+                                      // onTap: () {
+                                      //   blocAjuda.eventoCliqueBotaoAjuda();
+
+                                      //   selected = snapshot.data;
+                                      // },
+                                      child: Icon(
+                                        Icons.help,
+                                        size: 25.0,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => ScreenUser(),
+                                    ),
+                                  );
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.all(1.0),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: Colors.blue[900],
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(2.0),
+                                      ),
+                                    ),
+                                    child: GestureDetector(
                                       onTap: () {
-                                        blocAjuda.eventoCliqueBotaoAjuda();
-                                        print(snapshot.data);
+                                        blocAjuda
+                                            .eventoCliqueBotaoApagarDados();
+
                                         selected = snapshot.data;
                                       },
                                       child: Icon(
-                                        Icons.help,
+                                        Icons.delete_forever,
                                         size: 25.0,
                                         color: Colors.white,
                                       ),

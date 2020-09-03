@@ -3,34 +3,60 @@ import 'dart:js';
 import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:smartlogproject/src/AcessoSistema/Widget/acesso-sistema-widget.dart';
-import 'package:smartlogproject/src/Cards/Widgets/criaCardAjuda.dart';
-import 'package:smartlogproject/src/Cards/Widgets/criaCardAjudaAdicionais.dart';
-import 'package:smartlogproject/src/Cards/Widgets/criaCardAjudaCarga.dart';
-import 'package:smartlogproject/src/Cards/Widgets/criaCardAjudaContrato.dart';
-import 'package:smartlogproject/src/Cards/Widgets/criaCardAjudaCustos.dart';
-import 'package:smartlogproject/src/Cards/Widgets/criaCardAjudaDetalhes.dart';
-import 'package:smartlogproject/src/Cards/Widgets/criaCardAjudaEmpresa.dart';
-import 'package:smartlogproject/src/Cards/Widgets/criaCardAjudaRomaneio.dart';
-import 'package:smartlogproject/src/screen/visaoGeral.dart';
+import 'package:smartlogproject/src/Entidades/Bloc/custo-bloc.dart';
+import 'package:smartlogproject/src/Entidades/Bloc/embalagem-bloc.dart';
 
 class CardAjudaBloc extends BlocBase {
   var _controllerExibeCard = BehaviorSubject<bool>(seedValue: true);
-  var _controllerCardAjuda = BehaviorSubject<String>(seedValue: 'AcessoSistemaWidget()');
+  var _controllerCardAjuda =
+      BehaviorSubject<String>(seedValue: 'AcessoSistemaWidget()');
 
   Stream<bool> get outExibeCard => _controllerExibeCard.stream;
   Stream<String> get outCardAjuda => _controllerCardAjuda.stream;
 
   final BuildContext contextoAplicacao;
   final String origem;
+  final String origemDado;
 
-  CardAjudaBloc(this.contextoAplicacao, this.origem);
+  CardAjudaBloc(this.contextoAplicacao, this.origem, this.origemDado);
+
+  Future<void> eventoCliqueBotaoSalvar() async {
+    if (origemDado == 'USUARIO') {
+      //UsuarioBloc blocUsuario = BlocProvider.of<UsuarioBloc>(contextoAplicacao);
+      //await blocUsuario.insereDados(contextoAplicacao);
+    }
+    if (origemDado == 'EMBALAGEM') {
+      EmbalagemBloc blocEmbalagem =
+          BlocProvider.of<EmbalagemBloc>(contextoAplicacao);
+      await blocEmbalagem.insereDados(contextoAplicacao);
+    }
+    if (origemDado == 'CUSTOS') {
+      CustoBloc blocCusto = BlocProvider.of<CustoBloc>(contextoAplicacao);
+      await blocCusto.insereDados(contextoAplicacao);
+    }
+  }
+
+  Future<void> eventoCliqueBotaoApagarDados() async {
+    if (origemDado == 'USUARIO') {
+      //UsuarioBloc blocUsuario = BlocProvider.of<UsuarioBloc>(contextoAplicacao);
+
+      //await blocUsuario.apagarDados(contextoAplicacao);
+    }
+    if (origemDado == 'EMBALAGEM') {
+      EmbalagemBloc blocEmbalagem =
+          BlocProvider.of<EmbalagemBloc>(contextoAplicacao);
+      await blocEmbalagem.apagarDados(contextoAplicacao);
+    }
+    if (origemDado == 'CUSTOS') {
+      CustoBloc blocCusto = BlocProvider.of<CustoBloc>(contextoAplicacao);
+      await blocCusto.apagarDados(contextoAplicacao);
+    }
+  }
 
   Future<void> eventoCliqueBotaoAjuda() async {
-    
     _controllerExibeCard.add(!_controllerExibeCard.value);
 
-    _controllerCardAjuda.add('CriaCardAjudaEmpresa()');
+    // _controllerCardAjuda.add('CriaCardAjudaEmpresa()');
 
     // if (origem == 'GERAL' ||
     //     origem == 'RESPONSAVEL' ||
