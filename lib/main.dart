@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:smartlogproject/src/AcessoSistema/Widget/acesso-sistema-widget.dart';
 import 'package:smartlogproject/src/funcoes/buscaEmbalagens.dart';
+import 'package:smartlogproject/src/funcoes/criaListaValores.dart';
 import 'package:smartlogproject/src/screen/screenCarga.dart';
 import 'package:smartlogproject/src/screen/screenContrato.dart';
 import 'package:smartlogproject/src/screen/screenDespesasContrato.dart';
@@ -11,8 +12,10 @@ import 'package:smartlogproject/src/screen/screenRomaneio.dart';
 import 'package:smartlogproject/src/screen/screenAbastecimento.dart';
 import 'package:smartlogproject/src/screen/screenTrocaOleo.dart';
 import 'package:smartlogproject/src/screen/teste2.dart';
+import 'package:smartlogproject/src/tabelas/Widget/tabelaCaminhao.dart';
 import 'package:smartlogproject/src/tabelas/Widget/tabelaCustos.dart';
 import 'package:smartlogproject/src/tabelas/Widget/tabelaEmbalagem.dart';
+import 'package:smartlogproject/src/tabelas/Widget/tabelaEmpresa.dart';
 import 'package:smartlogproject/src/tabelas/Widget/tabelaFuncionario.dart';
 
 import 'src/login/login.dart';
@@ -34,11 +37,22 @@ class Main extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       initialRoute: '/AcessoSistema',
       routes: {
+        /*
+        Acesso e Visão Geral
+        */
         '/AcessoSistema': (context) => AcessoSistemaWidget(),
         '/VisaoGeral': (context) => VisaoGeral(),
+        /*
+        Listas de Registros
+        */
         '/ListaFuncionarios': (context) => ListaFuncionarios(),
         '/ListaEmbalagens' : (context) => ListaEmbalagens(),
+        '/ListaEmpresas' : (context) => ListaEmpresas(),
         '/ListaCustos' : (context) => ListaCustos(),
+        '/ListaCaminhoes' : (context) => ListaCaminhoes(),
+        /*
+        Formulários Detalhados
+        */
         '/FormularioUsuario': (context) => ScreenUser(),
         '/FormularioEmbalagem': (context) => ScreenEmbalagem(),
         '/FormularioCaminhao': (context) => ScreenCaminhao(),
@@ -53,6 +67,10 @@ class Main extends StatelessWidget {
         '/FormularioAbastecimento': (context) => ScreenAbastecimento(),
         '/FormularioTrocaDeOleo': (context) => ScreenTrocaOleo(),
         '/FormularioManutencao': (context) => ScreenManutencao(),
+        /*
+        Listas de Valores p/ Formulários
+        */
+        '/ListaValoresEmbalagem' : (context) => ListaValoresEmbalagem(),
       },
     );
   }

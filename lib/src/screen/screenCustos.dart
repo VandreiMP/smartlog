@@ -122,7 +122,7 @@ class CriaCardFormulario extends StatelessWidget {
                       children: <Widget>[
                         Container(
                           child: AppText(
-                            'Custos/Despesas',
+                            'Custos',
                             bold: true,
                           ),
                         ),

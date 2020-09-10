@@ -3,8 +3,11 @@ import 'dart:js';
 import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:smartlogproject/src/Entidades/Bloc/caminhao-bloc.dart';
 import 'package:smartlogproject/src/Entidades/Bloc/custo-bloc.dart';
 import 'package:smartlogproject/src/Entidades/Bloc/embalagem-bloc.dart';
+import 'package:smartlogproject/src/Entidades/Bloc/empresa-bloc.dart';
+import 'package:smartlogproject/src/Entidades/Bloc/usuario-bloc.dart';
 
 class CardAjudaBloc extends BlocBase {
   var _controllerExibeCard = BehaviorSubject<bool>(seedValue: true);
@@ -22,8 +25,8 @@ class CardAjudaBloc extends BlocBase {
 
   Future<void> eventoCliqueBotaoSalvar() async {
     if (origemDado == 'USUARIO') {
-      //UsuarioBloc blocUsuario = BlocProvider.of<UsuarioBloc>(contextoAplicacao);
-      //await blocUsuario.insereDados(contextoAplicacao);
+      UsuarioBloc blocUsuario = BlocProvider.of<UsuarioBloc>(contextoAplicacao);
+      await blocUsuario.insereDados(contextoAplicacao);
     }
     if (origemDado == 'EMBALAGEM') {
       EmbalagemBloc blocEmbalagem =
@@ -34,13 +37,21 @@ class CardAjudaBloc extends BlocBase {
       CustoBloc blocCusto = BlocProvider.of<CustoBloc>(contextoAplicacao);
       await blocCusto.insereDados(contextoAplicacao);
     }
+    if (origemDado == 'EMPRESA') {
+      EmpresaBloc blocEmpresa = BlocProvider.of<EmpresaBloc>(contextoAplicacao);
+      await blocEmpresa.insereDados(contextoAplicacao);
+    }
+    if (origemDado == 'CAMINHAO') {
+      CaminhaoBloc blocCaminhao = BlocProvider.of<CaminhaoBloc>(contextoAplicacao);
+      await blocCaminhao.insereDados(contextoAplicacao);
+    }
   }
 
   Future<void> eventoCliqueBotaoApagarDados() async {
     if (origemDado == 'USUARIO') {
-      //UsuarioBloc blocUsuario = BlocProvider.of<UsuarioBloc>(contextoAplicacao);
+      UsuarioBloc blocUsuario = BlocProvider.of<UsuarioBloc>(contextoAplicacao);
 
-      //await blocUsuario.apagarDados(contextoAplicacao);
+      await blocUsuario.apagarDados(contextoAplicacao);
     }
     if (origemDado == 'EMBALAGEM') {
       EmbalagemBloc blocEmbalagem =
@@ -50,6 +61,14 @@ class CardAjudaBloc extends BlocBase {
     if (origemDado == 'CUSTOS') {
       CustoBloc blocCusto = BlocProvider.of<CustoBloc>(contextoAplicacao);
       await blocCusto.apagarDados(contextoAplicacao);
+    }
+    if (origemDado == 'EMPRESA') {
+      EmpresaBloc blocEmpresa = BlocProvider.of<EmpresaBloc>(contextoAplicacao);
+      await blocEmpresa.apagarDados(contextoAplicacao);
+    }
+    if (origemDado == 'CAMINHAO') {
+      CaminhaoBloc blocCaminhao = BlocProvider.of<CaminhaoBloc>(contextoAplicacao);
+      await blocCaminhao.apagarDados(contextoAplicacao);
     }
   }
 

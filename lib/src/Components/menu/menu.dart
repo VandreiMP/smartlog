@@ -48,7 +48,7 @@ class ConstroiMenu extends StatelessWidget {
                             title: 'Empresa',
                             onPress: () {
                               Navigator.of(context)
-                                  .pushNamed('/FormularioEmpresa');
+                                  .pushNamed('/ListaEmpresas');
                             },
                             arrowIcon: Icons.arrow_forward_ios,
                           ),
@@ -95,7 +95,7 @@ class ConstroiMenu extends StatelessWidget {
                             title: 'Frota',
                             onPress: () {
                               Navigator.of(context)
-                                  .pushNamed('/FormularioCaminhao');
+                                  .pushNamed('/ListaCaminhoes');
                             },
                             arrowIcon: Icons.arrow_forward_ios,
                           ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:smartlogproject/src/funcoes/criaLista.dart';
+import 'package:smartlogproject/src/funcoes/criaListaValores.dart';
 import 'package:smartlogproject/src/funcoes/requiredLabel.dart';
 import '../Components/scroll/scroll.dart';
 import '../constantes/mascaras.dart';
@@ -168,8 +169,9 @@ class CriaCardFormulario extends StatelessWidget {
                                             children: [
                                               GestureDetector(
                                                 onTap: () {
-                                                  Navigator.of(context).pushNamed(
-                                                      '/FormularioRomaneio');
+                                                  Navigator.of(context)
+                                                      .pushNamed(
+                                                          '/FormularioRomaneio');
                                                 },
                                                 child: Container(
                                                   decoration: BoxDecoration(
@@ -367,15 +369,50 @@ class CriaCardFormulario extends StatelessWidget {
                                         altura: 30,
                                         obrigaCampo: false,
                                       ),
-                                       Padding(
-                                         padding: const EdgeInsets.only(left: 25.0),
-                                         child: constroiCampo(
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(left: 25.0),
+                                        child: constroiCampo(
                                           labelCampo: 'Embalagem',
                                           largura: 200,
                                           altura: 30,
                                           obrigaCampo: false,
+                                        ),
                                       ),
-                                       ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(20.0),
+                                        child: Container(
+                                          alignment: Alignment.bottomCenter,
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              GestureDetector(
+                                                onTap: () {
+                                                  Navigator.of(context).pushNamed(
+                                                      '/ListaValoresEmbalagem');
+                                                },
+                                                child: Container(
+                                                  decoration: BoxDecoration(
+                                                    color: Colors.blue[900],
+                                                    borderRadius:
+                                                        BorderRadius.all(
+                                                      Radius.circular(2.0),
+                                                    ),
+                                                  ),
+                                                  child: Icon(
+                                                    Icons.add,
+                                                    size: 25.0,
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
                                     ],
                                   ),
                                   Row(
