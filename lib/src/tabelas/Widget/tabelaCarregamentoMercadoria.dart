@@ -3,23 +3,31 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:smartlogproject/src/Components/scroll/scroll.dart';
+import 'package:smartlogproject/src/Entidades/Bloc/caminhao-bloc.dart';
+import 'package:smartlogproject/src/Entidades/Bloc/carregamentoMercadoria-bloc.dart';
+import 'package:smartlogproject/src/Entidades/Bloc/custo-bloc.dart';
 import 'package:smartlogproject/src/Entidades/Bloc/embalagem-bloc.dart';
+import 'package:smartlogproject/src/Entidades/Bloc/empresa-bloc.dart';
 import 'package:smartlogproject/src/Entidades/Bloc/usuario-bloc.dart';
 import 'package:smartlogproject/src/constantes/mascaras.dart';
 import 'package:smartlogproject/src/funcoes/appText.dart';
+import 'package:smartlogproject/src/funcoes/buscaCaminhoes.dart';
+import 'package:smartlogproject/src/funcoes/buscaCarregamentoMercadoria.dart';
+import 'package:smartlogproject/src/funcoes/buscaCustos.dart';
 import 'package:smartlogproject/src/funcoes/buscaEmbalagens.dart';
+import 'package:smartlogproject/src/funcoes/buscaEmpresa.dart';
 import 'package:smartlogproject/src/funcoes/buscaFuncionarios.dart';
 import 'package:smartlogproject/src/funcoes/criaLista.dart';
 import 'package:smartlogproject/src/funcoes/requiredLabel.dart';
 import 'package:smartlogproject/src/screen/screenPattern.dart';
 import 'package:smartlogproject/src/tabelas/Bloc/tabela-bloc.dart';
 
-class ListaEmbalagens extends StatelessWidget {
+class ListaCargas extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ScreenPattern(
       child: BlocProvider(
-        bloc: EmbalagemBloc(context),
+        bloc: CarregamentoMercadoriaBloc(context),
         child: CriaCardFormulario(),
       ),
     );
@@ -27,20 +35,11 @@ class ListaEmbalagens extends StatelessWidget {
 }
 
 class CriaCardFormulario extends StatelessWidget {
-  /*
-    Variáveis usadas para capturar o valor dos campos do formulário
-    e salvar no banco
-  */
-  final tNome = TextEditingController();
-  final tId = TextEditingController();
-  final tTpUsuario = TextEditingController();
-  final tLogin = TextEditingController();
-  final tEmailLogin = TextEditingController();
-  final tSenha = TextEditingController();
-  final tEmail = TextEditingController();
-  final tTelefone = TextEditingController();
-  final tCelular = TextEditingController();
-  final tRamal = TextEditingController();
+
+
+  final tComprador = TextEditingController();
+  final tCarga = TextEditingController();
+ 
   bool inverteOrdenacao = false;
 
   @override
@@ -96,12 +95,12 @@ class CriaCardFormulario extends StatelessWidget {
                                 children: <Widget>[
                                   Container(
                                     child: constroiCampo(
-                                      labelCampo: 'Descrição',
+                                      labelCampo: 'Comprador',
                                       largura: 500,
                                       altura: 30,
                                       contextoAplicacao: context,
                                       obrigaCampo: false,
-                                      controller: tNome,
+                                      controller: tComprador,
                                     ),
                                   ),
                                   Row(
@@ -113,15 +112,13 @@ class CriaCardFormulario extends StatelessWidget {
                                       Container(
                                         alignment: Alignment.topLeft,
                                         child: constroiCampo(
-                                          labelCampo: 'Identificação',
+                                          labelCampo: 'Carga',
                                           largura: 150,
                                           altura: 30,
                                           obrigaCampo: false,
                                           contextoAplicacao: context,
-                                          controller: tId,
-                                          mascara: new MaskedTextController(
-                                            mask: mascaraIdentificao,
-                                          ),
+                                          controller: tCarga,
+                                         
                                         ),
                                       ),
                                     ],
@@ -134,7 +131,7 @@ class CriaCardFormulario extends StatelessWidget {
                         GestureDetector(
                           onTap: () {
                             Navigator.of(context).pushNamed(
-                              '/FormularioEmbalagem',
+                              '/FormularioCarga',
                             );
                           },
                           child: Padding(
@@ -161,7 +158,7 @@ class CriaCardFormulario extends StatelessWidget {
                     ),
                     Container(
                       child: AppText(
-                        'Lista de Embalagens para Acondicionamento de Mercadorias',
+                        'Lista de Cargas por Data de Entrega',
                         bold: true,
                       ),
                     ),
@@ -170,10 +167,7 @@ class CriaCardFormulario extends StatelessWidget {
                     ),
                     Row(
                       children: [
-                        BuscaEmbalagens(Icons.search, () {
-                          Navigator.of(context)
-                              .pushNamed('/FormularioEmbalagem');
-                        }),
+                        BuscaCarregamentoMercadoria(),
                       ],
                     )
                   ],

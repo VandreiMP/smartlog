@@ -4,6 +4,7 @@ import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:smartlogproject/src/Entidades/Bloc/caminhao-bloc.dart';
+import 'package:smartlogproject/src/Entidades/Bloc/carregamentoMercadoria-bloc.dart';
 import 'package:smartlogproject/src/Entidades/Bloc/custo-bloc.dart';
 import 'package:smartlogproject/src/Entidades/Bloc/embalagem-bloc.dart';
 import 'package:smartlogproject/src/Entidades/Bloc/empresa-bloc.dart';
@@ -45,6 +46,10 @@ class CardAjudaBloc extends BlocBase {
       CaminhaoBloc blocCaminhao = BlocProvider.of<CaminhaoBloc>(contextoAplicacao);
       await blocCaminhao.insereDados(contextoAplicacao);
     }
+    if (origemDado == 'CARGA') {
+      CarregamentoMercadoriaBloc blocCarregamentoMercadoria = BlocProvider.of<CarregamentoMercadoriaBloc>(contextoAplicacao);
+      await blocCarregamentoMercadoria.insereDados(contextoAplicacao);
+    }
   }
 
   Future<void> eventoCliqueBotaoApagarDados() async {
@@ -69,6 +74,10 @@ class CardAjudaBloc extends BlocBase {
     if (origemDado == 'CAMINHAO') {
       CaminhaoBloc blocCaminhao = BlocProvider.of<CaminhaoBloc>(contextoAplicacao);
       await blocCaminhao.apagarDados(contextoAplicacao);
+    }
+    if (origemDado == 'CARGA') {
+      CarregamentoMercadoriaBloc blocCarregamentoMercadoria = BlocProvider.of<CarregamentoMercadoriaBloc>(contextoAplicacao);
+      await blocCarregamentoMercadoria.apagarDados(contextoAplicacao);
     }
   }
 

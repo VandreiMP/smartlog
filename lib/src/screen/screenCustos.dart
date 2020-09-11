@@ -1,4 +1,5 @@
 import 'package:bloc_pattern/bloc_pattern.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:smartlogproject/src/Components/scroll/scroll.dart';
@@ -63,11 +64,17 @@ class _BodyState extends State<Body> {
   }
 }
 
-class CriaCardFormulario extends StatelessWidget {
+class CriaCardFormulario extends StatefulWidget {
+  @override
+  _CriaCardFormularioState createState() => _CriaCardFormularioState();
+}
+
+class _CriaCardFormularioState extends State<CriaCardFormulario> {
   List<String> modalidadeCusto = [
     'Fixo',
     'Variável',
   ];
+
   List<String> periodoCusto = [
     'Semanal',
     'Quinzenal',
@@ -82,228 +89,234 @@ class CriaCardFormulario extends StatelessWidget {
     'Desconsidera',
   ];
 
-  /*
-    Variáveis usadas para capturar o valor dos campos do formulário
-    e salvar no banco
-  */
-
   final tDetalhes = TextEditingController();
+
   final tId = TextEditingController();
+
   final tModalidade = TextEditingController();
+
   final tPeriodicidade = TextEditingController();
+
   final tAnaliseGerencial = TextEditingController();
+
   final tValor = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     CustoBloc blocCusto = BlocProvider.of<CustoBloc>(context);
-    return StreamBuilder<Object>(
-      stream: null,
-      builder: (context, snapshot) {
-        return Scroll(
-          height: double.infinity,
-          child: Column(
-            children: [
-              Container(
-                alignment: Alignment.topRight,
-                padding: EdgeInsets.only(top: 2.0),
-                child: Card(
-                  child: Container(
-                    padding: const EdgeInsets.all(15.0),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.all(Radius.circular(5)),
-                      border: new Border.all(
-                        color: Colors.black,
+
+    return StreamBuilder<QuerySnapshot>(
+        stream: null,
+        builder: (context, snapshot) {
+          return Scroll(
+            height: double.infinity,
+            child: Column(
+              children: [
+                Container(
+                  alignment: Alignment.topRight,
+                  padding: EdgeInsets.only(top: 2.0),
+                  child: Card(
+                    child: Container(
+                      padding: const EdgeInsets.all(15.0),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.all(Radius.circular(5)),
+                        border: new Border.all(
+                          color: Colors.black,
+                        ),
                       ),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Container(
-                          child: AppText(
-                            'Custos',
-                            bold: true,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Container(
+                            child: AppText(
+                              'Custos',
+                              bold: true,
+                            ),
                           ),
-                        ),
-                        SizedBox(
-                          height: 10.0,
-                        ),
-                        Row(
-                          children: [
-                            Container(
-                              //height: 150.0,
-                              padding: EdgeInsets.all(10.0),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.all(Radius.circular(5)),
-                                border: new Border.all(
-                                  color: Colors.black,
+                          SizedBox(
+                            height: 10.0,
+                          ),
+                          Row(
+                            children: [
+                              Container(
+                                //height: 150.0,
+                                padding: EdgeInsets.all(10.0),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(5)),
+                                  border: new Border.all(
+                                    color: Colors.black,
+                                  ),
                                 ),
-                              ),
-                              child: Row(
-                                children: <Widget>[
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: <Widget>[
-                                      Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: <Widget>[
-                                          Container(
-                                            alignment: Alignment.topLeft,
-                                            child: constroiCampo(
-                                              labelCampo: 'Identificação',
-                                              largura: 150,
-                                              altura: 30,
-                                              controller: tId,
-                                              obrigaCampo: true,
-                                              onChanged: (String valor) {
-                                                  blocCusto.setId(tId.text);
-                                                },
-                                              mascara: new MaskedTextController(
-                                                mask: mascaraIdentificao,
-                                              ),
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding:
-                                                const EdgeInsets.only(left: 12.0),
-                                            child: Container(
+                                child: Row(
+                                  children: <Widget>[
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: <Widget>[
+                                        Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: <Widget>[
+                                            Container(
                                               alignment: Alignment.topLeft,
                                               child: constroiCampo(
-                                                labelCampo: 'Detalhes',
-                                                largura: 250,
-                                                controller: tDetalhes,
+                                                labelCampo: 'Identificação',
+                                                largura: 150,
                                                 altura: 30,
-                                                 onChanged: (String valor) {
-                                                  blocCusto.setDetalhes(tDetalhes.text);
-                                                },
+                                                controller: tId,
                                                 obrigaCampo: true,
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: <Widget>[
-                                          Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              RequiredLabel(
-                                                'Modalidade',
-                                                true,
-                                              ),
-                                              Container(
-                                                child: DropDown(
-                                                    valores: modalidadeCusto),
-                                              ),
-                                            ],
-                                          ),
-                                          Padding(
-                                            padding:
-                                                const EdgeInsets.only(left: 68.0),
-                                            child: Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.start,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                RequiredLabel(
-                                                  'Periodicidade',
-                                                  true,
-                                                ),
-                                                Container(
-                                                  child: DropDown(
-                                                      valores: periodoCusto),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding:
-                                                const EdgeInsets.only(left: 15.0),
-                                            child: Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.start,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                RequiredLabel(
-                                                  'Análise Gerencial',
-                                                  true,
-                                                ),
-                                                Container(
-                                                  child: DropDown(
-                                                      valores: consideraAgr),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: <Widget>[
-                                          Container(
-                                            alignment: Alignment.topLeft,
-                                            child: constroiCampo(
-                                              labelCampo: 'Valor',
-                                              largura: 80,
-                                              controller: tValor,
-                                              altura: 30,
-                                               onChanged: (String valor) {
-                                                  blocCusto.setValor(tValor.text);
+                                                onChanged: (String valor) {
+                                                  blocCusto.setId(tId.text);
                                                 },
-                                              obrigaCampo: false,
-                                              mascara: new MaskedTextController(
-                                                mask: mascaraIdentificao,
+                                                mascara:
+                                                    new MaskedTextController(
+                                                  mask: mascaraIdentificao,
+                                                ),
                                               ),
                                             ),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ],
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                  left: 12.0),
+                                              child: Container(
+                                                alignment: Alignment.topLeft,
+                                                child: constroiCampo(
+                                                  labelCampo: 'Detalhes',
+                                                  largura: 250,
+                                                  controller: tDetalhes,
+                                                  altura: 30,
+                                                  onChanged: (String valor) {
+                                                    blocCusto.setDetalhes(
+                                                        tDetalhes.text);
+                                                  },
+                                                  obrigaCampo: true,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: <Widget>[
+                                            Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                RequiredLabel(
+                                                  'Modalidade',
+                                                  true,
+                                                ),
+                                                Container(
+                                                  child: DropDown(
+                                                      valores: modalidadeCusto),
+                                                ),
+                                              ],
+                                            ),
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                  left: 68.0),
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.start,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  RequiredLabel(
+                                                    'Periodicidade',
+                                                    true,
+                                                  ),
+                                                  Container(
+                                                    child: DropDown(
+                                                        valores: periodoCusto),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                  left: 15.0),
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.start,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  RequiredLabel(
+                                                    'Análise Gerencial',
+                                                    true,
+                                                  ),
+                                                  Container(
+                                                    child: DropDown(
+                                                        valores: consideraAgr),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: <Widget>[
+                                            Container(
+                                              alignment: Alignment.topLeft,
+                                              child: constroiCampo(
+                                                labelCampo: 'Valor',
+                                                largura: 80,
+                                                controller: tValor,
+                                                altura: 30,
+                                                onChanged: (String valor) {
+                                                  blocCusto
+                                                      .setValor(tValor.text);
+                                                },
+                                                obrigaCampo: false,
+                                                mascara:
+                                                    new MaskedTextController(
+                                                  mask: mascaraIdentificao,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Container(
-                          child: AppText(
-                            '*Os campos marcados com o asterisco são obrigatórios.',
-                            color: Colors.red,
-                            bold: true,
+                            ],
                           ),
-                        ),
-                      ],
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Container(
+                            child: AppText(
+                              '*Os campos marcados com o asterisco são obrigatórios.',
+                              color: Colors.red,
+                              bold: true,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ],
-          ),
-        );
-      }
-    );
+              ],
+            ),
+          );
+        });
   }
 
   Widget constroiCampo({

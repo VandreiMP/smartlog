@@ -6,18 +6,21 @@ import 'package:smartlogproject/src/Entidades/Bloc/usuario-bloc.dart';
 import 'package:smartlogproject/src/funcoes/appText.dart';
 
 class BuscaEmbalagens extends StatefulWidget {
-  
+    final IconData iconeLista;
+    final Function funcaoLista;
 
+  BuscaEmbalagens(this.iconeLista, this.funcaoLista);
   @override
-  _BuscaEmbalagensState createState() => _BuscaEmbalagensState();
+  _BuscaEmbalagensState createState() => _BuscaEmbalagensState(iconeLista, funcaoLista);
 }
 
 class _BuscaEmbalagensState extends State<BuscaEmbalagens> {
+  final IconData iconeLista;
+  final Function funcaoLista;
 
-
+  _BuscaEmbalagensState(this.iconeLista, this.funcaoLista);
   @override
   Widget build(BuildContext context) {
- 
     final Firestore firestore = Firestore.instance;
     return Row(
       children: [
@@ -135,9 +138,7 @@ class _BuscaEmbalagensState extends State<BuscaEmbalagens> {
                                       ),
                                       GestureDetector(
                                         onTap: () {
-                                          Navigator.of(context).pushNamed(
-                                              '/FormularioEmbalagem',
-                                              arguments: document.documentID);
+                                          funcaoLista();
                                         },
                                         child: Padding(
                                           padding:
@@ -150,7 +151,7 @@ class _BuscaEmbalagensState extends State<BuscaEmbalagens> {
                                               ),
                                             ),
                                             child: Icon(
-                                              Icons.search,
+                                              iconeLista,
                                               size: 30.0,
                                               color: Colors.white,
                                             ),

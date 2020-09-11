@@ -66,11 +66,9 @@ class CriaCardFormulario extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<String> situacaoContrato = [
-      'Ativo',
-      'Encerrado',
-      'Cancelado',
-      'Finalizado',
-      'Pendente',
+      'Ativa',
+      'Encerrada',
+      'Cancelada',
     ];
 
     return Scroll(
@@ -443,6 +441,7 @@ class CriaCardFormulario extends StatelessWidget {
                   ],
                 ),
               ),
+
             ),
           ),
         ],

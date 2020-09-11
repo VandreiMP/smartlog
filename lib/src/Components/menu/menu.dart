@@ -47,8 +47,7 @@ class ConstroiMenu extends StatelessWidget {
                           child: SubMenu(
                             title: 'Empresa',
                             onPress: () {
-                              Navigator.of(context)
-                                  .pushNamed('/ListaEmpresas');
+                              Navigator.of(context).pushNamed('/ListaEmpresas');
                             },
                             arrowIcon: Icons.arrow_forward_ios,
                           ),
@@ -104,8 +103,7 @@ class ConstroiMenu extends StatelessWidget {
                           child: SubMenu(
                             title: 'Custos',
                             onPress: () {
-                              Navigator.of(context)
-                                  .pushNamed('/ListaCustos');
+                              Navigator.of(context).pushNamed('/ListaCustos');
                             },
                             arrowIcon: Icons.arrow_forward_ios,
                           ),
@@ -120,21 +118,10 @@ class ConstroiMenu extends StatelessWidget {
                 );
               }),
           ItemMenu(
-            icon: Icons.shopping_cart,
-            title: 'Contratos',
-            onPress: () {
-              Navigator.of(context).pushNamed('/FormularioContratos');
-            },
-            arrowIcon: Icons.arrow_forward_ios,
-            colorMenu: Colors.blueGrey[600],
-            colorMenuSelected: Colors.white,
-            fontWeight: FontWeight.normal,
-          ),
-          ItemMenu(
             icon: Icons.local_shipping,
             title: 'Carga',
             onPress: () {
-              Navigator.of(context).pushNamed('/FormularioCarga');
+              Navigator.of(context).pushNamed('/ListaCargas');
             },
             arrowIcon: Icons.arrow_forward_ios,
             colorMenu: Colors.blueGrey[600],
