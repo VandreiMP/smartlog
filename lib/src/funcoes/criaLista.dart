@@ -5,7 +5,8 @@ class DropDown extends StatefulWidget {
   final Function retornaValor;
 
   const DropDown({
-    this.valores, this.retornaValor,
+    this.valores,
+    this.retornaValor,
   });
   @override
   _DropDownState createState() => _DropDownState();
@@ -32,12 +33,14 @@ class _DropDownState extends State<DropDown> {
             }).toList(),
             onChanged: (
               String novoValorSelecionado,
-            ) {
+            ) async {
               setState(() {
                 this.valorSelecionado = novoValorSelecionado;
                 retornaValor(novoValorSelecionado) async {
                   return novoValorSelecionado;
-                };
+                }
+
+                ;
               });
             },
             value: valorSelecionado,

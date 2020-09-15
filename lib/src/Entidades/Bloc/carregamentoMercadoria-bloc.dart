@@ -1,5 +1,6 @@
 import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:date_format/date_format.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:rxdart/rxdart.dart';
@@ -117,7 +118,6 @@ class CarregamentoMercadoriaBloc extends BlocBase {
   //var _totalCargaController = BehaviorSubject<String>();
   //Stream<String> get outTotalCarga => _totalCargaController.stream;
 
-
   /*
   Método que insere os dados do formulário na tabela do Firebase.
   Primeiro busca os valores inseridos nos controllers e seta os mesmos
@@ -129,6 +129,7 @@ class CarregamentoMercadoriaBloc extends BlocBase {
     var carregamentoMercadoria = CarregamentoMercadoria();
 
     carregamentoMercadoria.carga = _cargaController.value;
+
     carregamentoMercadoria.saidaCaminhao = _saidaCaminhaoController.value;
     carregamentoMercadoria.numeroRomaneio = _numeroRomaneioController.value;
     carregamentoMercadoria.situacaoExpedicao =
@@ -160,7 +161,7 @@ class CarregamentoMercadoriaBloc extends BlocBase {
         'caminhao': carregamentoMercadoria.caminhao,
         'motorista': carregamentoMercadoria.motorista,
         'comprador': carregamentoMercadoria.comprador,
-        'telefone' : carregamentoMercadoria.telefone,
+        'telefone': carregamentoMercadoria.telefone,
         'dataEntrega': carregamentoMercadoria.dataEntrega,
         'situacaoEntrega': carregamentoMercadoria.situacaoEntrega,
         'produto': carregamentoMercadoria.produto,
@@ -210,7 +211,7 @@ class CarregamentoMercadoriaBloc extends BlocBase {
   }
 
   Future<void> atualizaDados(BuildContext contextoAplicacao) async {
-   var carregamentoMercadoria = CarregamentoMercadoria();
+    var carregamentoMercadoria = CarregamentoMercadoria();
 
     carregamentoMercadoria.carga = _cargaController.value;
     carregamentoMercadoria.saidaCaminhao = _saidaCaminhaoController.value;
@@ -244,7 +245,7 @@ class CarregamentoMercadoriaBloc extends BlocBase {
         'caminhao': carregamentoMercadoria.caminhao,
         'motorista': carregamentoMercadoria.motorista,
         'comprador': carregamentoMercadoria.comprador,
-        'telefone' : carregamentoMercadoria.telefone,
+        'telefone': carregamentoMercadoria.telefone,
         'dataEntrega': carregamentoMercadoria.dataEntrega,
         'situacaoEntrega': carregamentoMercadoria.situacaoEntrega,
         'produto': carregamentoMercadoria.produto,

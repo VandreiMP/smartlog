@@ -8,6 +8,7 @@ import 'package:smartlogproject/src/Entidades/Bloc/carregamentoMercadoria-bloc.d
 import 'package:smartlogproject/src/Entidades/Bloc/custo-bloc.dart';
 import 'package:smartlogproject/src/Entidades/Bloc/embalagem-bloc.dart';
 import 'package:smartlogproject/src/Entidades/Bloc/empresa-bloc.dart';
+import 'package:smartlogproject/src/Entidades/Bloc/romaneio-bloc.dart';
 import 'package:smartlogproject/src/Entidades/Bloc/usuario-bloc.dart';
 
 class CardAjudaBloc extends BlocBase {
@@ -43,12 +44,19 @@ class CardAjudaBloc extends BlocBase {
       await blocEmpresa.insereDados(contextoAplicacao);
     }
     if (origemDado == 'CAMINHAO') {
-      CaminhaoBloc blocCaminhao = BlocProvider.of<CaminhaoBloc>(contextoAplicacao);
+      CaminhaoBloc blocCaminhao =
+          BlocProvider.of<CaminhaoBloc>(contextoAplicacao);
       await blocCaminhao.insereDados(contextoAplicacao);
     }
     if (origemDado == 'CARGA') {
-      CarregamentoMercadoriaBloc blocCarregamentoMercadoria = BlocProvider.of<CarregamentoMercadoriaBloc>(contextoAplicacao);
+      CarregamentoMercadoriaBloc blocCarregamentoMercadoria =
+          BlocProvider.of<CarregamentoMercadoriaBloc>(contextoAplicacao);
       await blocCarregamentoMercadoria.insereDados(contextoAplicacao);
+    }
+    if (origemDado == 'ROMANEIO') {
+      RomaneioBloc blocRomaneio =
+          BlocProvider.of<RomaneioBloc>(contextoAplicacao);
+      await blocRomaneio.insereDados(contextoAplicacao);
     }
   }
 
@@ -72,12 +80,19 @@ class CardAjudaBloc extends BlocBase {
       await blocEmpresa.apagarDados(contextoAplicacao);
     }
     if (origemDado == 'CAMINHAO') {
-      CaminhaoBloc blocCaminhao = BlocProvider.of<CaminhaoBloc>(contextoAplicacao);
+      CaminhaoBloc blocCaminhao =
+          BlocProvider.of<CaminhaoBloc>(contextoAplicacao);
       await blocCaminhao.apagarDados(contextoAplicacao);
     }
     if (origemDado == 'CARGA') {
-      CarregamentoMercadoriaBloc blocCarregamentoMercadoria = BlocProvider.of<CarregamentoMercadoriaBloc>(contextoAplicacao);
+      CarregamentoMercadoriaBloc blocCarregamentoMercadoria =
+          BlocProvider.of<CarregamentoMercadoriaBloc>(contextoAplicacao);
       await blocCarregamentoMercadoria.apagarDados(contextoAplicacao);
+    }
+    if (origemDado == 'ROMANEIO') {
+      RomaneioBloc blocRomaneio =
+          BlocProvider.of<RomaneioBloc>(contextoAplicacao);
+      await blocRomaneio.apagarDados(contextoAplicacao);
     }
   }
 

@@ -12,6 +12,7 @@ import '../funcoes/appText.dart';
 import '../funcoes/appTextField.dart';
 import '../Cards/Widgets/criaCardAuxiliar.dart';
 import 'screenPattern.dart';
+import 'package:smartlogproject/src/funcoes/alertErro.dart';
 
 class ScreenCarga extends StatefulWidget {
   @override
@@ -105,6 +106,7 @@ class CriaCardFormulario extends StatelessWidget {
       'Encerrada',
       'Cancelada',
     ];
+
     CarregamentoMercadoriaBloc blocCarregamentoMercadoria =
         BlocProvider.of<CarregamentoMercadoriaBloc>(context);
 
@@ -219,9 +221,15 @@ class CriaCardFormulario extends StatelessWidget {
                                                   children: [
                                                     GestureDetector(
                                                       onTap: () {
-                                                        Navigator.of(context)
-                                                            .pushNamed(
-                                                                '/FormularioRomaneio');
+                                                        if (tCarga
+                                                            .text.isNotEmpty) {
+                                                          Navigator.of(context)
+                                                              .pushNamed(
+                                                                  '/FormularioRomaneio',
+                                                                  arguments:
+                                                                      tCarga
+                                                                          .text);
+                                                        }
                                                       },
                                                       child: Container(
                                                         decoration:
