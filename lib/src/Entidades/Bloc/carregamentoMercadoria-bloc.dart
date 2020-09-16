@@ -22,12 +22,13 @@ class CarregamentoMercadoriaBloc extends BlocBase {
   String _situacaoEntrega;
   String _produto;
   String _embalagem;
-  String _pesoBruto;
-  String _pesoLiquido;
-  String _cubagemCarga;
-  String _quantidade;
-  String _precoLiquido;
-  String _totalCarga;
+  double _quantidadeEmbalagem;
+  double _pesoBruto;
+  double _pesoLiquido;
+  double _cubagemCarga;
+  double _quantidade;
+  double _precoLiquido;
+  double _totalCarga;
 
   BuildContext contextoAplicacao;
 
@@ -53,11 +54,14 @@ class CarregamentoMercadoriaBloc extends BlocBase {
       _situacaoEntregaController.sink.add(value);
   void setProduto(String value) => _produtoController.sink.add(value);
   void setEmbalagem(String value) => _embalagemController.sink.add(value);
-  void setPesoBruto(String value) => _pesoBrutoController.sink.add(value);
-  void setPesoLiquido(String value) => _pesoLiquidoController.sink.add(value);
-  void setCubagemCarga(String value) => _cubagemCargaController.sink.add(value);
-  void setQuantidade(String value) => _quantidadeController.sink.add(value);
-  void setPrecoLiquido(String value) => _precoLiquidoController.sink.add(value);
+  void setQuantidadeEmbalagem(double value) =>
+      _quantidadeEmbalagemController.sink.add(value);
+  void setPesoBruto(double value) => _pesoBrutoController.sink.add(value);
+  void setPesoLiquido(double value) => _pesoLiquidoController.sink.add(value);
+  void setCubagemCarga(double value) => _cubagemCargaController.sink.add(value);
+  void setQuantidade(double value) => _quantidadeController.sink.add(value);
+  void setTotalDesp(double value) => _totalDespController.sink.add(value);
+  void setPrecoLiquido(double value) => _precoLiquidoController.sink.add(value);
 
   /*
   Aqui seta os valores dos controllers para as variáveis de saída do BLOC.
@@ -97,26 +101,33 @@ class CarregamentoMercadoriaBloc extends BlocBase {
   var _produtoController = BehaviorSubject<String>();
   Stream<String> get outProduto => _produtoController.stream;
 
+  var _quantidadeEmbalagemController = BehaviorSubject<double>();
+  Stream<double> get outQuantidadeEmbalagem =>
+      _quantidadeEmbalagemController.stream;
+
   var _embalagemController = BehaviorSubject<String>();
   Stream<String> get outEmbalagem => _embalagemController.stream;
 
-  var _pesoBrutoController = BehaviorSubject<String>();
-  Stream<String> get outPesoBruto => _pesoBrutoController.stream;
+  var _pesoBrutoController = BehaviorSubject<double>();
+  Stream<double> get outPesoBruto => _pesoBrutoController.stream;
 
-  var _pesoLiquidoController = BehaviorSubject<String>();
-  Stream<String> get outPesoLiquido => _pesoLiquidoController.stream;
+  var _pesoLiquidoController = BehaviorSubject<double>();
+  Stream<double> get outPesoLiquido => _pesoLiquidoController.stream;
 
-  var _cubagemCargaController = BehaviorSubject<String>();
-  Stream<String> get outCubagemCarga => _cubagemCargaController.stream;
+  var _cubagemCargaController = BehaviorSubject<double>();
+  Stream<double> get outCubagemCarga => _cubagemCargaController.stream;
 
-  var _quantidadeController = BehaviorSubject<String>();
-  Stream<String> get outQuantidade => _quantidadeController.stream;
+  var _quantidadeController = BehaviorSubject<double>();
+  Stream<double> get outQuantidade => _quantidadeController.stream;
 
-  var _precoLiquidoController = BehaviorSubject<String>();
-  Stream<String> get outPrecoLiquido => _precoLiquidoController.stream;
+  var _precoLiquidoController = BehaviorSubject<double>();
+  Stream<double> get outPrecoLiquido => _precoLiquidoController.stream;
 
-  //var _totalCargaController = BehaviorSubject<String>();
-  //Stream<String> get outTotalCarga => _totalCargaController.stream;
+  var _totalDespController = BehaviorSubject<double>();
+  Stream<double> get outTotalDesp => _totalDespController.stream;
+
+  var _totalCargaController = BehaviorSubject<double>();
+  Stream<double> get outTotalCarga => _totalCargaController.stream;
 
   /*
   Método que insere os dados do formulário na tabela do Firebase.
@@ -142,12 +153,18 @@ class CarregamentoMercadoriaBloc extends BlocBase {
     carregamentoMercadoria.situacaoEntrega = _situacaoEntregaController.value;
     carregamentoMercadoria.produto = _produtoController.value;
     carregamentoMercadoria.embalagem = _embalagemController.value;
+    carregamentoMercadoria.quantidadeEmbalagem =
+        _quantidadeEmbalagemController.value;
     carregamentoMercadoria.pesoBruto = _pesoBrutoController.value;
     carregamentoMercadoria.pesoLiquido = _pesoLiquidoController.value;
     carregamentoMercadoria.cubagemCarga = _cubagemCargaController.value;
     carregamentoMercadoria.quantidade = _quantidadeController.value;
     carregamentoMercadoria.precoLiquido = _precoLiquidoController.value;
-    //carregamentoMercadoria.totalCarga = _precoLiquidoController.value * _quantidadeController.value;
+    carregamentoMercadoria.totalDesp = _totalDespController.value;
+    carregamentoMercadoria.totalCarga = calculaValorTotalCarga(
+        _precoLiquidoController.value,
+        _quantidadeController.value,
+        _totalDespController.value);
 
     try {
       await Firestore.instance
@@ -166,12 +183,14 @@ class CarregamentoMercadoriaBloc extends BlocBase {
         'situacaoEntrega': carregamentoMercadoria.situacaoEntrega,
         'produto': carregamentoMercadoria.produto,
         'embalagem': carregamentoMercadoria.embalagem,
+        'quantidadeEmbalagem': carregamentoMercadoria.quantidadeEmbalagem,
         'pesoBruto': carregamentoMercadoria.pesoBruto,
         'pesoLiquido': carregamentoMercadoria.pesoLiquido,
         'cubagemCarga': carregamentoMercadoria.cubagemCarga,
         'quantidade': carregamentoMercadoria.quantidade,
         'precoLiquido': carregamentoMercadoria.precoLiquido,
-        //'totalCarga': carregamentoMercadoria.totalCarga
+        'totalDesp': carregamentoMercadoria.totalDesp,
+        'totalCarga': carregamentoMercadoria.totalCarga
       }).then((value) async => await alert(
               contextoAplicacao,
               'Notificação de Sucesso',
@@ -226,12 +245,19 @@ class CarregamentoMercadoriaBloc extends BlocBase {
     carregamentoMercadoria.situacaoEntrega = _situacaoEntregaController.value;
     carregamentoMercadoria.produto = _produtoController.value;
     carregamentoMercadoria.embalagem = _embalagemController.value;
+    carregamentoMercadoria.quantidadeEmbalagem =
+        _quantidadeEmbalagemController.value;
     carregamentoMercadoria.pesoBruto = _pesoBrutoController.value;
     carregamentoMercadoria.pesoLiquido = _pesoLiquidoController.value;
     carregamentoMercadoria.cubagemCarga = _cubagemCargaController.value;
     carregamentoMercadoria.quantidade = _quantidadeController.value;
     carregamentoMercadoria.precoLiquido = _precoLiquidoController.value;
-    //carregamentoMercadoria.totalCarga = _totalCargaController.value;
+    carregamentoMercadoria.totalDesp = _totalDespController.value;
+    carregamentoMercadoria.totalCarga = calculaValorTotalCarga(
+      _precoLiquidoController.value,
+      _quantidadeController.value,
+      _totalDespController.value,
+    );
 
     try {
       await Firestore.instance
@@ -250,12 +276,14 @@ class CarregamentoMercadoriaBloc extends BlocBase {
         'situacaoEntrega': carregamentoMercadoria.situacaoEntrega,
         'produto': carregamentoMercadoria.produto,
         'embalagem': carregamentoMercadoria.embalagem,
+        'quantidadeEmbalagem': carregamentoMercadoria.quantidadeEmbalagem,
         'pesoBruto': carregamentoMercadoria.pesoBruto,
         'pesoLiquido': carregamentoMercadoria.pesoLiquido,
         'cubagemCarga': carregamentoMercadoria.cubagemCarga,
         'quantidade': carregamentoMercadoria.quantidade,
         'precoLiquido': carregamentoMercadoria.precoLiquido,
-        //'totalCarga': carregamentoMercadoria.totalCarga
+        'totalDesp': carregamentoMercadoria.totalDesp,
+        'totalCarga': carregamentoMercadoria.totalCarga
       }).then((value) async => await alert(
               contextoAplicacao,
               'Notificação de Sucesso',
@@ -267,4 +295,9 @@ class CarregamentoMercadoriaBloc extends BlocBase {
 
   @override
   void dispose() {}
+}
+
+double calculaValorTotalCarga(
+    double precoLiquido, double unitario, double totalDesp) {
+  return ((precoLiquido * unitario) + totalDesp);
 }

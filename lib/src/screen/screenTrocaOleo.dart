@@ -68,7 +68,6 @@ class CriaCardFormulario extends StatelessWidget {
   List<String> situacaoSolicitacao = [
     'Aberta',
     'Pendente',
-    'Cancelada',
     'Negada',
     'Efetivada',
   ];
@@ -303,45 +302,49 @@ class CriaCardFormulario extends StatelessWidget {
                                         padding:
                                             const EdgeInsets.only(left: 0.0),
                                         child: constroiCampo(
+                                          labelCampo: 'Preço p/ Litro',
+                                          largura: 85,
+                                          altura: 30,
+                                          // controller: tPrecoLitro,
+                                          obrigaCampo: false,
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(4.0),
+                                        child: AppText(
+                                          '   *',
+                                          bold: true,
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(left: 25.0),
+                                        child: constroiCampo(
                                           labelCampo: 'Quantidade(Lt)',
                                           largura: 85,
                                           altura: 30,
-                                          controller: tQuantidadeOleo,
+                                          // controller: tQuantidade,
                                           obrigaCampo: false,
                                         ),
                                       ),
                                       Padding(
-                                        padding:
-                                            const EdgeInsets.only(left: 0.0),
-                                        child: constroiCampo(
-                                          labelCampo: 'Unitário Filtro',
-                                          largura: 85,
-                                          altura: 30,
-                                          controller: tPrecoUnitarioFiltro,
-                                          obrigaCampo: false,
+                                        padding: const EdgeInsets.all(4.0),
+                                        child: AppText(
+                                          '   =',
+                                          bold: true,
                                         ),
                                       ),
                                       Padding(
-                                        padding:
-                                            const EdgeInsets.only(left: 25.0),
-                                        child: constroiCampo(
-                                          labelCampo: 'Quantidade Filtro(Un)',
-                                          largura: 85,
-                                          altura: 30,
-                                          controller: tQuantidadeFiltro,
-                                          obrigaCampo: false,
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding:
-                                            const EdgeInsets.only(left: 25.0),
-                                        child: constroiCampo(
+                                          padding:
+                                              const EdgeInsets.only(left: 25.0),
+                                          child: constroiCampo(
                                             labelCampo: 'Custo Total',
                                             largura: 85,
                                             altura: 30,
                                             obrigaCampo: false,
-                                            controller: tCustoTotal),
-                                      ),
+                                          )
+                                          // controller: tCustoTotal),
+                                          ),
                                       Padding(
                                         padding:
                                             const EdgeInsets.only(left: 25.0),
@@ -349,8 +352,43 @@ class CriaCardFormulario extends StatelessWidget {
                                           labelCampo: 'Custo Vinculado',
                                           largura: 100,
                                           altura: 30,
-                                          controller: tCustoVinculado,
+                                          // controller: tCustoVinculado,
                                           obrigaCampo: false,
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(20.0),
+                                        child: Container(
+                                          alignment: Alignment.bottomCenter,
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              GestureDetector(
+                                                onTap: () {
+                                                  Navigator.of(context)
+                                                      .pushNamed(
+                                                          '/ListaValoresCusto');
+                                                },
+                                                child: Container(
+                                                  decoration: BoxDecoration(
+                                                    color: Colors.blue[900],
+                                                    borderRadius:
+                                                        BorderRadius.all(
+                                                      Radius.circular(2.0),
+                                                    ),
+                                                  ),
+                                                  child: Icon(
+                                                    Icons.add,
+                                                    size: 25.0,
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
                                         ),
                                       ),
                                     ],

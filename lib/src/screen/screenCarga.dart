@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:smartlogproject/src/Entidades/Bloc/carregamentoMercadoria-bloc.dart';
 import 'package:smartlogproject/src/funcoes/criaLista.dart';
-import 'package:smartlogproject/src/funcoes/criaListaValores.dart';
+import 'package:smartlogproject/src/funcoes/criaListaValoresEmbalagem.dart';
 import 'package:smartlogproject/src/funcoes/requiredLabel.dart';
 import '../Components/scroll/scroll.dart';
 import '../constantes/mascaras.dart';
@@ -86,11 +86,13 @@ class CriaCardFormulario extends StatelessWidget {
     final tSituacaoEntrega = TextEditingController();
     final tProduto = TextEditingController();
     final tEmbalagem = TextEditingController();
+    final tQuantidadeEmbalagem = TextEditingController();
     final tPesoBruto = TextEditingController();
     final tPesoLiquido = TextEditingController();
     final tCubagemCarga = TextEditingController();
     final tQuantidade = TextEditingController();
     final tPrecoLiquido = TextEditingController();
+    final tTotalDesp = TextEditingController();
     final tTotalCarga = TextEditingController();
 
     List<String> situacaoCarga = [
@@ -321,24 +323,48 @@ class CriaCardFormulario extends StatelessWidget {
                                           children: <Widget>[
                                             constroiCampo(
                                               labelCampo: 'Caminhão',
-                                              largura: 150,
+                                              largura: 450,
                                               altura: 30,
-                                              controller: tCaminhao,
-                                              onChanged: (String valor) {
-                                                blocCarregamentoMercadoria
-                                                    .setCaminhao(
-                                                        tCaminhao.text);
-                                              },
                                               obrigaCampo: true,
                                             ),
                                             Padding(
-                                              padding: const EdgeInsets.only(
-                                                  left: 25.0),
-                                              child: constroiCampo(
-                                                //descrição do caminhão
-                                                largura: 300,
-                                                altura: 30,
-                                                obrigaCampo: false,
+                                              padding:
+                                                  const EdgeInsets.all(20.0),
+                                              child: Container(
+                                                alignment:
+                                                    Alignment.bottomCenter,
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    GestureDetector(
+                                                      onTap: () {
+                                                        Navigator.of(context)
+                                                            .pushNamed(
+                                                                '/ListaValoresCaminhao');
+                                                      },
+                                                      child: Container(
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          color:
+                                                              Colors.blue[900],
+                                                          borderRadius:
+                                                              BorderRadius.all(
+                                                            Radius.circular(
+                                                                2.0),
+                                                          ),
+                                                        ),
+                                                        child: Icon(
+                                                          Icons.local_shipping,
+                                                          size: 25.0,
+                                                          color: Colors.white,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
                                               ),
                                             ),
                                           ],
@@ -351,24 +377,48 @@ class CriaCardFormulario extends StatelessWidget {
                                           children: <Widget>[
                                             constroiCampo(
                                               labelCampo: 'Motorista',
-                                              largura: 150,
+                                              largura: 450,
                                               altura: 30,
-                                              controller: tMotorista,
-                                              onChanged: (String valor) {
-                                                blocCarregamentoMercadoria
-                                                    .setMototista(
-                                                        tMotorista.text);
-                                              },
                                               obrigaCampo: true,
                                             ),
                                             Padding(
-                                              padding: const EdgeInsets.only(
-                                                  left: 25.0),
-                                              child: constroiCampo(
-                                                //nome do motorista
-                                                largura: 300,
-                                                altura: 30,
-                                                obrigaCampo: false,
+                                              padding:
+                                                  const EdgeInsets.all(20.0),
+                                              child: Container(
+                                                alignment:
+                                                    Alignment.bottomCenter,
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    GestureDetector(
+                                                      onTap: () {
+                                                        Navigator.of(context)
+                                                            .pushNamed(
+                                                                '/ListaValoresMotorista');
+                                                      },
+                                                      child: Container(
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          color:
+                                                              Colors.blue[900],
+                                                          borderRadius:
+                                                              BorderRadius.all(
+                                                            Radius.circular(
+                                                                2.0),
+                                                          ),
+                                                        ),
+                                                        child: Icon(
+                                                          Icons.person,
+                                                          size: 25.0,
+                                                          color: Colors.white,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
                                               ),
                                             ),
                                           ],
@@ -551,7 +601,7 @@ class CriaCardFormulario extends StatelessWidget {
                                                           ),
                                                         ),
                                                         child: Icon(
-                                                          Icons.add,
+                                                          Icons.shopping_basket,
                                                           size: 25.0,
                                                           color: Colors.white,
                                                         ),
@@ -559,6 +609,25 @@ class CriaCardFormulario extends StatelessWidget {
                                                     ),
                                                   ],
                                                 ),
+                                              ),
+                                            ),
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                  left: 8.0),
+                                              child: constroiCampo(
+                                                labelCampo: 'Qtd. Embalagem',
+                                                largura: 85,
+                                                altura: 30,
+                                                controller:
+                                                    tQuantidadeEmbalagem,
+                                                onChanged: (String valor) {
+                                                  blocCarregamentoMercadoria
+                                                      .setQuantidadeEmbalagem(
+                                                          double.parse(
+                                                              tQuantidadeEmbalagem
+                                                                  .text));
+                                                },
+                                                obrigaCampo: false,
                                               ),
                                             ),
                                           ],
@@ -576,8 +645,8 @@ class CriaCardFormulario extends StatelessWidget {
                                               controller: tPesoBruto,
                                               onChanged: (String valor) {
                                                 blocCarregamentoMercadoria
-                                                    .setPesoBruto(
-                                                        tPesoBruto.text);
+                                                    .setPesoBruto(double.parse(
+                                                        tPesoBruto.text));
                                               },
                                               obrigaCampo: false,
                                             ),
@@ -592,7 +661,9 @@ class CriaCardFormulario extends StatelessWidget {
                                                 onChanged: (String valor) {
                                                   blocCarregamentoMercadoria
                                                       .setPesoLiquido(
-                                                          tPesoLiquido.text);
+                                                          double.parse(
+                                                              tPesoLiquido
+                                                                  .text));
                                                 },
                                                 obrigaCampo: false,
                                               ),
@@ -601,33 +672,39 @@ class CriaCardFormulario extends StatelessWidget {
                                               padding: const EdgeInsets.only(
                                                   left: 8.0),
                                               child: constroiCampo(
-                                                labelCampo: 'Cubagem/Vol.',
+                                                labelCampo: 'Volume Real',
                                                 largura: 85,
                                                 altura: 30,
                                                 controller: tCubagemCarga,
                                                 onChanged: (String valor) {
                                                   blocCarregamentoMercadoria
                                                       .setCubagemCarga(
-                                                          tCubagemCarga.text);
+                                                          double.parse(
+                                                              tCubagemCarga
+                                                                  .text));
                                                 },
                                                 obrigaCampo: false,
                                               ),
                                             ),
-                                            Padding(
-                                              padding: const EdgeInsets.only(
-                                                  left: 8.0),
-                                              child: constroiCampo(
-                                                labelCampo: 'Quantidade',
-                                                largura: 85,
-                                                altura: 30,
-                                                controller: tQuantidade,
-                                                onChanged: (String valor) {
-                                                  blocCarregamentoMercadoria
-                                                      .setQuantidade(
-                                                          tQuantidade.text);
-                                                },
-                                                obrigaCampo: false,
-                                              ),
+                                          ],
+                                        ),
+                                        Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: <Widget>[
+                                            constroiCampo(
+                                              labelCampo: 'Unitário',
+                                              largura: 85,
+                                              altura: 30,
+                                              controller: tQuantidade,
+                                              onChanged: (String valor) {
+                                                blocCarregamentoMercadoria
+                                                    .setQuantidade(double.parse(
+                                                        tQuantidade.text));
+                                              },
+                                              obrigaCampo: false,
                                             ),
                                             Padding(
                                               padding:
@@ -648,9 +725,76 @@ class CriaCardFormulario extends StatelessWidget {
                                                 onChanged: (String valor) {
                                                   blocCarregamentoMercadoria
                                                       .setPrecoLiquido(
-                                                          tPrecoLiquido.text);
+                                                          double.parse(
+                                                              tPrecoLiquido
+                                                                  .text));
                                                 },
                                                 obrigaCampo: false,
+                                              ),
+                                            ),
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.all(4.0),
+                                              child: AppText(
+                                                '+',
+                                                bold: true,
+                                              ),
+                                            ),
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                  left: 8.0),
+                                              child: constroiCampo(
+                                                labelCampo: 'Total Desp.',
+                                                largura: 85,
+                                                altura: 30,
+                                                controller: tTotalDesp,
+                                                onChanged: (String valor) {
+                                                  blocCarregamentoMercadoria
+                                                      .setTotalDesp(
+                                                          double.parse(
+                                                              tTotalDesp.text));
+                                                },
+                                                obrigaCampo: false,
+                                              ),
+                                            ),
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.all(20.0),
+                                              child: Container(
+                                                alignment:
+                                                    Alignment.bottomCenter,
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    GestureDetector(
+                                                      onTap: () {
+                                                        Navigator.of(context)
+                                                            .pushNamed(
+                                                                '/FormularioDespesasContrato');
+                                                      },
+                                                      child: Container(
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          color:
+                                                              Colors.blue[900],
+                                                          borderRadius:
+                                                              BorderRadius.all(
+                                                            Radius.circular(
+                                                                2.0),
+                                                          ),
+                                                        ),
+                                                        child: Icon(
+                                                          Icons.attach_money,
+                                                          size: 25.0,
+                                                          color: Colors.white,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
                                               ),
                                             ),
                                             Padding(
@@ -673,13 +817,6 @@ class CriaCardFormulario extends StatelessWidget {
                                               ),
                                             ),
                                           ],
-                                        ),
-                                        Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: <Widget>[],
                                         ),
                                       ],
                                     ),

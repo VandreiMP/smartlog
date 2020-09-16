@@ -35,7 +35,7 @@ class CriaCardFormulario extends StatelessWidget {
   */
   final tDescricao = TextEditingController();
   final tId = TextEditingController();
- 
+
   bool inverteOrdenacao = false;
 
   @override
@@ -165,7 +165,9 @@ class CriaCardFormulario extends StatelessWidget {
                     ),
                     Row(
                       children: [
-                        BuscaCustos(),
+                        BuscaCustos(Icons.search, () {
+                          Navigator.of(context).pushNamed('/FormularioCustos');
+                        })
                       ],
                     )
                   ],

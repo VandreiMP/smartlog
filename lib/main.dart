@@ -3,7 +3,10 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:smartlogproject/src/AcessoSistema/Widget/acesso-sistema-widget.dart';
 import 'package:smartlogproject/src/funcoes/buscaEmbalagens.dart';
-import 'package:smartlogproject/src/funcoes/criaListaValores.dart';
+import 'package:smartlogproject/src/funcoes/criaListaValoresCaminhao.dart';
+import 'package:smartlogproject/src/funcoes/criaListaValoresCusto.dart';
+import 'package:smartlogproject/src/funcoes/criaListaValoresEmbalagem.dart';
+import 'package:smartlogproject/src/funcoes/criaListaValoresMotorista.dart';
 import 'package:smartlogproject/src/screen/screenCarga.dart';
 import 'package:smartlogproject/src/screen/screenContrato.dart';
 import 'package:smartlogproject/src/screen/screenDespesasContrato.dart';
@@ -47,11 +50,11 @@ class Main extends StatelessWidget {
         Listas de Registros
         */
         '/ListaFuncionarios': (context) => ListaFuncionarios(),
-        '/ListaEmbalagens' : (context) => ListaEmbalagens(),
-        '/ListaEmpresas' : (context) => ListaEmpresas(),
-        '/ListaCustos' : (context) => ListaCustos(),
-        '/ListaCaminhoes' : (context) => ListaCaminhoes(),
-        '/ListaCargas' : (context) => ListaCargas(),
+        '/ListaEmbalagens': (context) => ListaEmbalagens(),
+        '/ListaEmpresas': (context) => ListaEmpresas(),
+        '/ListaCustos': (context) => ListaCustos(),
+        '/ListaCaminhoes': (context) => ListaCaminhoes(),
+        '/ListaCargas': (context) => ListaCargas(),
         /*
         Formulários Detalhados
         */
@@ -72,7 +75,10 @@ class Main extends StatelessWidget {
         /*
         Listas de Valores p/ Formulários
         */
-        '/ListaValoresEmbalagem' : (context) => ListaValoresEmbalagem(),
+        '/ListaValoresEmbalagem': (context) => ListaValoresEmbalagem(),
+        '/ListaValoresCusto': (context) => ListaValoresCusto(),
+        '/ListaValoresCaminhao': (context) => ListaValoresCaminhao(),
+        '/ListaValoresMotorista': (context) => ListaValoresMotorista()
       },
     );
   }

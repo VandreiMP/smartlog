@@ -9,6 +9,7 @@ class Embalagem extends BaseModel {
   String tipoUnidade;
   String largura;
   String comprimento;
+  String altura;
   String tara;
 
   Embalagem();
@@ -21,6 +22,7 @@ class Embalagem extends BaseModel {
     // this.tipoUnidade = document.data['tipoUnidade'];
     this.largura = document.data["largura"];
     this.comprimento = document.data["comprimento"];
+    this.altura = document.data["altura"];
     this.tara = document.data["tara"];
 
     @override
@@ -33,6 +35,7 @@ class Embalagem extends BaseModel {
       // map['tipoUnidade'] = this.tipoUnidade;
       map['largura'] = this.largura;
       map['comprimento'] = this.comprimento;
+      map['altura'] = this.altura;
       map['tara'] = this.tara;
 
       return map;

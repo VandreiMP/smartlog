@@ -5,11 +5,29 @@ import 'package:smartlogproject/src/Entidades/Bloc/usuario-bloc.dart';
 import 'package:smartlogproject/src/funcoes/appText.dart';
 
 class BuscaFuncionarios extends StatefulWidget {
+  final IconData iconeLista;
+  final Function funcaoLista;
+
+  const BuscaFuncionarios(
+    this.iconeLista,
+    this.funcaoLista,
+  );
+
   @override
-  _BuscaFuncionariosState createState() => _BuscaFuncionariosState();
+  _BuscaFuncionariosState createState() => _BuscaFuncionariosState(
+        iconeLista,
+        funcaoLista,
+      );
 }
 
 class _BuscaFuncionariosState extends State<BuscaFuncionarios> {
+  final IconData iconeLista;
+  final Function funcaoLista;
+
+  _BuscaFuncionariosState(
+    this.iconeLista,
+    this.funcaoLista,
+  );
   @override
   Widget build(BuildContext context) {
     UsuarioBloc blocUsuario = BlocProvider.of<UsuarioBloc>(context);
@@ -34,7 +52,7 @@ class _BuscaFuncionariosState extends State<BuscaFuncionarios> {
                       Text(
                         'Consultando registros existentes...',
                         style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 40),
+                            fontWeight: FontWeight.bold, fontSize: 15),
                       ),
                       SizedBox(
                         height: 10,
@@ -137,10 +155,7 @@ class _BuscaFuncionariosState extends State<BuscaFuncionarios> {
                                       ),
                                       GestureDetector(
                                         onTap: () {
-                                          print('botão ${document.documentID}');
-                                          Navigator.of(context).pushNamed(
-                                              '/FormularioUsuario',
-                                              arguments: document.documentID);
+                                          funcaoLista();
                                         },
                                         child: Padding(
                                           padding:
@@ -153,7 +168,7 @@ class _BuscaFuncionariosState extends State<BuscaFuncionarios> {
                                               ),
                                             ),
                                             child: Icon(
-                                              Icons.search,
+                                              iconeLista,
                                               size: 30.0,
                                               color: Colors.white,
                                             ),

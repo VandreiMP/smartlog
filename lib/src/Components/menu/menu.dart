@@ -134,7 +134,7 @@ class ConstroiMenu extends StatelessWidget {
                 return Center(
                   child: ItemMenu(
                     icon: Icons.settings,
-                    title: 'Solic.',
+                    title: 'Contr. OS',
                     onPress: () {},
                     subMenu: Column(
                       children: [

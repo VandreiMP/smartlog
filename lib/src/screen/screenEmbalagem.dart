@@ -82,6 +82,7 @@ class CriaCardFormulario extends StatelessWidget {
   final tTipoUnidade = TextEditingController();
   final tLargura = TextEditingController();
   final tComprimento = TextEditingController();
+  final tAltura = TextEditingController();
   final tTara = TextEditingController();
 
   @override
@@ -307,6 +308,22 @@ class CriaCardFormulario extends StatelessWidget {
                                                 onChanged: (String valor) {
                                                   blocEmbalagem.setComprimento(
                                                       tComprimento.text);
+                                                },
+                                                obrigaCampo: false,
+                                              ),
+                                            ),
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                left: 20.0,
+                                              ),
+                                              child: constroiCampo(
+                                                labelCampo: 'Altura',
+                                                largura: 70,
+                                                altura: 30,
+                                                controller: tAltura,
+                                                onChanged: (String valor) {
+                                                  blocEmbalagem.setAltura(
+                                                      tAltura.text);
                                                 },
                                                 obrigaCampo: false,
                                               ),

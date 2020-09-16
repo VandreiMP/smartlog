@@ -55,7 +55,7 @@ class CriaCardFormulario extends StatelessWidget {
   final tSolicitante = TextEditingController();
   final tDataAbertura = TextEditingController();
   final tDataEfetivacao = TextEditingController();
-  final tEstabelecimento = TextEditingController();
+  final tOficina = TextEditingController();
   final tCustoTotal = TextEditingController();
   final tCustoVinculado = TextEditingController();
   bool saved = false;
@@ -63,7 +63,6 @@ class CriaCardFormulario extends StatelessWidget {
   List<String> situacaoSolicitacao = [
     'Aberta',
     'Pendente',
-    'Cancelada',
     'Negada',
     'Efetivada',
   ];
@@ -176,7 +175,7 @@ class CriaCardFormulario extends StatelessWidget {
                                         child: constroiCampo(
                                           labelCampo: 'Detalhes',
                                           largura: 500,
-                                          altura: 30,
+                                          altura: 70,
                                           obrigaCampo: true,
                                           contextoAplicacao: context,
                                           controller: tDetalhes,
@@ -294,12 +293,12 @@ class CriaCardFormulario extends StatelessWidget {
                                 children: <Widget>[
                                   Container(
                                     child: constroiCampo(
-                                      labelCampo: 'Estabelecimento',
+                                      labelCampo: 'Oficina',
                                       largura: 500,
                                       altura: 30,
                                       contextoAplicacao: context,
                                       obrigaCampo: true,
-                                      controller: tEstabelecimento,
+                                      controller: tOficina,
                                       onChanged: (String valor) {},
                                     ),
                                   ),
@@ -309,16 +308,12 @@ class CriaCardFormulario extends StatelessWidget {
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: <Widget>[
-                                      Padding(
-                                        padding:
-                                            const EdgeInsets.only(left: 25.0),
-                                        child: constroiCampo(
-                                            labelCampo: 'Custo Total',
-                                            largura: 85,
-                                            altura: 30,
-                                            obrigaCampo: false,
-                                            controller: tCustoTotal),
-                                      ),
+                                      constroiCampo(
+                                          labelCampo: 'Custo Total',
+                                          largura: 85,
+                                          altura: 30,
+                                          obrigaCampo: false,
+                                          controller: tCustoTotal),
                                       Padding(
                                         padding:
                                             const EdgeInsets.only(left: 25.0),
@@ -328,6 +323,41 @@ class CriaCardFormulario extends StatelessWidget {
                                           altura: 30,
                                           controller: tCustoVinculado,
                                           obrigaCampo: false,
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(20.0),
+                                        child: Container(
+                                          alignment: Alignment.bottomCenter,
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              GestureDetector(
+                                                onTap: () {
+                                                  Navigator.of(context)
+                                                      .pushNamed(
+                                                          '/ListaValoresCusto');
+                                                },
+                                                child: Container(
+                                                  decoration: BoxDecoration(
+                                                    color: Colors.blue[900],
+                                                    borderRadius:
+                                                        BorderRadius.all(
+                                                      Radius.circular(2.0),
+                                                    ),
+                                                  ),
+                                                  child: Icon(
+                                                    Icons.add,
+                                                    size: 25.0,
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
                                         ),
                                       ),
                                     ],
@@ -365,18 +395,19 @@ class CriaCardFormulario extends StatelessWidget {
     );
   }
 
-  Widget constroiCampo({
-    String labelCampo,
-    Function onChanged,
-    double largura,
-    double altura,
-    bool obrigaCampo,
-    BuildContext contextoAplicacao,
-    TextEditingController mascara,
-    TextEditingController controller,
-    String valorInicial,
-    //int tamanhoMaximo,
-  }) {
+  Widget constroiCampo(
+      {String labelCampo,
+      Function onChanged,
+      double largura,
+      double altura,
+      bool obrigaCampo,
+      BuildContext contextoAplicacao,
+      TextEditingController mascara,
+      TextEditingController controller,
+      String valorInicial,
+      int maximoLinhas
+      //int tamanhoMaximo,
+      }) {
     return Form(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -387,6 +418,8 @@ class CriaCardFormulario extends StatelessWidget {
             width: largura ?? double.maxFinite,
             child: TextFormField(
               initialValue: valorInicial,
+              maxLines: maximoLinhas ?? 1,
+              // expands: true,
               //maxLength: tamanhoMaximo,
               cursorColor: Colors.black,
               // initialValue: valorInicial,

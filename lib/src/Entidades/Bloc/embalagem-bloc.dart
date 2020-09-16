@@ -15,6 +15,7 @@ class EmbalagemBloc extends BlocBase {
   String _tipoUnidade;
   String _largura;
   String _comprimento;
+  String _altura;
   String _tara;
 
   BuildContext contextoAplicacao;
@@ -33,6 +34,7 @@ class EmbalagemBloc extends BlocBase {
   // void setTipoUnidade(String value) => _tipoUnidadeController.sink.add(value);
   void setLargura(String value) => _larguraController.sink.add(value);
   void setComprimento(String value) => _comprimentoController.sink.add(value);
+  void setAltura(String value) => _alturaController.sink.add(value);
   void setTara(String value) => _taraController.sink.add(value);
 
   /*
@@ -60,6 +62,9 @@ class EmbalagemBloc extends BlocBase {
 
   var _comprimentoController = BehaviorSubject<String>();
   Stream<String> get outComprimento => _comprimentoController.stream;
+  
+  var _alturaController = BehaviorSubject<String>();
+  Stream<String> get outAltura => _alturaController.stream;
 
   var _taraController = BehaviorSubject<String>();
   Stream<String> get outTara => _taraController.stream;
@@ -82,6 +87,7 @@ class EmbalagemBloc extends BlocBase {
     // embalagem.tipoUnidade = _tipoUnidadeController.value;
     embalagem.largura = _larguraController.value;
     embalagem.comprimento = _comprimentoController.value;
+    embalagem.altura = _alturaController.value;
     embalagem.tara = _taraController.value;
 
     try {
@@ -97,6 +103,7 @@ class EmbalagemBloc extends BlocBase {
             // 'tipoUnidade': embalagem.tipoUnidade,
             'largura': embalagem.largura,
             'comprimento': embalagem.comprimento,
+            'altura' : embalagem.altura,
             'tara': embalagem.tara,
           })
           .then((value) async => await alert(
@@ -147,6 +154,7 @@ class EmbalagemBloc extends BlocBase {
     // embalagem.tipoUnidade = _tipoUnidadeController.value;
     embalagem.largura = _larguraController.value;
     embalagem.comprimento = _comprimentoController.value;
+    embalagem.altura = _alturaController.value;
     embalagem.tara = _taraController.value;
 
     try {
@@ -162,6 +170,7 @@ class EmbalagemBloc extends BlocBase {
             // 'tipoUnidade': embalagem.tipoUnidade,
             'largura': embalagem.largura,
             'comprimento': embalagem.comprimento,
+            'altura' : embalagem.altura,
             'tara': embalagem.tara,
           })
           .then((value) async => await alert(

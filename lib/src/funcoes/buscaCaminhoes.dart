@@ -6,11 +6,19 @@ import 'package:smartlogproject/src/Entidades/Bloc/usuario-bloc.dart';
 import 'package:smartlogproject/src/funcoes/appText.dart';
 
 class BuscaCaminhao extends StatefulWidget {
+  final IconData iconeLista;
+  final Function funcaoLista;
+
+  const BuscaCaminhao(this.iconeLista, this.funcaoLista);
   @override
-  _BuscaCaminhaoState createState() => _BuscaCaminhaoState();
+  _BuscaCaminhaoState createState() => _BuscaCaminhaoState(iconeLista, funcaoLista);
 }
 
 class _BuscaCaminhaoState extends State<BuscaCaminhao> {
+  final IconData iconeLista;
+  final Function funcaoLista;
+
+  _BuscaCaminhaoState(this.iconeLista, this.funcaoLista);
   @override
   Widget build(BuildContext context) {
     final Firestore firestore = Firestore.instance;
@@ -133,9 +141,7 @@ class _BuscaCaminhaoState extends State<BuscaCaminhao> {
                                         ),
                                         GestureDetector(
                                           onTap: () {
-                                            Navigator.of(context).pushNamed(
-                                                '/FormularioCaminhao',
-                                                arguments: document.documentID);
+                                            funcaoLista();
                                           },
                                           child: Padding(
                                             padding: const EdgeInsets.only(
@@ -148,7 +154,7 @@ class _BuscaCaminhaoState extends State<BuscaCaminhao> {
                                                 ),
                                               ),
                                               child: Icon(
-                                                Icons.search,
+                                                iconeLista,
                                                 size: 30.0,
                                                 color: Colors.white,
                                               ),

@@ -33,11 +33,9 @@ class ListaCaminhoes extends StatelessWidget {
 }
 
 class CriaCardFormulario extends StatelessWidget {
-
-
   final tDescricao = TextEditingController();
   final tPlaca = TextEditingController();
- 
+
   bool inverteOrdenacao = false;
 
   @override
@@ -116,7 +114,6 @@ class CriaCardFormulario extends StatelessWidget {
                                           obrigaCampo: false,
                                           contextoAplicacao: context,
                                           controller: tPlaca,
-                                         
                                         ),
                                       ),
                                     ],
@@ -165,7 +162,13 @@ class CriaCardFormulario extends StatelessWidget {
                     ),
                     Row(
                       children: [
-                        BuscaCaminhao(),
+                        BuscaCaminhao(
+                          Icons.search,
+                          () {
+                            Navigator.of(context)
+                                .pushNamed('/FormularioCaminhao');
+                          },
+                        )
                       ],
                     )
                   ],

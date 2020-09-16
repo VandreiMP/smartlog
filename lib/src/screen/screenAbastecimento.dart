@@ -65,9 +65,17 @@ class CriaCardFormulario extends StatelessWidget {
   List<String> situacaoSolicitacao = [
     'Aberta',
     'Pendente',
-    'Cancelada',
     'Negada',
     'Efetivada',
+  ];
+
+  List<String> tipoCombustivel = [
+    'Diesel',
+    'Gasolina',
+    'Etanol',
+    'Flex',
+    'GLP',
+    'Outros'
   ];
 
   @override
@@ -124,7 +132,7 @@ class CriaCardFormulario extends StatelessWidget {
                                     children: [
                                       Container(
                                         child: constroiCampo(
-                                          labelCampo: 'Identificação',
+                                          labelCampo: 'Ordem de Serviço',
                                           largura: 150,
                                           altura: 30,
                                           contextoAplicacao: context,
@@ -263,17 +271,44 @@ class CriaCardFormulario extends StatelessWidget {
                                     MainAxisAlignment.spaceBetween,
                                 children: <Widget>[
                                   Container(
-                                    child: constroiCampo(
-                                      labelCampo: 'Posto',
-                                      largura: 500,
-                                      altura: 30,
-                                      contextoAplicacao: context,
-                                      obrigaCampo: true,
-                                      controller: tPosto,
-                                      onChanged: (String valor) {},
+                                    child: Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        constroiCampo(
+                                          labelCampo: 'Posto',
+                                          largura: 500,
+                                          altura: 30,
+                                          contextoAplicacao: context,
+                                          obrigaCampo: true,
+                                          controller: tPosto,
+                                          onChanged: (String valor) {},
+                                        ),
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(left: 70.0),
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              RequiredLabel(
+                                                'Combust.',
+                                                true,
+                                              ),
+                                              Container(
+                                                child: DropDown(
+                                                    valores: tipoCombustivel),
+                                              ),
+                                            ],
+                                          ),
+                                        )
+                                      ],
                                     ),
                                   ),
-                                  
                                   Row(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.center,
@@ -335,6 +370,40 @@ class CriaCardFormulario extends StatelessWidget {
                                           altura: 30,
                                           controller: tCustoVinculado,
                                           obrigaCampo: false,
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(20.0),
+                                        child: Container(
+                                          alignment: Alignment.bottomCenter,
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              GestureDetector(
+                                                onTap: () {
+                                                  Navigator.of(context).pushNamed(
+                                                      '/ListaValoresCusto');
+                                                },
+                                                child: Container(
+                                                  decoration: BoxDecoration(
+                                                    color: Colors.blue[900],
+                                                    borderRadius:
+                                                        BorderRadius.all(
+                                                      Radius.circular(2.0),
+                                                    ),
+                                                  ),
+                                                  child: Icon(
+                                                    Icons.add,
+                                                    size: 25.0,
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
                                         ),
                                       ),
                                     ],

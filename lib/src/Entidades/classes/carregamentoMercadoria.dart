@@ -14,12 +14,14 @@ class CarregamentoMercadoria extends BaseModel {
   String situacaoEntrega;
   String produto;
   String embalagem;
-  String pesoBruto;
-  String pesoLiquido;
-  String cubagemCarga;
-  String quantidade;
-  String precoLiquido;
-  String totalCarga;
+  double quantidadeEmbalagem;
+  double pesoBruto;
+  double pesoLiquido;
+  double cubagemCarga;
+  double quantidade;
+  double precoLiquido;
+  double totalDesp;
+  double totalCarga;
 
   CarregamentoMercadoria();
 
@@ -36,11 +38,13 @@ class CarregamentoMercadoria extends BaseModel {
     this.situacaoEntrega = document.data['situacaoEntrega'];
     this.produto = document.data['produto'];
     this.embalagem = document.data['embalagem'];
+    this.quantidadeEmbalagem = document.data['quantidadeEmbalagem'];
     this.pesoBruto = document.data['pesoBruto'];
     this.pesoLiquido = document.data['pesoLiquido'];
     this.cubagemCarga = document.data['cubagemCarga'];
     this.quantidade = document.data['quantidade'];
     this.precoLiquido = document.data['precoLiquido'];
+    this.totalDesp = document.data['totalDesp'];
     this.totalCarga = document.data['totalCarga'];
 
     @override
@@ -58,11 +62,13 @@ class CarregamentoMercadoria extends BaseModel {
       map['situacaoEntrega'] = this.situacaoEntrega;
       map['produto'] = this.produto;
       map['embalagem'] = this.embalagem;
+      map['quantidadeEmbalagem'] = this.quantidadeEmbalagem;
       map['pesoBruto'] = this.pesoBruto;
       map['pesoLiquido'] = this.pesoLiquido;
       map['cubagemCarga'] = this.cubagemCarga;
       map['quantidade'] = this.quantidade;
       map['precoLiquido'] = this.precoLiquido;
+      map['totalDesp'] = this.totalDesp;
       map['totalCarga'] = this.totalCarga;
 
       return map;
