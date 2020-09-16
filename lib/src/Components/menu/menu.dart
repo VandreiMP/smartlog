@@ -149,7 +149,7 @@ class ConstroiMenu extends StatelessWidget {
                             title: 'Abastecimento',
                             onPress: () {
                               Navigator.of(context)
-                                  .pushNamed('/FormularioAbastecimento');
+                                  .pushNamed('/ListaAbastecimentos');
                             },
                             arrowIcon: Icons.arrow_forward_ios,
                           ),

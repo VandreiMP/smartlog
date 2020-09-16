@@ -9,6 +9,7 @@ import 'package:smartlogproject/src/Entidades/Bloc/custo-bloc.dart';
 import 'package:smartlogproject/src/Entidades/Bloc/embalagem-bloc.dart';
 import 'package:smartlogproject/src/Entidades/Bloc/empresa-bloc.dart';
 import 'package:smartlogproject/src/Entidades/Bloc/romaneio-bloc.dart';
+import 'package:smartlogproject/src/Entidades/Bloc/solicitacaoAbastecimento-bloc.dart';
 import 'package:smartlogproject/src/Entidades/Bloc/usuario-bloc.dart';
 
 class CardAjudaBloc extends BlocBase {
@@ -58,6 +59,12 @@ class CardAjudaBloc extends BlocBase {
           BlocProvider.of<RomaneioBloc>(contextoAplicacao);
       await blocRomaneio.insereDados(contextoAplicacao);
     }
+    if (origemDado == 'COMBUSTIVEL') {
+      SolicitacaoAbastecimentoBloc blocSolicitacaoAbastecimento =
+          BlocProvider.of<SolicitacaoAbastecimentoBloc>(contextoAplicacao);
+
+      await blocSolicitacaoAbastecimento.insereDados(contextoAplicacao);
+    }
   }
 
   Future<void> eventoCliqueBotaoApagarDados() async {
@@ -93,6 +100,11 @@ class CardAjudaBloc extends BlocBase {
       RomaneioBloc blocRomaneio =
           BlocProvider.of<RomaneioBloc>(contextoAplicacao);
       await blocRomaneio.apagarDados(contextoAplicacao);
+    }
+    if (origemDado == 'COMBUSTIVEL') {
+      SolicitacaoAbastecimentoBloc blocSolicitacaoAbastecimento =
+          BlocProvider.of<SolicitacaoAbastecimentoBloc>(contextoAplicacao);
+      await blocSolicitacaoAbastecimento.apagarDados(contextoAplicacao);
     }
   }
 
