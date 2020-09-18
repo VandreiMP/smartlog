@@ -100,6 +100,7 @@ class _BuscaCarregamentoMercadoriaState
                                 itemBuilder: (BuildContext context, int index) {
                                   final DocumentSnapshot document =
                                       snapshot.data.documents[index];
+                                  final dynamic numeroCarga = document['carga'];
                                   final dynamic comprador =
                                       document['comprador'];
                                   final dynamic carga = document['carga'];
@@ -163,7 +164,7 @@ class _BuscaCarregamentoMercadoriaState
                                           onTap: () {
                                             Navigator.of(context).pushNamed(
                                                 '/FormularioCarga',
-                                                arguments: document.documentID);
+                                                arguments: numeroCarga);
                                           },
                                           child: Padding(
                                             padding: const EdgeInsets.only(

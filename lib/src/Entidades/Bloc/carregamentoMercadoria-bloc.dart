@@ -8,6 +8,7 @@ import 'package:smartlogproject/src/Entidades/classes/carregamentoMercadoria.dar
 import 'package:smartlogproject/src/Entidades/classes/embalagem.dart';
 import 'package:smartlogproject/src/funcoes/alert.dart';
 import 'package:smartlogproject/src/funcoes/alertErro.dart';
+import 'package:smartlogproject/src/funcoes/calculaTotalCarga.dart';
 
 class CarregamentoMercadoriaBloc extends BlocBase {
   String _carga;
@@ -229,7 +230,7 @@ class CarregamentoMercadoriaBloc extends BlocBase {
     }
   }
 
-  Future<void> atualizaDados(BuildContext contextoAplicacao) async {
+  Future<void> atualizaDados(BuildContext contextoAplicacao, String chaveConsulta) async {
     var carregamentoMercadoria = CarregamentoMercadoria();
 
     carregamentoMercadoria.carga = _cargaController.value;
@@ -262,7 +263,7 @@ class CarregamentoMercadoriaBloc extends BlocBase {
     try {
       await Firestore.instance
           .collection('carregamentoMercadoria')
-          .document(carregamentoMercadoria.carga)
+          .document(chaveConsulta)
           .updateData({
         'carga': carregamentoMercadoria.carga,
         'saidaCaminhao': carregamentoMercadoria.saidaCaminhao,
@@ -295,9 +296,4 @@ class CarregamentoMercadoriaBloc extends BlocBase {
 
   @override
   void dispose() {}
-}
-
-double calculaValorTotalCarga(
-    double precoLiquido, double unitario, double totalDesp) {
-  return ((precoLiquido * unitario) + totalDesp);
 }

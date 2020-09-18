@@ -7,19 +7,19 @@ import 'package:smartlogproject/src/funcoes/appText.dart';
 
 class BuscaCustos extends StatefulWidget {
   final IconData iconeLista;
-  final Function funcaoLista;
+  final String origem;
 
-  const BuscaCustos(this.iconeLista, this.funcaoLista);
+  const BuscaCustos(this.iconeLista, this.origem);
 
   @override
-  _BuscaCustosState createState() => _BuscaCustosState(iconeLista, funcaoLista);
+  _BuscaCustosState createState() => _BuscaCustosState(iconeLista, origem);
 }
 
 class _BuscaCustosState extends State<BuscaCustos> {
   final IconData iconeLista;
-  final Function funcaoLista;
+  final String origem;
 
-  _BuscaCustosState(this.iconeLista, this.funcaoLista);
+  _BuscaCustosState(this.iconeLista, this.origem);
   @override
   Widget build(BuildContext context) {
     final Firestore firestore = Firestore.instance;
@@ -139,7 +139,11 @@ class _BuscaCustosState extends State<BuscaCustos> {
                                       ),
                                       GestureDetector(
                                         onTap: () {
-                                          funcaoLista();
+                                          if (origem == 'LISTA_REGISTROS') {
+                                            Navigator.of(context).pushNamed(
+                                                '/FormularioCustos',
+                                                arguments: identificacao);
+                                          }
                                         },
                                         child: Padding(
                                           padding:

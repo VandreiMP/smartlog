@@ -96,18 +96,24 @@ class CustoBloc extends BlocBase {
   }
 
   /*
-  Método que apaga os dados do formulário na tabela do Firebase.
-  Primeiro busca a identificação informada no formulário através dos controllers,
-  para depois excluir o registro na tabela do Firebase filtrando pela
-  identificação, que é a PK desta tabela.
+  Método que consulta os dados do formulário na tabela do Firebase.
   */
 
-  Future<void> consultarDados(BuildContext contextoAplicacao) async {
+  String consultarDados(BuildContext contextoAplicacao, String identificacao) {
     var custo = Custo();
+    final valor = TextEditingController();
     final Firestore firestore = Firestore.instance;
-    Future<DocumentSnapshot> consultaCustos =
-        firestore.collection("custos").document('1').get();
-    consultaCustos.then((value) => custo.fromMap(value));
+    void consultaValor(DocumentSnapshot campo) {
+      valor.text = campo.data['detalhes'];
+    }
+
+    Future<dynamic> consultaDetalhes = firestore
+        .collection("custos")
+        .document('1')
+        .get()
+        .then((value) => consultaValor(value));
+
+    return valor.text;
   }
 
   Future<void> apagarDados(BuildContext contextoAplicacao) async {

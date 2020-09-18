@@ -18,18 +18,20 @@ class CriaCardAuxiliar extends StatelessWidget {
   final String nomeFormulario;
   final String origem;
   final String origemDado;
+  final String chaveConsulta;
 
   const CriaCardAuxiliar(
       {Key key,
       this.caminhoImagem,
       this.nomeFormulario,
       this.origem,
-      this.origemDado})
+      this.origemDado,
+      this.chaveConsulta})
       : super(key: key);
   @override
   Widget build(BuildContext context) {
     return BlocProvider<CardAjudaBloc>(
-      bloc: CardAjudaBloc(context, origem, origemDado),
+      bloc: CardAjudaBloc(context, origem, origemDado, chaveConsulta),
       child: CardAjuda(caminhoImagem, nomeFormulario, origem, origemDado),
     );
   }

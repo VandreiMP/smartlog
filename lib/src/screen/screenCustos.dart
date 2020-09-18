@@ -1,3 +1,5 @@
+import 'dart:html';
+
 import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -6,7 +8,6 @@ import 'package:smartlogproject/src/Components/scroll/scroll.dart';
 import 'package:smartlogproject/src/Entidades/Bloc/custo-bloc.dart';
 import '../constantes/mascaras.dart';
 import '../funcoes/appText.dart';
-import '../funcoes/appTextField.dart';
 import '../Cards/Widgets/criaCardAuxiliar.dart';
 import '../funcoes/criaLista.dart';
 import '../funcoes/requiredLabel.dart';
@@ -105,9 +106,27 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
   Widget build(BuildContext context) {
     CustoBloc blocCusto = BlocProvider.of<CustoBloc>(context);
 
+    final Firestore firestore = Firestore.instance;
+    String identificacaoCusto = ModalRoute.of(context).settings.arguments;
+
+    Future consultaValor(DocumentSnapshot campo) async {
+      tId.text = identificacaoCusto;
+      tDetalhes.text = campo.data['detalhes'];
+      tValor.text = campo.data['valor'];
+    }
+
+    Future<dynamic> consultaDetalhes = firestore
+        .collection("custos")
+        .document(identificacaoCusto)
+        .get()
+        .then((value) async => consultaValor(value));
+
+    tDetalhes.text = blocCusto.consultarDados(context, '1');
+
     return StreamBuilder<QuerySnapshot>(
-        stream: blocCusto.outCustos,
-        builder: (context, snapshot) {
+        stream: null,
+        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          //print(descricao);
           return Scroll(
             height: double.infinity,
             child: Column(
@@ -173,6 +192,12 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
                                                 controller: tId,
                                                 obrigaCampo: true,
                                                 onChanged: (String valor) {
+                                                  DocumentSnapshot document =
+                                                      snapshot
+                                                          .data.documents[0];
+                                                  final dynamic descricao =
+                                                      document['detalhes'];
+                                                  print(descricao);
                                                   // blocCusto
                                                   //     .consultarDados(context);
                                                   //print(blocCusto.outDetalhes);
@@ -222,7 +247,8 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
                                                 ),
                                                 Container(
                                                   child: DropDown(
-                                                      valores: modalidadeCusto),
+                                                    valores: modalidadeCusto,
+                                                  ),
                                                 ),
                                               ],
                                             ),

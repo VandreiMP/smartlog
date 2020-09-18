@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:smartlogproject/src/Entidades/Bloc/carregamentoMercadoria-bloc.dart';
+import 'package:smartlogproject/src/funcoes/calculaTotalCarga.dart';
 import 'package:smartlogproject/src/funcoes/criaLista.dart';
 import 'package:smartlogproject/src/funcoes/criaListaValoresEmbalagem.dart';
 import 'package:smartlogproject/src/funcoes/requiredLabel.dart';
@@ -53,6 +54,7 @@ class _BodyState extends State<Body> {
                     nomeFormulario: "Carregamento de Mercadoria",
                     origem: 'CARGA',
                     origemDado: 'CARGA',
+                    chaveConsulta: ModalRoute.of(context).settings.arguments,
                   ),
                   // CriaCardAjudaCaminhao(),
                 ],
@@ -95,6 +97,73 @@ class CriaCardFormulario extends StatelessWidget {
     final tTotalDesp = TextEditingController();
     final tTotalCarga = TextEditingController();
 
+    CarregamentoMercadoriaBloc blocCarregamentoMercadoria =
+        BlocProvider.of<CarregamentoMercadoriaBloc>(context);
+
+    final Firestore firestore = Firestore.instance;
+    String numeroCarga = ModalRoute.of(context).settings.arguments;
+
+    Future consultaValor(DocumentSnapshot campo) async {
+      tCarga.text = numeroCarga;
+      tSaidaCaminhao.text = campo.data['saidaCaminhao'];
+      tNumeroRomaneio.text = campo.data['numeroRomaneio'];
+      tSituacaoExpedicao.text = campo.data['situacaoExpedicao'];
+      tCaminhao.text = campo.data['caminhao'];
+      tMotorista.text = campo.data['motorista'];
+      tComprador.text = campo.data['comprador'];
+      tTelefone.text = campo.data['celefone'];
+      tDataEntrega.text = campo.data['dataEntrega'];
+      tSituacaoEntrega.text = campo.data['situacaoEntrega'];
+      tProduto.text = campo.data['produto'];
+      tEmbalagem.text = campo.data['embalagem'];
+      tQuantidadeEmbalagem.text = campo.data['quantidadeEmbalagem'].toString();
+      tPesoBruto.text = campo.data['pesoBruto'].toString();
+      tPesoLiquido.text = campo.data['pesoLiquido'].toString();
+      tCubagemCarga.text = campo.data['cubagemCarga'].toString();
+      tPrecoLiquido.text = campo.data['precoLiquido'].toString();
+      tQuantidade.text = campo.data['quantidade'].toString();
+      tTotalDesp.text = campo.data['totalDesp'].toString();
+      tTotalCarga.text = campo.data['totalCarga'].toString();
+    }
+
+    if (numeroCarga != null) {
+      Future<dynamic> consultaDetalhes = firestore
+          .collection("carregamentoMercadoria")
+          .document(numeroCarga)
+          .get()
+          .then((value) async => consultaValor(value));
+    }
+    void populaObjeto() {
+      blocCarregamentoMercadoria.setCarga(tCarga.text);
+      blocCarregamentoMercadoria.setSaidaCaminhao(tSaidaCaminhao.text);
+      blocCarregamentoMercadoria.setNumeroRomaneio(tNumeroRomaneio.text);
+      blocCarregamentoMercadoria.setSituacaoExpedicao(tSituacaoExpedicao.text);
+      blocCarregamentoMercadoria.setCaminhao(tCaminhao.text);
+      blocCarregamentoMercadoria.setMototista(tMotorista.text);
+      blocCarregamentoMercadoria.setComprador(tComprador.text);
+      blocCarregamentoMercadoria.setTelefone(tTelefone.text);
+      blocCarregamentoMercadoria.setDataEntrega(tDataEntrega.text);
+      blocCarregamentoMercadoria.setSituacaoEntrega(tSituacaoEntrega.text);
+      blocCarregamentoMercadoria.setProduto(tProduto.text);
+      blocCarregamentoMercadoria.setEmbalagem(tEmbalagem.text);
+      blocCarregamentoMercadoria
+          .setQuantidadeEmbalagem(double.parse(tQuantidadeEmbalagem.text));
+      blocCarregamentoMercadoria.setPesoBruto(double.parse(tPesoBruto.text));
+      blocCarregamentoMercadoria
+          .setPesoLiquido(double.parse(tPesoLiquido.text));
+      blocCarregamentoMercadoria
+          .setCubagemCarga(double.parse(tCubagemCarga.text));
+      blocCarregamentoMercadoria
+          .setPrecoLiquido(double.parse(tPrecoLiquido.text));
+      blocCarregamentoMercadoria.setQuantidade(double.parse(tQuantidade.text));
+      blocCarregamentoMercadoria.setTotalDesp(double.parse(tTotalDesp.text));
+      blocCarregamentoMercadoria
+          .setQuantidadeEmbalagem(double.parse(tQuantidadeEmbalagem.text));
+    }
+
+    if (numeroCarga != null) {
+      populaObjeto();
+    }
     List<String> situacaoCarga = [
       'Montagem da Carga',
       'Mercadoria Carregada',
@@ -108,9 +177,6 @@ class CriaCardFormulario extends StatelessWidget {
       'Encerrada',
       'Cancelada',
     ];
-
-    CarregamentoMercadoriaBloc blocCarregamentoMercadoria =
-        BlocProvider.of<CarregamentoMercadoriaBloc>(context);
 
     return StreamBuilder<QuerySnapshot>(
         stream: null,
@@ -525,7 +591,7 @@ class CriaCardFormulario extends StatelessWidget {
                                                     CrossAxisAlignment.start,
                                                 children: [
                                                   RequiredLabel(
-                                                    'Situação',
+                                                    'Sit. Entrega',
                                                     true,
                                                   ),
                                                   Container(
@@ -700,6 +766,14 @@ class CriaCardFormulario extends StatelessWidget {
                                               altura: 30,
                                               controller: tQuantidade,
                                               onChanged: (String valor) {
+                                                tTotalCarga.text =
+                                                    calculaValorTotalCarga(
+                                                  double.parse(
+                                                      tPrecoLiquido.text),
+                                                  double.parse(
+                                                      tQuantidade.text),
+                                                  double.parse(tTotalDesp.text),
+                                                ).toString();
                                                 blocCarregamentoMercadoria
                                                     .setQuantidade(double.parse(
                                                         tQuantidade.text));
@@ -723,6 +797,15 @@ class CriaCardFormulario extends StatelessWidget {
                                                 altura: 30,
                                                 controller: tPrecoLiquido,
                                                 onChanged: (String valor) {
+                                                  tTotalCarga.text =
+                                                      calculaValorTotalCarga(
+                                                    double.parse(
+                                                        tPrecoLiquido.text),
+                                                    double.parse(
+                                                        tQuantidade.text),
+                                                    double.parse(
+                                                        tTotalDesp.text),
+                                                  ).toString();
                                                   blocCarregamentoMercadoria
                                                       .setPrecoLiquido(
                                                           double.parse(
@@ -749,6 +832,15 @@ class CriaCardFormulario extends StatelessWidget {
                                                 altura: 30,
                                                 controller: tTotalDesp,
                                                 onChanged: (String valor) {
+                                                  tTotalCarga.text =
+                                                      calculaValorTotalCarga(
+                                                    double.parse(
+                                                        tPrecoLiquido.text),
+                                                    double.parse(
+                                                        tQuantidade.text),
+                                                    double.parse(
+                                                        tTotalDesp.text),
+                                                  ).toString();
                                                   blocCarregamentoMercadoria
                                                       .setTotalDesp(
                                                           double.parse(

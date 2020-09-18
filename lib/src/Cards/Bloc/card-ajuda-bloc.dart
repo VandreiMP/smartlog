@@ -26,8 +26,10 @@ class CardAjudaBloc extends BlocBase {
   final BuildContext contextoAplicacao;
   final String origem;
   final String origemDado;
+  final String chaveConsulta;
 
-  CardAjudaBloc(this.contextoAplicacao, this.origem, this.origemDado);
+  CardAjudaBloc(
+      this.contextoAplicacao, this.origem, this.origemDado, this.chaveConsulta);
 
   Future<void> eventoCliqueBotaoSalvar() async {
     if (origemDado == 'USUARIO') {
@@ -55,7 +57,11 @@ class CardAjudaBloc extends BlocBase {
     if (origemDado == 'CARGA') {
       CarregamentoMercadoriaBloc blocCarregamentoMercadoria =
           BlocProvider.of<CarregamentoMercadoriaBloc>(contextoAplicacao);
-      await blocCarregamentoMercadoria.insereDados(contextoAplicacao);
+      if (chaveConsulta == null) {
+        await blocCarregamentoMercadoria.insereDados(contextoAplicacao);
+      } else
+        await blocCarregamentoMercadoria.atualizaDados(
+            contextoAplicacao, chaveConsulta);
     }
     if (origemDado == 'ROMANEIO') {
       RomaneioBloc blocRomaneio =

@@ -87,7 +87,7 @@ class CriaCardFormulario extends StatelessWidget {
                     ),
                     Row(
                       children: [
-                        BuscaCustos(Icons.add, () {}),
+                        BuscaCustos(Icons.add, 'LISTA_VALORES'),
                       ],
                     )
                   ],

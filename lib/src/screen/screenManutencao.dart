@@ -369,8 +369,8 @@ class CriaCardFormulario extends StatelessWidget {
                                               controller: tCustoTotal,
                                               onChanged: (String valor) {
                                                 blocSolicitacaoManutencao
-                                                    .setCust(
-                                                        tCustoTotal.text);
+                                                    .setCustoTotal(double.parse(
+                                                        tCustoTotal.text));
                                               },
                                             ),
                                           ],

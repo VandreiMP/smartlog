@@ -165,9 +165,10 @@ class CriaCardFormulario extends StatelessWidget {
                     ),
                     Row(
                       children: [
-                        BuscaCustos(Icons.search, () {
-                          Navigator.of(context).pushNamed('/FormularioCustos');
-                        })
+                        BuscaCustos(
+                          Icons.search,
+                          'LISTA_REGISTROS'
+                        )
                       ],
                     )
                   ],
