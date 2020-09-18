@@ -22,6 +22,8 @@ import 'package:smartlogproject/src/tabelas/Widget/tabelaCustos.dart';
 import 'package:smartlogproject/src/tabelas/Widget/tabelaEmbalagem.dart';
 import 'package:smartlogproject/src/tabelas/Widget/tabelaEmpresa.dart';
 import 'package:smartlogproject/src/tabelas/Widget/tabelaFuncionario.dart';
+import 'package:smartlogproject/src/tabelas/Widget/tabelaManutencao.dart';
+import 'package:smartlogproject/src/tabelas/Widget/tabelaTrocaOleo.dart';
 
 import 'src/login/login.dart';
 import 'src/screen/screenCaminhao.dart';
@@ -57,6 +59,8 @@ class Main extends StatelessWidget {
         '/ListaCaminhoes': (context) => ListaCaminhoes(),
         '/ListaCargas': (context) => ListaCargas(),
         '/ListaAbastecimentos': (context) => ListaAbastecimentos(),
+        '/ListaTrocaOleo': (context) => ListaTrocaOleo(),
+        '/ListaManutencao': (context) => ListaManutencao(),
         /*
         Formulários Detalhados
         */

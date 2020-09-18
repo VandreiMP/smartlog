@@ -12,7 +12,7 @@ class CustoBloc extends BlocBase {
   String _documentId;
   String _detalhes;
   String _modalidade;
-  String _periodicidade; 
+  String _periodicidade;
   String _analiseGerencial;
   String _valor;
 
@@ -54,6 +54,9 @@ class CustoBloc extends BlocBase {
 
   var _valorController = BehaviorSubject<String>();
   Stream<String> get outValor => _valorController.stream;
+
+  var _custoController = BehaviorSubject<QuerySnapshot>();
+  Stream<QuerySnapshot> get outCustos => _custoController.stream;
 
   /*
   Método que insere os dados do formulário na tabela do Firebase.
@@ -98,6 +101,14 @@ class CustoBloc extends BlocBase {
   para depois excluir o registro na tabela do Firebase filtrando pela
   identificação, que é a PK desta tabela.
   */
+
+  Future<void> consultarDados(BuildContext contextoAplicacao) async {
+    var custo = Custo();
+    final Firestore firestore = Firestore.instance;
+    Future<DocumentSnapshot> consultaCustos =
+        firestore.collection("custos").document('1').get();
+    consultaCustos.then((value) => custo.fromMap(value));
+  }
 
   Future<void> apagarDados(BuildContext contextoAplicacao) async {
     var custo = Custo();

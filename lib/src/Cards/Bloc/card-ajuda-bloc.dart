@@ -10,7 +10,10 @@ import 'package:smartlogproject/src/Entidades/Bloc/embalagem-bloc.dart';
 import 'package:smartlogproject/src/Entidades/Bloc/empresa-bloc.dart';
 import 'package:smartlogproject/src/Entidades/Bloc/romaneio-bloc.dart';
 import 'package:smartlogproject/src/Entidades/Bloc/solicitacaoAbastecimento-bloc.dart';
+import 'package:smartlogproject/src/Entidades/Bloc/solicitacaoManutencao-bloc.dart';
+import 'package:smartlogproject/src/Entidades/Bloc/solicitacaoTrocaOleo-bloc.dart';
 import 'package:smartlogproject/src/Entidades/Bloc/usuario-bloc.dart';
+import 'package:smartlogproject/src/Entidades/classes/solicitacaoTrocaOleo.dart';
 
 class CardAjudaBloc extends BlocBase {
   var _controllerExibeCard = BehaviorSubject<bool>(seedValue: true);
@@ -65,6 +68,18 @@ class CardAjudaBloc extends BlocBase {
 
       await blocSolicitacaoAbastecimento.insereDados(contextoAplicacao);
     }
+    if (origemDado == 'OLEO') {
+      SolicitacaoTrocaOleoBloc blocSolicitacaoAbastecimento =
+          BlocProvider.of<SolicitacaoTrocaOleoBloc>(contextoAplicacao);
+
+      await blocSolicitacaoAbastecimento.insereDados(contextoAplicacao);
+    }
+    if (origemDado == 'MANUTENCAO') {
+      SolicitacaoManutencaoBloc blocSolicitacaoManutencao =
+          BlocProvider.of<SolicitacaoManutencaoBloc>(contextoAplicacao);
+
+      await blocSolicitacaoManutencao.insereDados(contextoAplicacao);
+    }
   }
 
   Future<void> eventoCliqueBotaoApagarDados() async {
@@ -105,6 +120,16 @@ class CardAjudaBloc extends BlocBase {
       SolicitacaoAbastecimentoBloc blocSolicitacaoAbastecimento =
           BlocProvider.of<SolicitacaoAbastecimentoBloc>(contextoAplicacao);
       await blocSolicitacaoAbastecimento.apagarDados(contextoAplicacao);
+    }
+    if (origemDado == 'OLEO') {
+      SolicitacaoTrocaOleoBloc blocSolicitacaoAbastecimento =
+          BlocProvider.of<SolicitacaoTrocaOleoBloc>(contextoAplicacao);
+      await blocSolicitacaoAbastecimento.apagarDados(contextoAplicacao);
+    }
+    if (origemDado == 'MANUTENCAO') {
+      SolicitacaoManutencaoBloc blocSolicitacaoManutencao =
+          BlocProvider.of<SolicitacaoManutencaoBloc>(contextoAplicacao);
+      await blocSolicitacaoManutencao.apagarDados(contextoAplicacao);
     }
   }
 

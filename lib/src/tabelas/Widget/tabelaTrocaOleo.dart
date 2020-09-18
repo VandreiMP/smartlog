@@ -9,6 +9,7 @@ import 'package:smartlogproject/src/Entidades/Bloc/custo-bloc.dart';
 import 'package:smartlogproject/src/Entidades/Bloc/embalagem-bloc.dart';
 import 'package:smartlogproject/src/Entidades/Bloc/empresa-bloc.dart';
 import 'package:smartlogproject/src/Entidades/Bloc/solicitacaoAbastecimento-bloc.dart';
+import 'package:smartlogproject/src/Entidades/Bloc/solicitacaoTrocaOleo-bloc.dart';
 import 'package:smartlogproject/src/Entidades/Bloc/usuario-bloc.dart';
 import 'package:smartlogproject/src/constantes/mascaras.dart';
 import 'package:smartlogproject/src/funcoes/appText.dart';
@@ -19,17 +20,18 @@ import 'package:smartlogproject/src/funcoes/buscaEmbalagens.dart';
 import 'package:smartlogproject/src/funcoes/buscaEmpresa.dart';
 import 'package:smartlogproject/src/funcoes/buscaFuncionarios.dart';
 import 'package:smartlogproject/src/funcoes/buscaSolicAbastecimento.dart';
+import 'package:smartlogproject/src/funcoes/buscaTrocaOleo.dart';
 import 'package:smartlogproject/src/funcoes/criaLista.dart';
 import 'package:smartlogproject/src/funcoes/requiredLabel.dart';
 import 'package:smartlogproject/src/screen/screenPattern.dart';
 import 'package:smartlogproject/src/tabelas/Bloc/tabela-bloc.dart';
 
-class ListaAbastecimentos extends StatelessWidget {
+class ListaTrocaOleo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ScreenPattern(
       child: BlocProvider(
-        bloc: SolicitacaoAbastecimentoBloc(context),
+        bloc: SolicitacaoTrocaOleoBloc(context),
         child: CriaCardFormulario(),
       ),
     );
@@ -39,7 +41,7 @@ class ListaAbastecimentos extends StatelessWidget {
 class CriaCardFormulario extends StatelessWidget {
   final tId = TextEditingController();
   final tDataAbertura = TextEditingController();
-  final tPosto = TextEditingController();
+  final tOficina = TextEditingController();
 
   bool inverteOrdenacao = false;
 
@@ -96,12 +98,12 @@ class CriaCardFormulario extends StatelessWidget {
                                 children: <Widget>[
                                   Container(
                                     child: constroiCampo(
-                                      labelCampo: 'Posto',
+                                      labelCampo: 'Oficina',
                                       largura: 500,
                                       altura: 30,
                                       contextoAplicacao: context,
                                       obrigaCampo: false,
-                                      controller: tPosto,
+                                      controller: tOficina,
                                     ),
                                   ),
                                   Row(
@@ -134,7 +136,7 @@ class CriaCardFormulario extends StatelessWidget {
                         GestureDetector(
                           onTap: () {
                             Navigator.of(context).pushNamed(
-                              '/FormularioAbastecimento',
+                              '/FormularioTrocaDeOleo',
                             );
                           },
                           child: Padding(
@@ -161,7 +163,7 @@ class CriaCardFormulario extends StatelessWidget {
                     ),
                     Container(
                       child: AppText(
-                        'Lista de Solicitações de Abastecimento Pendentes',
+                        'Lista de Solicitações de Troca de Óleo Pendentes',
                         bold: true,
                       ),
                     ),
@@ -170,7 +172,7 @@ class CriaCardFormulario extends StatelessWidget {
                     ),
                     Row(
                       children: [
-                        BuscaAbastecimento(),
+                        BuscaTrocaOleo(),
                       ],
                     )
                   ],

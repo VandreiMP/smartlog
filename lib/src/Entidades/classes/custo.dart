@@ -11,7 +11,7 @@ class Custo extends BaseModel {
 
   Custo();
 
-  Custo.fromMap(DocumentSnapshot document) {
+  fromMap(DocumentSnapshot document) {
     this.identificacao = document.data["identificacao"];
     this.detalhes = document.data["detalhes"];
     this.modalidade = document.data["modalidade"];

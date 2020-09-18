@@ -134,7 +134,7 @@ class ConstroiMenu extends StatelessWidget {
                 return Center(
                   child: ItemMenu(
                     icon: Icons.settings,
-                    title: 'Contr. OS',
+                    title: 'Solic.',
                     onPress: () {},
                     subMenu: Column(
                       children: [
@@ -165,7 +165,7 @@ class ConstroiMenu extends StatelessWidget {
                             title: 'Troca de Óleo',
                             onPress: () {
                               Navigator.of(context)
-                                  .pushNamed('/FormularioTrocaDeOleo');
+                                  .pushNamed('/ListaTrocaOleo');
                             },
                             arrowIcon: Icons.arrow_forward_ios,
                           ),
@@ -181,7 +181,7 @@ class ConstroiMenu extends StatelessWidget {
                             title: 'Manut. Geral',
                             onPress: () {
                               Navigator.of(context)
-                                  .pushNamed('/FormularioManutencao');
+                                  .pushNamed('/ListaManutencao');
                             },
                             arrowIcon: Icons.arrow_forward_ios,
                           ),

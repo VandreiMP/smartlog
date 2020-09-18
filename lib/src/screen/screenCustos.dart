@@ -106,7 +106,7 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
     CustoBloc blocCusto = BlocProvider.of<CustoBloc>(context);
 
     return StreamBuilder<QuerySnapshot>(
-        stream: null,
+        stream: blocCusto.outCustos,
         builder: (context, snapshot) {
           return Scroll(
             height: double.infinity,
@@ -173,6 +173,9 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
                                                 controller: tId,
                                                 obrigaCampo: true,
                                                 onChanged: (String valor) {
+                                                  // blocCusto
+                                                  //     .consultarDados(context);
+                                                  //print(blocCusto.outDetalhes);
                                                   blocCusto.setId(tId.text);
                                                 },
                                                 mascara:
