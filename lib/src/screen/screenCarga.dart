@@ -1,11 +1,16 @@
+import 'dart:html';
+
 import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
+import 'package:masked_text/masked_text.dart';
 import 'package:smartlogproject/src/Entidades/Bloc/carregamentoMercadoria-bloc.dart';
+import 'package:smartlogproject/src/Entidades/classes/listaValores.dart';
 import 'package:smartlogproject/src/funcoes/calculaTotalCarga.dart';
 import 'package:smartlogproject/src/funcoes/criaLista.dart';
 import 'package:smartlogproject/src/funcoes/criaListaValoresEmbalagem.dart';
+import 'package:smartlogproject/src/funcoes/decompoeChave.dart';
 import 'package:smartlogproject/src/funcoes/requiredLabel.dart';
 import '../Components/scroll/scroll.dart';
 import '../constantes/mascaras.dart';
@@ -54,7 +59,7 @@ class _BodyState extends State<Body> {
                     nomeFormulario: "Carregamento de Mercadoria",
                     origem: 'CARGA',
                     origemDado: 'CARGA',
-                    chaveConsulta: ModalRoute.of(context).settings.arguments,
+                    chaveConsulta: null,
                   ),
                   // CriaCardAjudaCaminhao(),
                 ],
@@ -77,33 +82,38 @@ class CriaCardFormulario extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final tCarga = TextEditingController();
-    final tSaidaCaminhao = TextEditingController();
+    final tSaidaCaminhao = MaskedTextController(mask: mascaraData);
     final tNumeroRomaneio = TextEditingController();
     final tSituacaoExpedicao = TextEditingController();
     final tCaminhao = TextEditingController();
     final tMotorista = TextEditingController();
     final tComprador = TextEditingController();
-    final tTelefone = TextEditingController();
-    final tDataEntrega = TextEditingController();
+    final tTelefone = MaskedTextController(mask: mascaraTelefone);
+    final tDataEntrega = MaskedTextController(mask: mascaraData);
     final tSituacaoEntrega = TextEditingController();
     final tProduto = TextEditingController();
     final tEmbalagem = TextEditingController();
-    final tQuantidadeEmbalagem = TextEditingController();
-    final tPesoBruto = TextEditingController();
-    final tPesoLiquido = TextEditingController();
-    final tCubagemCarga = TextEditingController();
-    final tQuantidade = TextEditingController();
-    final tPrecoLiquido = TextEditingController();
-    final tTotalDesp = TextEditingController();
-    final tTotalCarga = TextEditingController();
+    final tQuantidadeEmbalagem = MaskedTextController(mask: mascaraQuantidade);
+    final tPesoBruto = MaskedTextController(mask: mascaraPeso);
+    final tPesoLiquido = MaskedTextController(mask: mascaraPreco);
+    final tCubagemCarga = MaskedTextController(mask: mascaraPeso);
+    final tQuantidade = MaskedTextController(mask: mascaraQuantidade);
+    final tPrecoLiquido = MaskedTextController(mask: mascaraPreco);
+    final tTotalDesp = MaskedTextController(mask: mascaraPreco);
+    final tTotalCarga = MaskedTextController(mask: mascaraPreco);
 
     CarregamentoMercadoriaBloc blocCarregamentoMercadoria =
         BlocProvider.of<CarregamentoMercadoriaBloc>(context);
 
     final Firestore firestore = Firestore.instance;
-    String numeroCarga = ModalRoute.of(context).settings.arguments;
+    String chaveConsulta = ModalRoute.of(context).settings.arguments;
+    String numeroCarga = decompoeChave('CHAVE_CONSULTA', chaveConsulta);
+    String identificacaoEmbalagemLista =
+        decompoeChave('IDENTIFICACAO', chaveConsulta);
 
-    Future consultaValor(DocumentSnapshot campo) async {
+    String filtroTabela;
+
+    Future consultaDados(DocumentSnapshot campo) async {
       tCarga.text = numeroCarga;
       tSaidaCaminhao.text = campo.data['saidaCaminhao'];
       tNumeroRomaneio.text = campo.data['numeroRomaneio'];
@@ -111,31 +121,21 @@ class CriaCardFormulario extends StatelessWidget {
       tCaminhao.text = campo.data['caminhao'];
       tMotorista.text = campo.data['motorista'];
       tComprador.text = campo.data['comprador'];
-      tTelefone.text = campo.data['celefone'];
+      tTelefone.text = campo.data['telefone'];
       tDataEntrega.text = campo.data['dataEntrega'];
       tSituacaoEntrega.text = campo.data['situacaoEntrega'];
       tProduto.text = campo.data['produto'];
-      tEmbalagem.text = campo.data['embalagem'];
       tQuantidadeEmbalagem.text = campo.data['quantidadeEmbalagem'].toString();
       tPesoBruto.text = campo.data['pesoBruto'].toString();
+
       tPesoLiquido.text = campo.data['pesoLiquido'].toString();
       tCubagemCarga.text = campo.data['cubagemCarga'].toString();
       tPrecoLiquido.text = campo.data['precoLiquido'].toString();
       tQuantidade.text = campo.data['quantidade'].toString();
       tTotalDesp.text = campo.data['totalDesp'].toString();
       tTotalCarga.text = campo.data['totalCarga'].toString();
-    }
 
-    if (numeroCarga != null) {
-      Future<dynamic> consultaDetalhes = firestore
-          .collection("carregamentoMercadoria")
-          .document(numeroCarga)
-          .get()
-          .then((value) async => consultaValor(value));
-    }
-    void populaObjeto() {
       blocCarregamentoMercadoria.setCarga(tCarga.text);
-      blocCarregamentoMercadoria.setSaidaCaminhao(tSaidaCaminhao.text);
       blocCarregamentoMercadoria.setNumeroRomaneio(tNumeroRomaneio.text);
       blocCarregamentoMercadoria.setSituacaoExpedicao(tSituacaoExpedicao.text);
       blocCarregamentoMercadoria.setCaminhao(tCaminhao.text);
@@ -145,10 +145,26 @@ class CriaCardFormulario extends StatelessWidget {
       blocCarregamentoMercadoria.setDataEntrega(tDataEntrega.text);
       blocCarregamentoMercadoria.setSituacaoEntrega(tSituacaoEntrega.text);
       blocCarregamentoMercadoria.setProduto(tProduto.text);
-      blocCarregamentoMercadoria.setEmbalagem(tEmbalagem.text);
+      print(campo.data['embalagem']);
+      if (identificacaoEmbalagemLista.isNotEmpty &&
+          identificacaoEmbalagemLista != campo.data['embalagem']) {
+        blocCarregamentoMercadoria.setEmbalagem(identificacaoEmbalagemLista);
+        filtroTabela = identificacaoEmbalagemLista;
+      } else {
+        blocCarregamentoMercadoria.setEmbalagem(campo.data['embalagem']);
+        filtroTabela = campo.data['embalagem'];
+      }
+
+      firestore
+          .collection("embalagem")
+          .document(filtroTabela)
+          .get()
+          .then((value) async => tEmbalagem.text = value.data['descricao']);
+
       blocCarregamentoMercadoria
           .setQuantidadeEmbalagem(double.parse(tQuantidadeEmbalagem.text));
       blocCarregamentoMercadoria.setPesoBruto(double.parse(tPesoBruto.text));
+
       blocCarregamentoMercadoria
           .setPesoLiquido(double.parse(tPesoLiquido.text));
       blocCarregamentoMercadoria
@@ -157,13 +173,17 @@ class CriaCardFormulario extends StatelessWidget {
           .setPrecoLiquido(double.parse(tPrecoLiquido.text));
       blocCarregamentoMercadoria.setQuantidade(double.parse(tQuantidade.text));
       blocCarregamentoMercadoria.setTotalDesp(double.parse(tTotalDesp.text));
-      blocCarregamentoMercadoria
-          .setQuantidadeEmbalagem(double.parse(tQuantidadeEmbalagem.text));
     }
 
     if (numeroCarga != null) {
-      populaObjeto();
+      print("chaveConsulta");
+      firestore
+          .collection("carregamentoMercadoria")
+          .document(decompoeChave('CHAVE_CONSULTA', chaveConsulta))
+          .get()
+          .then((value) async => consultaDados(value));
     }
+
     List<String> situacaoCarga = [
       'Montagem da Carga',
       'Mercadoria Carregada',
@@ -179,7 +199,7 @@ class CriaCardFormulario extends StatelessWidget {
     ];
 
     return StreamBuilder<QuerySnapshot>(
-        stream: null,
+        stream: firestore.collection("carregamentoMercadoria").snapshots(),
         builder: (context, snapshot) {
           return Scroll(
             height: double.infinity,
@@ -612,7 +632,7 @@ class CriaCardFormulario extends StatelessWidget {
                                           children: <Widget>[
                                             constroiCampo(
                                               labelCampo: 'Produto',
-                                              largura: 300,
+                                              largura: 450,
                                               altura: 30,
                                               controller: tProduto,
                                               onChanged: (String valor) {
@@ -621,21 +641,21 @@ class CriaCardFormulario extends StatelessWidget {
                                               },
                                               obrigaCampo: false,
                                             ),
-                                            Padding(
-                                              padding: const EdgeInsets.only(
-                                                  left: 25.0),
-                                              child: constroiCampo(
-                                                labelCampo: 'Embalagem',
-                                                largura: 200,
-                                                altura: 30,
-                                                controller: tEmbalagem,
-                                                onChanged: (String valor) {
-                                                  blocCarregamentoMercadoria
-                                                      .setEmbalagem(
-                                                          tEmbalagem.text);
-                                                },
-                                                obrigaCampo: false,
-                                              ),
+                                          ],
+                                        ),
+                                        Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            constroiCampo(
+                                              labelCampo: 'Embalagem',
+                                              enabled: false,
+                                              largura: 450,
+                                              altura: 30,
+                                              controller: tEmbalagem,
+                                              obrigaCampo: false,
                                             ),
                                             Padding(
                                               padding:
@@ -653,7 +673,10 @@ class CriaCardFormulario extends StatelessWidget {
                                                       onTap: () {
                                                         Navigator.of(context)
                                                             .pushNamed(
-                                                                '/ListaValoresEmbalagem');
+                                                                '/ListaValoresEmbalagem',
+                                                                arguments:
+                                                                    tCarga
+                                                                        .text);
                                                       },
                                                       child: Container(
                                                         decoration:
@@ -675,25 +698,6 @@ class CriaCardFormulario extends StatelessWidget {
                                                     ),
                                                   ],
                                                 ),
-                                              ),
-                                            ),
-                                            Padding(
-                                              padding: const EdgeInsets.only(
-                                                  left: 8.0),
-                                              child: constroiCampo(
-                                                labelCampo: 'Qtd. Embalagem',
-                                                largura: 85,
-                                                altura: 30,
-                                                controller:
-                                                    tQuantidadeEmbalagem,
-                                                onChanged: (String valor) {
-                                                  blocCarregamentoMercadoria
-                                                      .setQuantidadeEmbalagem(
-                                                          double.parse(
-                                                              tQuantidadeEmbalagem
-                                                                  .text));
-                                                },
-                                                obrigaCampo: false,
                                               ),
                                             ),
                                           ],
@@ -729,6 +733,25 @@ class CriaCardFormulario extends StatelessWidget {
                                                       .setPesoLiquido(
                                                           double.parse(
                                                               tPesoLiquido
+                                                                  .text));
+                                                },
+                                                obrigaCampo: false,
+                                              ),
+                                            ),
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                  left: 8.0),
+                                              child: constroiCampo(
+                                                labelCampo: 'Qtd. Embalagem',
+                                                largura: 85,
+                                                altura: 30,
+                                                controller:
+                                                    tQuantidadeEmbalagem,
+                                                onChanged: (String valor) {
+                                                  blocCarregamentoMercadoria
+                                                      .setQuantidadeEmbalagem(
+                                                          double.parse(
+                                                              tQuantidadeEmbalagem
                                                                   .text));
                                                 },
                                                 obrigaCampo: false,
@@ -941,6 +964,7 @@ class CriaCardFormulario extends StatelessWidget {
   Widget constroiCampo({
     String labelCampo,
     double largura,
+    bool enabled,
     double altura,
     bool obrigaCampo,
     Function onChanged,
@@ -951,6 +975,7 @@ class CriaCardFormulario extends StatelessWidget {
         label: labelCampo,
         onChanged: onChanged,
         width: largura,
+        enabled: enabled,
         heigth: altura,
         required: obrigaCampo,
         controller: controller,

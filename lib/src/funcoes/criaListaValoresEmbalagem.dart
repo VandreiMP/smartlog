@@ -7,7 +7,6 @@ import 'package:smartlogproject/src/funcoes/buscaEmbalagens.dart';
 import 'package:smartlogproject/src/screen/screenPattern.dart';
 
 class ListaValoresEmbalagem extends StatelessWidget {
-  
   @override
   Widget build(BuildContext context) {
     return ScreenPattern(
@@ -22,6 +21,7 @@ class ListaValoresEmbalagem extends StatelessWidget {
 class CriaCardFormulario extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    String numeroCarga = ModalRoute.of(context).settings.arguments;
     return Scroll(
       width: 720,
       height: double.infinity,
@@ -49,7 +49,7 @@ class CriaCardFormulario extends StatelessWidget {
                     SizedBox(
                       height: 10.0,
                     ),
-                  Row(
+                    Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Container(
@@ -85,9 +85,7 @@ class CriaCardFormulario extends StatelessWidget {
                       height: 10.0,
                     ),
                     Row(
-                      children: [
-                        BuscaEmbalagens(Icons.add, () {}),
-                      ],
+                      children: [BuscaEmbalagens(Icons.add, numeroCarga)],
                     )
                   ],
                 ),

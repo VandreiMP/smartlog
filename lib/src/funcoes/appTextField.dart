@@ -3,6 +3,7 @@ import 'package:smartlogproject/src/funcoes/requiredLabel.dart';
 
 class AppTextField extends StatelessWidget {
   final String label;
+  final bool enabled;
   final bool required;
   final String hint;
   final double width;
@@ -20,6 +21,7 @@ class AppTextField extends StatelessWidget {
 
   AppTextField({
     this.label,
+    this.enabled = true,
     this.required = false,
     this.hint,
     this.width,
@@ -55,16 +57,14 @@ class AppTextField extends StatelessWidget {
       height: heigth,
       width: width ?? double.maxFinite,
       child: TextFormField(
-        //maxLength: tamanhoMaximo,
         maxLengthEnforced: true,
         cursorColor: Colors.black,
         initialValue: valorInicial,
-        
-        //key: Key(label),
+        enabled: enabled,
         controller: controller,
         obscureText: password,
         validator: validator,
-        keyboardType: keyboardType,
+        keyboardType: TextInputType.datetime,
         textInputAction: textInputAction,
         focusNode: focusNode,
         onChanged: onChanged,
@@ -77,20 +77,7 @@ class AppTextField extends StatelessWidget {
           fontSize: 16,
           color: Colors.black,
         ),
-        decoration: InputDecoration(
-            /*border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16)
-       ),*/
-            /*labelText: label,
-          labelStyle: TextStyle(
-            fontSize: 20,
-            color: Colors.blue,
-          ),*/
-            /*hintText: hint,
-          hintStyle: TextStyle(
-            fontSize: 14,
-          ),*/
-            ),
+        decoration: InputDecoration(),
       ),
     );
   }

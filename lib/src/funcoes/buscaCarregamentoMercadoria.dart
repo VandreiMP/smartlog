@@ -107,6 +107,9 @@ class _BuscaCarregamentoMercadoriaState
                                   final dynamic dataEntrega =
                                       document['dataEntrega'];
 
+                                  final String chaveConsulta =
+                                      '${numeroCarga}&';
+
                                   return Container(
                                     child: Row(
                                       children: [
@@ -164,7 +167,7 @@ class _BuscaCarregamentoMercadoriaState
                                           onTap: () {
                                             Navigator.of(context).pushNamed(
                                                 '/FormularioCarga',
-                                                arguments: numeroCarga);
+                                                arguments: chaveConsulta);
                                           },
                                           child: Padding(
                                             padding: const EdgeInsets.only(

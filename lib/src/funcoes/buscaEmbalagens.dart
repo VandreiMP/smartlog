@@ -3,22 +3,24 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:smartlogproject/src/Entidades/Bloc/embalagem-bloc.dart';
 import 'package:smartlogproject/src/Entidades/Bloc/usuario-bloc.dart';
+import 'package:smartlogproject/src/Entidades/classes/listaValores.dart';
 import 'package:smartlogproject/src/funcoes/appText.dart';
 
 class BuscaEmbalagens extends StatefulWidget {
-    final IconData iconeLista;
-    final Function funcaoLista;
+  final IconData iconeLista;
+  final String chaveListaValores;
 
-  BuscaEmbalagens(this.iconeLista, this.funcaoLista);
+  BuscaEmbalagens(this.iconeLista, this.chaveListaValores);
   @override
-  _BuscaEmbalagensState createState() => _BuscaEmbalagensState(iconeLista, funcaoLista);
+  _BuscaEmbalagensState createState() =>
+      _BuscaEmbalagensState(iconeLista, chaveListaValores);
 }
 
 class _BuscaEmbalagensState extends State<BuscaEmbalagens> {
   final IconData iconeLista;
-  final Function funcaoLista;
+  final String chaveListaValores;
 
-  _BuscaEmbalagensState(this.iconeLista, this.funcaoLista);
+  _BuscaEmbalagensState(this.iconeLista, this.chaveListaValores);
   @override
   Widget build(BuildContext context) {
     final Firestore firestore = Firestore.instance;
@@ -99,6 +101,8 @@ class _BuscaEmbalagensState extends State<BuscaEmbalagens> {
                                 final dynamic descricao = document['descricao'];
                                 final dynamic identificacao =
                                     document['identificacao'];
+                                String listaValoresEmbalagem =
+                                    '${chaveListaValores}&${identificacao}';
                                 return Container(
                                   child: Row(
                                     children: [
@@ -138,7 +142,19 @@ class _BuscaEmbalagensState extends State<BuscaEmbalagens> {
                                       ),
                                       GestureDetector(
                                         onTap: () {
-                                          funcaoLista();
+                                          /*
+                                          Se possuir a variável chaveListaValores deve passar os valores de descrição
+                                          e código da embalagem para preencher na tela de origem
+                                          */
+                                          if (chaveListaValores.isNotEmpty) {
+                                            Navigator.of(context).pushNamed(
+                                                '/FormularioCarga',
+                                                arguments:
+                                                    listaValoresEmbalagem);
+                                          } else {
+                                            Navigator.of(context)
+                                                .pushNamed('/FormularioCarga');
+                                          }
                                         },
                                         child: Padding(
                                           padding:

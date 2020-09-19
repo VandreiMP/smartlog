@@ -35,3 +35,17 @@ Máscara para o campo do CEP
 */
 const String mascaraCep = '00.000-000';
 
+/*
+Máscara para preço
+*/
+const String mascaraPreco = '0000.00';
+
+/*
+Máscara para quantidade
+*/
+const String mascaraQuantidade = '00000.00';
+
+/*
+Máscara para peso
+*/
+const String mascaraPeso = '000000.000';

@@ -25,6 +25,7 @@ dependencies:
   flutter:
     sdk: flutter
   slidy: ^2.1.2+2
+  masked_text: ^0.0.6
   bloc_pattern: ^1.1.0
   dio: ^3.0.9
   rxdart: ^0.19.0

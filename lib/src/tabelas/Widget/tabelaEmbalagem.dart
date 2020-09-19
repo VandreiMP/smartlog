@@ -170,10 +170,10 @@ class CriaCardFormulario extends StatelessWidget {
                     ),
                     Row(
                       children: [
-                        BuscaEmbalagens(Icons.search, () {
-                          Navigator.of(context)
-                              .pushNamed('/FormularioEmbalagem');
-                        }),
+                        BuscaEmbalagens(
+                          Icons.search,
+                          null,
+                        ),
                       ],
                     )
                   ],

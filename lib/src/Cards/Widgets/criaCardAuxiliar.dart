@@ -107,7 +107,11 @@ class CardAjuda extends StatelessWidget {
                                   padding: const EdgeInsets.all(1.0),
                                   child: GestureDetector(
                                     onTap: () {
-                                      Navigator.of(context).pop();
+                                      if (origem == 'CARGA') {
+                                        Navigator.of(context).pushNamed(
+                                          '/ListaCargas',
+                                        );
+                                      }
                                     },
                                     child: Container(
                                       decoration: BoxDecoration(
