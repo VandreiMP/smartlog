@@ -173,6 +173,7 @@ class CriaCardFormulario extends StatelessWidget {
                         BuscaEmbalagens(
                           Icons.search,
                           null,
+                          'EMBALAGEM'
                         ),
                       ],
                     )

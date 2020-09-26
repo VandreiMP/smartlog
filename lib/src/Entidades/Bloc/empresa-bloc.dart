@@ -8,6 +8,7 @@ import 'package:smartlogproject/src/Entidades/classes/embalagem.dart';
 import 'package:smartlogproject/src/Entidades/classes/empresa.dart';
 import 'package:smartlogproject/src/funcoes/alert.dart';
 import 'package:smartlogproject/src/funcoes/alertErro.dart';
+import 'package:smartlogproject/src/funcoes/alertFuncao.dart';
 
 class EmpresaBloc extends BlocBase {
   String _identificacao;
@@ -117,33 +118,40 @@ class EmpresaBloc extends BlocBase {
     empresa.endereco = _enderecoController.value;
     empresa.cidade = _cidadeController.value;
     empresa.uf = _ufController.value;
+    empresa.bairro = _bairroController.value;
     empresa.cep = _cepController.value;
 
-    try {
-      await Firestore.instance
-          .collection('empresa')
-          .document(empresa.identificacao)
-          .setData({
-        'identificacao': empresa.identificacao,
-        'razaoSocial': empresa.razaoSocial,
-        'nomeFantasia': empresa.nomeFantasia,
-        'cnpj': empresa.cnpj,
-        'inscEstadual': empresa.inscEstadual,
-        'atividadeEmpresa': empresa.atividadeEmpresa,
-        'matrizFilial': empresa.matrizFilial,
-        'telefone': empresa.telefone,
-        'email': empresa.email,
-        'endereco': empresa.endereco,
-        'cidade': empresa.cidade,
-        'uf': empresa.uf,
-        'cep': empresa.cep
-      }).then((value) async => await alert(
-              contextoAplicacao,
-              'Notificação de Sucesso',
-              'Os dados do formulário foram salvos com sucesso no banco de dados!'));
-    } catch (on) {
-      TextError('Erro ao salvar os dados do formulário no banco de dados!');
-    }
+    await Firestore.instance
+        .collection("empresa")
+        .document(empresa.identificacao)
+        .get()
+        .then(
+          (coluna) async => coluna.exists == true
+              ? alert(contextoAplicacao, 'Atenção',
+                  'Este código de empresa já existe. Favor alterar!')
+              : Firestore.instance
+                  .collection('empresa')
+                  .document(empresa.identificacao)
+                  .setData({
+                  'identificacao': empresa.identificacao,
+                  'razaoSocial': empresa.razaoSocial,
+                  'nomeFantasia': empresa.nomeFantasia,
+                  'cnpj': empresa.cnpj,
+                  'inscEstadual': empresa.inscEstadual,
+                  'atividadeEmpresa': empresa.atividadeEmpresa,
+                  'matrizFilial': empresa.matrizFilial,
+                  'telefone': empresa.telefone,
+                  'email': empresa.email,
+                  'endereco': empresa.endereco,
+                  'cidade': empresa.cidade,
+                  'bairro': empresa.bairro,
+                  'uf': empresa.uf,
+                  'cep': empresa.cep
+                }).then((value) async => await alert(
+                      contextoAplicacao,
+                      'Notificação de Sucesso',
+                      'Os dados do formulário foram salvos com sucesso no banco de dados!')),
+        );
   }
 
   /*
@@ -164,8 +172,16 @@ class EmpresaBloc extends BlocBase {
           .document(empresa.identificacao)
           .delete()
           .then(
-            (value) => alert(contextoAplicacao, 'Notificação de Sucesso',
-                'Os dados do formulário foram apagados com sucesso no banco de dados!'),
+            (value) => alertFuncao(
+              contextoAplicacao,
+              'Notificação de Sucesso',
+              'Os dados do formulário foram apagados com sucesso no banco de dados!',
+              () {
+                Navigator.of(contextoAplicacao).pushNamed(
+                  '/FormularioEmpresa',
+                );
+              },
+            ),
           )
           .catchError((ErrorAndStacktrace erro) {
         print(erro.error);
@@ -175,7 +191,8 @@ class EmpresaBloc extends BlocBase {
     }
   }
 
-  Future<void> atualizaDados(BuildContext contextoAplicacao) async {
+  Future<void> atualizaDados(
+      BuildContext contextoAplicacao, String chaveConsulta) async {
     var empresa = Empresa();
 
     empresa.identificacao = _idController.value;
@@ -190,12 +207,13 @@ class EmpresaBloc extends BlocBase {
     empresa.endereco = _enderecoController.value;
     empresa.cidade = _cidadeController.value;
     empresa.uf = _ufController.value;
+    empresa.bairro = _bairroController.value;
     empresa.cep = _cepController.value;
 
     try {
       await Firestore.instance
           .collection('empresa')
-          .document(empresa.identificacao)
+          .document(chaveConsulta)
           .updateData({
         'identificacao': empresa.identificacao,
         'razaoSocial': empresa.razaoSocial,
@@ -208,6 +226,7 @@ class EmpresaBloc extends BlocBase {
         'email': empresa.email,
         'endereco': empresa.endereco,
         'cidade': empresa.cidade,
+        'bairro': empresa.bairro,
         'uf': empresa.uf,
         'cep': empresa.cep
       }).then((value) async => await alert(
@@ -216,6 +235,28 @@ class EmpresaBloc extends BlocBase {
               'Os dados do formulário foram atualizados com sucesso no banco de dados!'));
     } catch (on) {
       TextError('Erro ao atualizar os dados do formulário no banco de dados!');
+    }
+  }
+
+  Future<void> verificaEmpresa(
+      String codigoEmpresa, BuildContext contextoAplicacao) async {
+    if (codigoEmpresa.isNotEmpty) {
+      await Firestore.instance
+          .collection("empresa")
+          .document(codigoEmpresa)
+          .get()
+          .then(
+            (coluna) async => coluna.exists == false
+                ? alert(contextoAplicacao, 'Atenção',
+                    'Para abrir as informações do responsável, é necessário salvar os dados do formulario!')
+                : Navigator.of(contextoAplicacao).pushNamed(
+                    '/FormularioEmpresaDetalhes',
+                    arguments: codigoEmpresa,
+                  ),
+          );
+    } else {
+      alert(contextoAplicacao, 'Atenção',
+          'Para abrir as informações do responsável, é necessário salvar os dados do formulario!');
     }
   }
 

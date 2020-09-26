@@ -1,8 +1,6 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
+
 import 'package:flutter/material.dart';
 import 'package:smartlogproject/src/AcessoSistema/Widget/acesso-sistema-widget.dart';
-import 'package:smartlogproject/src/funcoes/buscaEmbalagens.dart';
 import 'package:smartlogproject/src/funcoes/criaListaValoresCaminhao.dart';
 import 'package:smartlogproject/src/funcoes/criaListaValoresCusto.dart';
 import 'package:smartlogproject/src/funcoes/criaListaValoresEmbalagem.dart';
@@ -12,9 +10,8 @@ import 'package:smartlogproject/src/screen/screenContrato.dart';
 import 'package:smartlogproject/src/screen/screenDespesasContrato.dart';
 import 'package:smartlogproject/src/screen/screenManutencao.dart';
 import 'package:smartlogproject/src/screen/screenRomaneio.dart';
-import 'package:smartlogproject/src/screen/screenAbastecimento.dart';
+import 'src/screen/screenAbastecimento.dart';
 import 'package:smartlogproject/src/screen/screenTrocaOleo.dart';
-import 'package:smartlogproject/src/screen/teste2.dart';
 import 'package:smartlogproject/src/tabelas/Widget/tabelaAbastecimento.dart';
 import 'package:smartlogproject/src/tabelas/Widget/tabelaCaminhao.dart';
 import 'package:smartlogproject/src/tabelas/Widget/tabelaCarregamentoMercadoria.dart';
@@ -24,8 +21,6 @@ import 'package:smartlogproject/src/tabelas/Widget/tabelaEmpresa.dart';
 import 'package:smartlogproject/src/tabelas/Widget/tabelaFuncionario.dart';
 import 'package:smartlogproject/src/tabelas/Widget/tabelaManutencao.dart';
 import 'package:smartlogproject/src/tabelas/Widget/tabelaTrocaOleo.dart';
-
-import 'src/login/login.dart';
 import 'src/screen/screenCaminhao.dart';
 import 'src/screen/screenCaminhaoDetalhes.dart';
 import 'src/screen/screenCustos.dart';

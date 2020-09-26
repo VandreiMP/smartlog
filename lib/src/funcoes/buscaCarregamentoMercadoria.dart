@@ -107,8 +107,7 @@ class _BuscaCarregamentoMercadoriaState
                                   final dynamic dataEntrega =
                                       document['dataEntrega'];
 
-                                  final String chaveConsulta =
-                                      '${numeroCarga}&';
+                                  final String chaveConsulta = numeroCarga;
 
                                   return Container(
                                     child: Row(

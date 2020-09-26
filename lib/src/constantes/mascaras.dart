@@ -33,7 +33,7 @@ const String mascaraRg = '00.000.000-0';
 /*
 Máscara para o campo do CEP
 */
-const String mascaraCep = '00.000-000';
+const String mascaraCep = '00000-000';
 
 /*
 Máscara para preço

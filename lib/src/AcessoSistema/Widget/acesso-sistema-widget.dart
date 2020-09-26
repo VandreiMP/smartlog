@@ -34,9 +34,6 @@ class _FormularioLogin extends StatelessWidget {
   final tUsuario = TextEditingController();
   final tSenha = TextEditingController();
 
- 
-
-
   String caminhoImagem = 'Images/login.png';
   String nomeFormulario = 'Autenticação do Sistema';
 
@@ -48,8 +45,8 @@ class _FormularioLogin extends StatelessWidget {
     return Scroll(
       width: double.infinity,
       child: Container(
-        padding:
-            EdgeInsets.only(top: 100.0, bottom: 60.0, left: 270.0, right: 270.0),
+        padding: EdgeInsets.only(
+            top: 100.0, bottom: 60.0, left: 270.0, right: 270.0),
         child: Scroll(
           width: double.infinity,
           child: Card(
@@ -142,6 +139,10 @@ class _FormularioLogin extends StatelessWidget {
                                   height: 30,
                                   child: Form(
                                     child: TextFormField(
+                                      onFieldSubmitted: (String valor) {
+                                        blocAcesso.validaAcessoUsuario(
+                                            tUsuario, tSenha);
+                                      },
                                       controller: tSenha,
                                       obscureText: escondeSenha,
                                       //   enabled: true,

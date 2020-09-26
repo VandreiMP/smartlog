@@ -62,6 +62,7 @@ class AppTextField extends StatelessWidget {
         initialValue: valorInicial,
         enabled: enabled,
         controller: controller,
+        
         obscureText: password,
         validator: validator,
         keyboardType: TextInputType.datetime,

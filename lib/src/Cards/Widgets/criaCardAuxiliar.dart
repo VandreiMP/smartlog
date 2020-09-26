@@ -32,7 +32,8 @@ class CriaCardAuxiliar extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider<CardAjudaBloc>(
       bloc: CardAjudaBloc(context, origem, origemDado, chaveConsulta),
-      child: CardAjuda(caminhoImagem, nomeFormulario, origem, origemDado),
+      child: CardAjuda(
+          caminhoImagem, nomeFormulario, origem, origemDado, chaveConsulta),
     );
   }
 }
@@ -45,15 +46,16 @@ class CardAjuda extends StatelessWidget {
   final String nomeFormulario;
   final String origem;
   final String origemDado;
+  final String chaveConsulta;
 
-  CardAjuda(
-      this.caminhoImagem, this.nomeFormulario, this.origem, this.origemDado);
+  CardAjuda(this.caminhoImagem, this.nomeFormulario, this.origem,
+      this.origemDado, this.chaveConsulta);
   @override
   Widget build(BuildContext context) {
     CardAjudaBloc blocAjuda = BlocProvider.of<CardAjudaBloc>(context);
 
-    return StreamBuilder<Object>(
-      stream: blocAjuda.outExibeCard,
+    return StreamBuilder<CardAjudaBloc>(
+      stream: null,
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         return Column(
           children: [
@@ -111,6 +113,14 @@ class CardAjuda extends StatelessWidget {
                                         Navigator.of(context).pushNamed(
                                           '/ListaCargas',
                                         );
+                                      } else if (origem == 'EMPRESA') {
+                                        Navigator.of(context).pushNamed(
+                                          '/ListaEmpresas',
+                                        );
+                                      } else if (origem == 'RESPONSAVEL') {
+                                        Navigator.of(context).pushNamed(
+                                            '/FormularioEmpresa',
+                                            arguments: chaveConsulta);
                                       }
                                     },
                                     child: Container(
@@ -131,7 +141,6 @@ class CardAjuda extends StatelessWidget {
                               ),
                               GestureDetector(
                                 onTap: () {
-                                  print('salvar');
                                   blocAjuda.eventoCliqueBotaoSalvar();
                                 },
                                 child: Padding(

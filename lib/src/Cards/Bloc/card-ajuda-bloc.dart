@@ -2,27 +2,19 @@ import 'dart:js';
 
 import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:flutter/material.dart';
-import 'package:rxdart/rxdart.dart';
 import 'package:smartlogproject/src/Entidades/Bloc/caminhao-bloc.dart';
 import 'package:smartlogproject/src/Entidades/Bloc/carregamentoMercadoria-bloc.dart';
 import 'package:smartlogproject/src/Entidades/Bloc/custo-bloc.dart';
 import 'package:smartlogproject/src/Entidades/Bloc/embalagem-bloc.dart';
 import 'package:smartlogproject/src/Entidades/Bloc/empresa-bloc.dart';
+import 'package:smartlogproject/src/Entidades/Bloc/responsavelEmpresa-bloc.dart';
 import 'package:smartlogproject/src/Entidades/Bloc/romaneio-bloc.dart';
 import 'package:smartlogproject/src/Entidades/Bloc/solicitacaoAbastecimento-bloc.dart';
 import 'package:smartlogproject/src/Entidades/Bloc/solicitacaoManutencao-bloc.dart';
 import 'package:smartlogproject/src/Entidades/Bloc/solicitacaoTrocaOleo-bloc.dart';
 import 'package:smartlogproject/src/Entidades/Bloc/usuario-bloc.dart';
-import 'package:smartlogproject/src/Entidades/classes/solicitacaoTrocaOleo.dart';
 
 class CardAjudaBloc extends BlocBase {
-  var _controllerExibeCard = BehaviorSubject<bool>(seedValue: true);
-  var _controllerCardAjuda =
-      BehaviorSubject<String>(seedValue: 'AcessoSistemaWidget()');
-
-  Stream<bool> get outExibeCard => _controllerExibeCard.stream;
-  Stream<String> get outCardAjuda => _controllerCardAjuda.stream;
-
   final BuildContext contextoAplicacao;
   final String origem;
   final String origemDado;
@@ -46,8 +38,20 @@ class CardAjudaBloc extends BlocBase {
       await blocCusto.insereDados(contextoAplicacao);
     }
     if (origemDado == 'EMPRESA') {
-      EmpresaBloc blocEmpresa = BlocProvider.of<EmpresaBloc>(contextoAplicacao);
-      await blocEmpresa.insereDados(contextoAplicacao);
+      if (chaveConsulta == null) {
+        EmpresaBloc blocEmpresa =
+            BlocProvider.of<EmpresaBloc>(contextoAplicacao);
+        await blocEmpresa.insereDados(contextoAplicacao);
+      } else {
+        EmpresaBloc blocEmpresa =
+            BlocProvider.of<EmpresaBloc>(contextoAplicacao);
+        await blocEmpresa.atualizaDados(contextoAplicacao, chaveConsulta);
+      }
+    }
+    if (origemDado == 'RESPONSAVEL') {
+      ResponsavelEmpresaBloc blocResponsavelEmpresa =
+          BlocProvider.of<ResponsavelEmpresaBloc>(contextoAplicacao);
+      await blocResponsavelEmpresa.insereDados(contextoAplicacao);
     }
     if (origemDado == 'CAMINHAO') {
       CaminhaoBloc blocCaminhao =
@@ -57,6 +61,7 @@ class CardAjudaBloc extends BlocBase {
     if (origemDado == 'CARGA') {
       CarregamentoMercadoriaBloc blocCarregamentoMercadoria =
           BlocProvider.of<CarregamentoMercadoriaBloc>(contextoAplicacao);
+
       if (chaveConsulta == null) {
         await blocCarregamentoMercadoria.insereDados(contextoAplicacao);
       } else
@@ -107,6 +112,11 @@ class CardAjudaBloc extends BlocBase {
       EmpresaBloc blocEmpresa = BlocProvider.of<EmpresaBloc>(contextoAplicacao);
       await blocEmpresa.apagarDados(contextoAplicacao);
     }
+    if (origemDado == 'RESPONSAVEL') {
+      ResponsavelEmpresaBloc blocResponsavelEmpresa =
+          BlocProvider.of<ResponsavelEmpresaBloc>(contextoAplicacao);
+      await blocResponsavelEmpresa.apagarDados(contextoAplicacao);
+    }
     if (origemDado == 'CAMINHAO') {
       CaminhaoBloc blocCaminhao =
           BlocProvider.of<CaminhaoBloc>(contextoAplicacao);
@@ -139,41 +149,6 @@ class CardAjudaBloc extends BlocBase {
     }
   }
 
-  Future<void> eventoCliqueBotaoAjuda() async {
-    _controllerExibeCard.add(!_controllerExibeCard.value);
-
-    // _controllerCardAjuda.add('CriaCardAjudaEmpresa()');
-
-    // if (origem == 'GERAL' ||
-    //     origem == 'RESPONSAVEL' ||
-    //     origem == 'DESPESAS_CONTRATO') {
-    //   _controllerCardAjuda.add(CriaCardAjuda());
-    // }
-    // if (origem == 'ADICIONAIS') {
-    //   _controllerCardAjuda.add(CriaCardAjudaAdicionais());
-    // }
-    // if (origem == 'DETALHES_CAMINHAO') {
-    //   _controllerCardAjuda.add(CriaCardAjudaCaminhaoDetalhes());
-    // }
-    // if (origem == 'CUSTOS') {
-    //   _controllerCardAjuda.add(CriaCardAjudaCustos());
-    // }
-    // if (origem == 'EMPRESA') {
-    //   _controllerCardAjuda.add(CriaCardAjudaEmpresa());
-    // }
-    // if (origem == 'CONTRATO') {
-    //   _controllerCardAjuda.add(CriaCardAjudaContrato());
-    // }
-    // if (origem == 'CARGA') {
-    //   _controllerCardAjuda.add(CriaCardAjudaCarga());
-    // }
-    // if (origem == 'ROMANEIO') {
-    //   _controllerCardAjuda.add(CriaCardAjudaRomaneio());
-    // }
-  }
-
   @override
-  void dispose() {
-    _controllerExibeCard.close();
-  }
+  void dispose() {}
 }

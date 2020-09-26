@@ -1,26 +1,11 @@
 import 'package:bloc_pattern/bloc_pattern.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:smartlogproject/src/Components/scroll/scroll.dart';
-import 'package:smartlogproject/src/Entidades/Bloc/caminhao-bloc.dart';
 import 'package:smartlogproject/src/Entidades/Bloc/carregamentoMercadoria-bloc.dart';
-import 'package:smartlogproject/src/Entidades/Bloc/custo-bloc.dart';
-import 'package:smartlogproject/src/Entidades/Bloc/embalagem-bloc.dart';
-import 'package:smartlogproject/src/Entidades/Bloc/empresa-bloc.dart';
-import 'package:smartlogproject/src/Entidades/Bloc/usuario-bloc.dart';
-import 'package:smartlogproject/src/constantes/mascaras.dart';
 import 'package:smartlogproject/src/funcoes/appText.dart';
-import 'package:smartlogproject/src/funcoes/buscaCaminhoes.dart';
 import 'package:smartlogproject/src/funcoes/buscaCarregamentoMercadoria.dart';
-import 'package:smartlogproject/src/funcoes/buscaCustos.dart';
-import 'package:smartlogproject/src/funcoes/buscaEmbalagens.dart';
-import 'package:smartlogproject/src/funcoes/buscaEmpresa.dart';
-import 'package:smartlogproject/src/funcoes/buscaFuncionarios.dart';
-import 'package:smartlogproject/src/funcoes/criaLista.dart';
 import 'package:smartlogproject/src/funcoes/requiredLabel.dart';
 import 'package:smartlogproject/src/screen/screenPattern.dart';
-import 'package:smartlogproject/src/tabelas/Bloc/tabela-bloc.dart';
 
 class ListaCargas extends StatelessWidget {
   @override
@@ -35,11 +20,9 @@ class ListaCargas extends StatelessWidget {
 }
 
 class CriaCardFormulario extends StatelessWidget {
-
-
   final tComprador = TextEditingController();
   final tCarga = TextEditingController();
- 
+
   bool inverteOrdenacao = false;
 
   @override
@@ -118,7 +101,6 @@ class CriaCardFormulario extends StatelessWidget {
                                           obrigaCampo: false,
                                           contextoAplicacao: context,
                                           controller: tCarga,
-                                         
                                         ),
                                       ),
                                     ],

@@ -85,7 +85,9 @@ class CriaCardFormulario extends StatelessWidget {
                       height: 10.0,
                     ),
                     Row(
-                      children: [BuscaEmbalagens(Icons.add, numeroCarga)],
+                      children: [
+                        BuscaEmbalagens(Icons.add, numeroCarga, 'CARGA'),
+                      ],
                     )
                   ],
                 ),

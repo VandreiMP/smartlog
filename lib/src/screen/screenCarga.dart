@@ -7,6 +7,7 @@ import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:masked_text/masked_text.dart';
 import 'package:smartlogproject/src/Entidades/Bloc/carregamentoMercadoria-bloc.dart';
 import 'package:smartlogproject/src/Entidades/classes/listaValores.dart';
+import 'package:smartlogproject/src/funcoes/alert.dart';
 import 'package:smartlogproject/src/funcoes/calculaTotalCarga.dart';
 import 'package:smartlogproject/src/funcoes/criaLista.dart';
 import 'package:smartlogproject/src/funcoes/criaListaValoresEmbalagem.dart';
@@ -59,7 +60,7 @@ class _BodyState extends State<Body> {
                     nomeFormulario: "Carregamento de Mercadoria",
                     origem: 'CARGA',
                     origemDado: 'CARGA',
-                    chaveConsulta: null,
+                    chaveConsulta: ModalRoute.of(context).settings.arguments,
                   ),
                   // CriaCardAjudaCaminhao(),
                 ],
@@ -93,6 +94,7 @@ class CriaCardFormulario extends StatelessWidget {
     final tSituacaoEntrega = TextEditingController();
     final tProduto = TextEditingController();
     final tEmbalagem = TextEditingController();
+    final tCodEmbalagem = TextEditingController();
     final tQuantidadeEmbalagem = MaskedTextController(mask: mascaraQuantidade);
     final tPesoBruto = MaskedTextController(mask: mascaraPeso);
     final tPesoLiquido = MaskedTextController(mask: mascaraPreco);
@@ -106,15 +108,17 @@ class CriaCardFormulario extends StatelessWidget {
         BlocProvider.of<CarregamentoMercadoriaBloc>(context);
 
     final Firestore firestore = Firestore.instance;
-    String chaveConsulta = ModalRoute.of(context).settings.arguments;
-    String numeroCarga = decompoeChave('CHAVE_CONSULTA', chaveConsulta);
-    String identificacaoEmbalagemLista =
-        decompoeChave('IDENTIFICACAO', chaveConsulta);
+    String numeroCarga = ModalRoute.of(context).settings.arguments;
+    // String numeroCarga = decompoeChave('CHAVE_CONSULTA', chaveConsulta);
+    // String identificacaoEmbalagemLista =
+    //     decompoeChave('IDENTIFICACAO', chaveConsulta);
 
     String filtroTabela;
 
     Future consultaDados(DocumentSnapshot campo) async {
-      tCarga.text = numeroCarga;
+      if (numeroCarga.isNotEmpty) {
+        tCarga.text = numeroCarga;
+      }
       tSaidaCaminhao.text = campo.data['saidaCaminhao'];
       tNumeroRomaneio.text = campo.data['numeroRomaneio'];
       tSituacaoExpedicao.text = campo.data['situacaoExpedicao'];
@@ -125,6 +129,7 @@ class CriaCardFormulario extends StatelessWidget {
       tDataEntrega.text = campo.data['dataEntrega'];
       tSituacaoEntrega.text = campo.data['situacaoEntrega'];
       tProduto.text = campo.data['produto'];
+      // tCodEmbalagem.text = campo.data['embalagem'];
       tQuantidadeEmbalagem.text = campo.data['quantidadeEmbalagem'].toString();
       tPesoBruto.text = campo.data['pesoBruto'].toString();
 
@@ -145,21 +150,12 @@ class CriaCardFormulario extends StatelessWidget {
       blocCarregamentoMercadoria.setDataEntrega(tDataEntrega.text);
       blocCarregamentoMercadoria.setSituacaoEntrega(tSituacaoEntrega.text);
       blocCarregamentoMercadoria.setProduto(tProduto.text);
-      print(campo.data['embalagem']);
-      if (identificacaoEmbalagemLista.isNotEmpty &&
-          identificacaoEmbalagemLista != campo.data['embalagem']) {
-        blocCarregamentoMercadoria.setEmbalagem(identificacaoEmbalagemLista);
-        filtroTabela = identificacaoEmbalagemLista;
-      } else {
-        blocCarregamentoMercadoria.setEmbalagem(campo.data['embalagem']);
-        filtroTabela = campo.data['embalagem'];
-      }
 
-      firestore
-          .collection("embalagem")
-          .document(filtroTabela)
-          .get()
-          .then((value) async => tEmbalagem.text = value.data['descricao']);
+      // firestore
+      //     .collection("embalagem")
+      //     .document(tCodEmbalagem.text)
+      //     .get()
+      //     .then((value) async => tEmbalagem.text = value.data['descricao']);
 
       blocCarregamentoMercadoria
           .setQuantidadeEmbalagem(double.parse(tQuantidadeEmbalagem.text));
@@ -176,17 +172,15 @@ class CriaCardFormulario extends StatelessWidget {
     }
 
     if (numeroCarga != null) {
-      print("chaveConsulta");
       firestore
           .collection("carregamentoMercadoria")
-          .document(decompoeChave('CHAVE_CONSULTA', chaveConsulta))
+          .document(numeroCarga)
           .get()
           .then((value) async => consultaDados(value));
     }
 
     List<String> situacaoCarga = [
       'Montagem da Carga',
-      'Mercadoria Carregada',
       'Bloqueada para Faturamento',
       'Liberada para Saída',
       'Entrega Efetuada',
@@ -714,6 +708,9 @@ class CriaCardFormulario extends StatelessWidget {
                                               altura: 30,
                                               controller: tPesoBruto,
                                               onChanged: (String valor) {
+                                                tPesoBruto.text = tPesoBruto
+                                                    .text
+                                                    .padLeft(4, '0');
                                                 blocCarregamentoMercadoria
                                                     .setPesoBruto(double.parse(
                                                         tPesoBruto.text));

@@ -8,6 +8,7 @@ import 'package:smartlogproject/src/Entidades/classes/carregamentoMercadoria.dar
 import 'package:smartlogproject/src/Entidades/classes/embalagem.dart';
 import 'package:smartlogproject/src/funcoes/alert.dart';
 import 'package:smartlogproject/src/funcoes/alertErro.dart';
+import 'package:smartlogproject/src/funcoes/alertFuncao.dart';
 import 'package:smartlogproject/src/funcoes/calculaTotalCarga.dart';
 
 class CarregamentoMercadoriaBloc extends BlocBase {
@@ -213,14 +214,23 @@ class CarregamentoMercadoriaBloc extends BlocBase {
 
     carregamentoMercadoria.carga = _cargaController.value;
 
+    void concluiEventoApagarDados() {
+      alertFuncao(contextoAplicacao, 'Notificação de Sucesso',
+          'Os dados do formulário foram apagados com sucesso no banco de dados!',
+          () {
+        Navigator.of(contextoAplicacao).pushNamed(
+          '/FormularioCarga',
+        );
+      });
+    }
+
     try {
       await Firestore.instance
           .collection('carregamentoMercadoria')
           .document(carregamentoMercadoria.carga)
           .delete()
           .then(
-            (value) => alert(contextoAplicacao, 'Notificação de Sucesso',
-                'Os dados do formulário foram apagados com sucesso no banco de dados!'),
+            (value) => concluiEventoApagarDados(),
           )
           .catchError((ErrorAndStacktrace erro) {
         print(erro.error);
@@ -230,7 +240,8 @@ class CarregamentoMercadoriaBloc extends BlocBase {
     }
   }
 
-  Future<void> atualizaDados(BuildContext contextoAplicacao, String chaveConsulta) async {
+  Future<void> atualizaDados(
+      BuildContext contextoAplicacao, String chaveConsulta) async {
     var carregamentoMercadoria = CarregamentoMercadoria();
 
     carregamentoMercadoria.carga = _cargaController.value;
