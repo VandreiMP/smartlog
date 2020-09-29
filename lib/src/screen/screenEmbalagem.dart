@@ -1,7 +1,9 @@
 import 'package:bloc_pattern/bloc_pattern.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:smartlogproject/src/Components/scroll/scroll.dart';
 import 'package:smartlogproject/src/Entidades/Bloc/embalagem-bloc.dart';
+import 'package:smartlogproject/src/funcoes/calculaCubagemEmbalagem.dart';
 import '../constantes/mascaras.dart';
 import '../funcoes/appText.dart';
 import '../funcoes/appTextField.dart';
@@ -45,8 +47,9 @@ class _BodyState extends State<Body> {
                 CriaCardAuxiliar(
                   caminhoImagem: "Images/embalagem.png",
                   nomeFormulario: "Cadastro de Embalagens",
-                  origem: 'GERAL',
+                  origem: 'EMBALAGEM',
                   origemDado: 'EMBALAGEM',
+                  chaveConsulta: ModalRoute.of(context).settings.arguments,
                 ),
                 // CriaCardAjuda(),
               ],
@@ -59,37 +62,98 @@ class _BodyState extends State<Body> {
   }
 }
 
-class CriaCardFormulario extends StatelessWidget {
+class CriaCardFormulario extends StatefulWidget {
+  @override
+  _CriaCardFormularioState createState() => _CriaCardFormularioState();
+}
+
+class _CriaCardFormularioState extends State<CriaCardFormulario> {
   List<String> tipoEmbalagens = [
     'Forma',
     'Caixa',
     'Pallet',
   ];
+
   List<String> tipoCapacidade = [
-    'Ovos',
+    'Ovo',
     'Forma',
     'Caixa',
   ];
 
-  /*
-    Variáveis usadas para capturar o valor dos campos do formulário
-    e salvar no banco
-  */
   final tDescricao = TextEditingController();
+
   final tId = TextEditingController();
+
   final tCategoriaEmbalagem = TextEditingController();
+
   final tCapacidade = TextEditingController();
+
   final tTipoUnidade = TextEditingController();
+
   final tLargura = TextEditingController();
+
   final tComprimento = TextEditingController();
+
   final tAltura = TextEditingController();
+
+  final tCubagem = TextEditingController();
+
   final tTara = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
+    String codigoEmbalagem = ModalRoute.of(context).settings.arguments;
     EmbalagemBloc blocEmbalagem = BlocProvider.of<EmbalagemBloc>(context);
+    final Firestore firestore = Firestore.instance;
+    bool campoHabilitado = true;
+    String valorSelecionado;
+
+    if (codigoEmbalagem != null) {
+      campoHabilitado = false;
+    }
+
+    /*
+    Aqui consulta os dados e seta o retorno da tabela nos controllers
+    para exibir no formulário. Também seta no objeto através dos setters
+    para atualizar os dados no banco, caso sejam alterados.
+    */
+
+    Future consultaDados(DocumentSnapshot coluna) async {
+      if (codigoEmbalagem.isNotEmpty) {
+        tId.text = codigoEmbalagem;
+      }
+      tDescricao.text = coluna.data['descricao'];
+      tCapacidade.text = coluna.data['capacidade'].toString();
+      tTipoUnidade.text = coluna.data['tipoUnidade'];
+      print(tTipoUnidade.text);
+      tLargura.text = coluna.data['largura'].toString();
+      tComprimento.text = coluna.data['comprimento'].toString();
+      tAltura.text = coluna.data['altura'].toString();
+      tCubagem.text = coluna.data['cubagem'].toString();
+      tTara.text = coluna.data['tara'].toString();
+
+      blocEmbalagem.setId(tId.text);
+      blocEmbalagem.setDescricao(tDescricao.text);
+      blocEmbalagem.setCapacidade(double.parse(tCapacidade.text));
+      blocEmbalagem.setTipoUnidade(valorSelecionado);
+      blocEmbalagem.setLargura(double.parse(tLargura.text));
+      blocEmbalagem.setComprimento(double.parse(tComprimento.text));
+      blocEmbalagem.setAltura(double.parse(tAltura.text));
+      blocEmbalagem.setCubagem(double.parse(tCubagem.text));
+      blocEmbalagem.setTara(double.parse(tTara.text));
+    }
+
+    if (codigoEmbalagem != null) {
+      firestore
+          .collection("embalagem")
+          .document(codigoEmbalagem)
+          .get()
+          .then((coluna) async => consultaDados(coluna));
+    }
+    print('fora do select');
+    print(tTipoUnidade.text.toString());
     return StreamBuilder<Object>(
-        stream: null,
+        stream: blocEmbalagem.outValorLista,
         builder: (context, snapshot) {
           return Scroll(
             height: double.infinity,
@@ -146,6 +210,7 @@ class CriaCardFormulario extends StatelessWidget {
                                           child: constroiCampo(
                                             labelCampo: 'Identificação',
                                             largura: 100,
+                                            enabled: campoHabilitado,
                                             altura: 30,
                                             controller: tId,
                                             onChanged: (String valor) {
@@ -248,7 +313,8 @@ class CriaCardFormulario extends StatelessWidget {
                                                 controller: tCapacidade,
                                                 onChanged: (String valor) {
                                                   blocEmbalagem.setCapacidade(
-                                                      tCapacidade.text);
+                                                      double.parse(
+                                                          tCapacidade.text));
                                                 },
                                                 obrigaCampo: true,
                                               ),
@@ -266,14 +332,136 @@ class CriaCardFormulario extends StatelessWidget {
                                                     'Unidade',
                                                     true,
                                                   ),
-                                                  Container(
-                                                    child: DropDown(
-                                                        valores:
-                                                            tipoCapacidade),
-                                                  ),
+                                                  StreamBuilder<Object>(
+                                                      stream: blocEmbalagem
+                                                          .outValorLista,
+                                                      builder: (context,
+                                                          retornoStream) {
+                                                        firestore
+                                                            .collection(
+                                                                "embalagem")
+                                                            .document(
+                                                                codigoEmbalagem)
+                                                            .get()
+                                                            .then(
+                                                                (coluna) async =>
+                                                                    Container(
+                                                                      height:
+                                                                          50.0,
+                                                                      child:
+                                                                          Column(
+                                                                        crossAxisAlignment:
+                                                                            CrossAxisAlignment.center,
+                                                                        children: <
+                                                                            Widget>[
+                                                                          DropdownButton<
+                                                                              String>(
+                                                                            items:
+                                                                                tipoCapacidade.map((
+                                                                              String dropDownStringItem,
+                                                                            ) {
+                                                                              return DropdownMenuItem<String>(
+                                                                                value: dropDownStringItem,
+                                                                                child: Text(dropDownStringItem),
+                                                                              );
+                                                                            }).toList(),
+                                                                            onChanged:
+                                                                                (
+                                                                              String novoValorSelecionado,
+                                                                            ) async {
+                                                                              print(snapshot.data);
+                                                                              blocEmbalagem.eventoAlteralista(novoValorSelecionado);
+                                                                              valorSelecionado = novoValorSelecionado;
+                                                                              blocEmbalagem.setTipoUnidade(novoValorSelecionado);
+                                                                            },
+                                                                            value:
+                                                                                valorSelecionado,
+                                                                          ),
+                                                                        ],
+                                                                      ),
+                                                                    ));
+
+                                                        // return Container(
+                                                        //   height: 50.0,
+                                                        //   child: Column(
+                                                        //     crossAxisAlignment:
+                                                        //         CrossAxisAlignment
+                                                        //             .center,
+                                                        //     children: <Widget>[
+                                                        //       DropdownButton<
+                                                        //           String>(
+                                                        //         items:
+                                                        //             tipoCapacidade
+                                                        //                 .map((
+                                                        //           String
+                                                        //               dropDownStringItem,
+                                                        //         ) {
+                                                        //           return DropdownMenuItem<
+                                                        //               String>(
+                                                        //             value:
+                                                        //                 dropDownStringItem,
+                                                        //             child: Text(
+                                                        //                 dropDownStringItem),
+                                                        //           );
+                                                        //         }).toList(),
+                                                        //         onChanged: (
+                                                        //           String
+                                                        //               novoValorSelecionado,
+                                                        //         ) async {
+                                                        //           print(snapshot
+                                                        //               .data);
+                                                        //           blocEmbalagem
+                                                        //               .eventoAlteralista(
+                                                        //                   novoValorSelecionado);
+                                                        //           valorSelecionado =
+                                                        //               novoValorSelecionado;
+                                                        //           blocEmbalagem
+                                                        //               .setTipoUnidade(
+                                                        //                   novoValorSelecionado);
+                                                        //         },
+                                                        //         value:
+                                                        //             valorSelecionado,
+                                                        //       ),
+                                                        //     ],
+                                                        //   ),
+                                                        // );
+                                                      }),
                                                 ],
                                               ),
                                             ),
+                                            // StreamBuilder<Object>(
+                                            //   initialData: false,
+                                            //   stream:
+                                            //       blocEmbalagem.outValorLista,
+                                            //   builder: (BuildContext context,
+                                            //       AsyncSnapshot snapshot) {
+                                            //     return Padding(
+                                            //       padding:
+                                            //           const EdgeInsets.only(
+                                            //               top: 10.0),
+                                            //       child: Container(
+                                            //         alignment:
+                                            //             Alignment.centerLeft,
+                                            //         child: Checkbox(
+                                            //           visualDensity:
+                                            //               VisualDensity(
+                                            //                   horizontal: 2.0,
+                                            //                   vertical: 2.0),
+                                            //           value: snapshot.data,
+                                            //           onChanged:
+                                            //               (bool novoValor) {
+                                            //             blocAcesso
+                                            //                 .eventoCliqueCheckBox(
+                                            //                     novoValor,
+                                            //                     tSenha);
+                                            //             escondeSenha =
+                                            //                 snapshot.data;
+                                            //           },
+                                            //         ),
+                                            //       ),
+                                            //     );
+                                            //   },
+                                            // ),
                                           ],
                                         ),
                                         Row(
@@ -292,7 +480,24 @@ class CriaCardFormulario extends StatelessWidget {
                                                   controller: tLargura,
                                                   onChanged: (String valor) {
                                                     blocEmbalagem.setLargura(
-                                                        tLargura.text);
+                                                      double.parse(
+                                                          tLargura.text),
+                                                    );
+                                                    tCubagem.text =
+                                                        calculaCubagemEmbalagem(
+                                                                double.parse(
+                                                                    tLargura
+                                                                        .text),
+                                                                double.parse(
+                                                                    tComprimento
+                                                                        .text),
+                                                                double.parse(
+                                                                    tAltura
+                                                                        .text))
+                                                            .toString();
+                                                    blocEmbalagem.setCubagem(
+                                                        double.parse(
+                                                            tCubagem.text));
                                                   },
                                                   obrigaCampo: false,
                                                 )),
@@ -307,7 +512,22 @@ class CriaCardFormulario extends StatelessWidget {
                                                 controller: tComprimento,
                                                 onChanged: (String valor) {
                                                   blocEmbalagem.setComprimento(
-                                                      tComprimento.text);
+                                                      double.parse(
+                                                          tComprimento.text));
+                                                  tCubagem.text =
+                                                      calculaCubagemEmbalagem(
+                                                              double.parse(
+                                                                  tLargura
+                                                                      .text),
+                                                              double.parse(
+                                                                  tComprimento
+                                                                      .text),
+                                                              double.parse(
+                                                                  tAltura.text))
+                                                          .toString();
+                                                  blocEmbalagem.setCubagem(
+                                                      double.parse(
+                                                          tCubagem.text));
                                                 },
                                                 obrigaCampo: false,
                                               ),
@@ -323,8 +543,35 @@ class CriaCardFormulario extends StatelessWidget {
                                                 controller: tAltura,
                                                 onChanged: (String valor) {
                                                   blocEmbalagem.setAltura(
-                                                      tAltura.text);
+                                                      double.parse(
+                                                          tAltura.text));
+                                                  tCubagem.text =
+                                                      calculaCubagemEmbalagem(
+                                                              double.parse(
+                                                                  tLargura
+                                                                      .text),
+                                                              double.parse(
+                                                                  tComprimento
+                                                                      .text),
+                                                              double.parse(
+                                                                  tAltura.text))
+                                                          .toString();
+                                                  blocEmbalagem.setCubagem(
+                                                      double.parse(
+                                                          tCubagem.text));
                                                 },
+                                                obrigaCampo: false,
+                                              ),
+                                            ),
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                left: 20.0,
+                                              ),
+                                              child: constroiCampo(
+                                                labelCampo: 'Cubagem',
+                                                largura: 70,
+                                                altura: 30,
+                                                controller: tCubagem,
                                                 obrigaCampo: false,
                                               ),
                                             ),
@@ -338,9 +585,9 @@ class CriaCardFormulario extends StatelessWidget {
                                                   altura: 30,
                                                   controller: tTara,
                                                   onChanged: (String valor) {
-                                                    blocEmbalagem
-                                                        .setTara(
-                                                            tTara.text);
+                                                    blocEmbalagem.setTara(
+                                                        double.parse(
+                                                            tTara.text));
                                                   },
                                                   obrigaCampo: false),
                                             ),
@@ -382,6 +629,7 @@ class CriaCardFormulario extends StatelessWidget {
     bool obrigaCampo,
     BuildContext contextoAplicacao,
     TextEditingController mascara,
+    bool enabled,
     TextEditingController controller,
     String valorInicial,
     //int tamanhoMaximo,
@@ -396,41 +644,15 @@ class CriaCardFormulario extends StatelessWidget {
             width: largura ?? double.maxFinite,
             child: TextFormField(
               initialValue: valorInicial,
-              //maxLength: tamanhoMaximo,
               cursorColor: Colors.black,
-              // initialValue: valorInicial,
-              // onFieldSubmitted: onChanged,
-              //key: Key(label),
+              enabled: enabled,
               controller: controller,
-              // obscureText: password,
-              // validator: validator,
-              // keyboardType: keyboardType,
-              // textInputAction: textInputAction,
-              // focusNode: focusNode,
               onChanged: onChanged,
-              // onFieldSubmitted: (String text) {
-              //   if (nextFocus != null) {
-              //     FocusScope.of(context).requestFocus(nextFocus);
-              //   }
-              // },
               style: TextStyle(
                 fontSize: 16,
                 color: Colors.black,
               ),
-              decoration: InputDecoration(
-                  /*border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16)
-       ),*/
-                  /*labelText: label,
-          labelStyle: TextStyle(
-            fontSize: 20,
-            color: Colors.blue,
-          ),*/
-                  /*hintText: hint,
-          hintStyle: TextStyle(
-            fontSize: 14,
-          ),*/
-                  ),
+              decoration: InputDecoration(),
             ),
           ),
           SizedBox(

@@ -39,16 +39,10 @@ class _DropDownState extends State<DropDown> {
                 retornaValor(novoValorSelecionado) async {
                   return novoValorSelecionado;
                 }
-
-                ;
               });
             },
             value: valorSelecionado,
           ),
-          /* Text(
-            "A cidade selecionada foi \n$_itemSelecionado",
-            style: TextStyle(fontSize: 20.0),
-          ),*/
         ],
       ),
     );

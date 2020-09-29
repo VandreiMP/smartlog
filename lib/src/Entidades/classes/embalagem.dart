@@ -5,24 +5,26 @@ class Embalagem extends BaseModel {
   String identificacao;
   String descricao;
   String categoriaEmbalagem;
-  String capacidade;
+  double capacidade;
   String tipoUnidade;
-  String largura;
-  String comprimento;
-  String altura;
-  String tara;
+  double largura;
+  double comprimento;
+  double altura;
+  double cubagem;
+  double tara;
 
   Embalagem();
 
   Embalagem.fromMap(DocumentSnapshot document) {
     this.identificacao = document.data["identificacao"];
     this.descricao = document.data["descricao"];
-    // this.categoriaEmbalagem = document.data["categoriaEmbalagem"];
+    this.categoriaEmbalagem = document.data["categoriaEmbalagem"];
     this.capacidade = document.data["capacidade"];
-    // this.tipoUnidade = document.data['tipoUnidade'];
+    this.tipoUnidade = document.data['tipoUnidade'];
     this.largura = document.data["largura"];
     this.comprimento = document.data["comprimento"];
     this.altura = document.data["altura"];
+    this.cubagem = document.data["cubagem"];
     this.tara = document.data["tara"];
 
     @override
@@ -30,12 +32,13 @@ class Embalagem extends BaseModel {
       var map = new Map<String, dynamic>();
       map['identificacao'] = this.identificacao;
       map['descricao'] = this.descricao;
-      // map['categoriaEmbalagem'] = this.categoriaEmbalagem;
+      map['categoriaEmbalagem'] = this.categoriaEmbalagem;
       map['capacidade'] = this.capacidade;
-      // map['tipoUnidade'] = this.tipoUnidade;
+      map['tipoUnidade'] = this.tipoUnidade;
       map['largura'] = this.largura;
       map['comprimento'] = this.comprimento;
       map['altura'] = this.altura;
+      map['cubagem'] = this.cubagem;
       map['tara'] = this.tara;
 
       return map;

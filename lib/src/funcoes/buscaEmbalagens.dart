@@ -166,6 +166,7 @@ class _BuscaEmbalagensState extends State<BuscaEmbalagens> {
                                           } else {
                                             Navigator.of(context).pushNamed(
                                               '/FormularioEmbalagem',
+                                              arguments: identificacao,
                                             );
                                           }
                                         },

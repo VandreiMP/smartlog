@@ -121,6 +121,10 @@ class CardAjuda extends StatelessWidget {
                                         Navigator.of(context).pushNamed(
                                             '/FormularioEmpresa',
                                             arguments: chaveConsulta);
+                                      } else if (origem == 'EMBALAGEM') {
+                                        Navigator.of(context).pushNamed(
+                                          '/ListaEmbalagens',
+                                        );
                                       }
                                     },
                                     child: Container(

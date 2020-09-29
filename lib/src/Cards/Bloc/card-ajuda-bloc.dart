@@ -29,9 +29,15 @@ class CardAjudaBloc extends BlocBase {
       await blocUsuario.insereDados(contextoAplicacao);
     }
     if (origemDado == 'EMBALAGEM') {
-      EmbalagemBloc blocEmbalagem =
-          BlocProvider.of<EmbalagemBloc>(contextoAplicacao);
-      await blocEmbalagem.insereDados(contextoAplicacao);
+      if (chaveConsulta == null) {
+        EmbalagemBloc blocEmbalagem =
+            BlocProvider.of<EmbalagemBloc>(contextoAplicacao);
+        await blocEmbalagem.insereDados(contextoAplicacao);
+      } else {
+        EmbalagemBloc blocEmbalagem =
+            BlocProvider.of<EmbalagemBloc>(contextoAplicacao);
+        await blocEmbalagem.atualizaDados(contextoAplicacao, chaveConsulta);
+      }
     }
     if (origemDado == 'CUSTOS') {
       CustoBloc blocCusto = BlocProvider.of<CustoBloc>(contextoAplicacao);
