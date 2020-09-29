@@ -7,26 +7,31 @@ import 'package:smartlogproject/src/funcoes/appText.dart';
 class BuscaFuncionarios extends StatefulWidget {
   final IconData iconeLista;
   final Function funcaoLista;
+  final String origem;
 
   const BuscaFuncionarios(
     this.iconeLista,
     this.funcaoLista,
+    this.origem,
   );
 
   @override
   _BuscaFuncionariosState createState() => _BuscaFuncionariosState(
         iconeLista,
         funcaoLista,
+        origem,
       );
 }
 
 class _BuscaFuncionariosState extends State<BuscaFuncionarios> {
   final IconData iconeLista;
   final Function funcaoLista;
+  final String origem;
 
   _BuscaFuncionariosState(
     this.iconeLista,
     this.funcaoLista,
+    this.origem,
   );
   @override
   Widget build(BuildContext context) {
@@ -62,131 +67,160 @@ class _BuscaFuncionariosState extends State<BuscaFuncionarios> {
                   ));
 
                 final int funcionarioContador = snapshot.data.documents.length;
-                return Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.all(Radius.circular(5)),
-                    border: new Border.all(
-                      color: Colors.black,
+                if (funcionarioContador > 0) {
+                  return Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.all(Radius.circular(5)),
+                      border: new Border.all(
+                        color: Colors.black,
+                      ),
                     ),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(left: 111.0, top: 15),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            AppText(
-                              'Identificação',
-                              bold: true,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 5.0),
-                              child: AppText(
-                                'Nome',
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(left: 111.0, top: 15),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              AppText(
+                                'Identificação',
                                 bold: true,
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 5.0),
+                                child: AppText(
+                                  'Nome',
+                                  bold: true,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Column(
+                          children: [
+                            Container(
+                              padding: EdgeInsets.only(bottom: 15),
+                              alignment: Alignment.topLeft,
+                              width: 670,
+                              child: ListView.builder(
+                                shrinkWrap: true,
+                                itemCount: funcionarioContador,
+                                itemBuilder: (BuildContext context, int index) {
+                                  final DocumentSnapshot document =
+                                      snapshot.data.documents[index];
+                                  final dynamic nome = document['nome'];
+                                  final dynamic identificacao =
+                                      document['identificacao'];
+                                  return Container(
+                                    child: Row(
+                                      children: [
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(left: 10.0),
+                                          child: Container(
+                                            alignment: Alignment.topRight,
+                                            padding: EdgeInsets.all(10),
+                                            width: 200,
+                                            decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(5)),
+                                              border: new Border.all(
+                                                color: Colors.black,
+                                              ),
+                                            ),
+                                            child: Text(
+                                              nome != null
+                                                  ? identificacao.toString()
+                                                  : '<Identificação do funcionário não informado no cadastro>',
+                                            ),
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.all(2.0),
+                                          child: Container(
+                                            padding: EdgeInsets.all(10),
+                                            width: 400,
+                                            decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(5)),
+                                              border: new Border.all(
+                                                color: Colors.black,
+                                              ),
+                                            ),
+                                            child: Text(
+                                              nome != null
+                                                  ? nome.toString()
+                                                  : '<Nome do funcionário não informado no cadastro>',
+                                            ),
+                                          ),
+                                        ),
+                                        GestureDetector(
+                                          onTap: () {
+                                            if (origem == 'CARGA') {
+                                              Navigator.of(context).pushNamed(
+                                                '/FormularioCarga',
+                                              );
+                                            } else {
+                                              Navigator.of(context).pushNamed(
+                                                '/FormularioUsuario',
+                                                arguments: identificacao,
+                                              );
+                                            }
+                                          },
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 7.0),
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                color: Colors.blue[900],
+                                                borderRadius: BorderRadius.all(
+                                                  Radius.circular(2.0),
+                                                ),
+                                              ),
+                                              child: Icon(
+                                                iconeLista,
+                                                size: 30.0,
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(height: 10),
+                                      ],
+                                    ),
+                                  );
+                                },
                               ),
                             ),
                           ],
                         ),
-                      ),
-                      Column(
-                        children: [
-                          Container(
-                            padding: EdgeInsets.only(bottom: 15),
-                            alignment: Alignment.topLeft,
-                            width: 670,
-                            child: ListView.builder(
-                              shrinkWrap: true,
-                              itemCount: funcionarioContador,
-                              itemBuilder: (BuildContext context, int index) {
-                                final DocumentSnapshot document =
-                                    snapshot.data.documents[index];
-                                final dynamic nome = document['nome'];
-                                final dynamic identificacao =
-                                    document['identificacao'];
-                                return Container(
-                                  child: Row(
-                                    children: [
-                                      Padding(
-                                        padding:
-                                            const EdgeInsets.only(left: 10.0),
-                                        child: Container(
-                                          alignment: Alignment.topRight,
-                                          padding: EdgeInsets.all(10),
-                                          width: 200,
-                                          decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(5)),
-                                            border: new Border.all(
-                                              color: Colors.black,
-                                            ),
-                                          ),
-                                          child: Text(
-                                            nome != null
-                                                ? identificacao.toString()
-                                                : '<Identificação do funcionário não informado no cadastro>',
-                                          ),
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.all(2.0),
-                                        child: Container(
-                                          padding: EdgeInsets.all(10),
-                                          width: 400,
-                                          decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(5)),
-                                            border: new Border.all(
-                                              color: Colors.black,
-                                            ),
-                                          ),
-                                          child: Text(
-                                            nome != null
-                                                ? nome.toString()
-                                                : '<Nome do funcionário não informado no cadastro>',
-                                          ),
-                                        ),
-                                      ),
-                                      GestureDetector(
-                                        onTap: () {
-                                          funcaoLista();
-                                        },
-                                        child: Padding(
-                                          padding:
-                                              const EdgeInsets.only(left: 7.0),
-                                          child: Container(
-                                            decoration: BoxDecoration(
-                                              color: Colors.blue[900],
-                                              borderRadius: BorderRadius.all(
-                                                Radius.circular(2.0),
-                                              ),
-                                            ),
-                                            child: Icon(
-                                              iconeLista,
-                                              size: 30.0,
-                                              color: Colors.white,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      SizedBox(height: 10),
-                                    ],
-                                  ),
-                                );
-                              },
-                            ),
+                      ],
+                    ),
+                  );
+                } else {
+                  return Container(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(top: 2),
+                          child: Text(
+                            'Não há nenhum registro salvo no banco de dados.',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 15,
+                                color: Colors.red),
                           ),
-                        ],
-                      ),
-                    ],
-                  ),
-                );
+                        ),
+                      ],
+                    ),
+                  );
+                }
               },
             ),
           ],

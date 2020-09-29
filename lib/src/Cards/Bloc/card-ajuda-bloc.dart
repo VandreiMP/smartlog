@@ -2,6 +2,7 @@ import 'dart:js';
 
 import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:flutter/material.dart';
+import 'package:mobx/mobx.dart';
 import 'package:smartlogproject/src/Entidades/Bloc/caminhao-bloc.dart';
 import 'package:smartlogproject/src/Entidades/Bloc/carregamentoMercadoria-bloc.dart';
 import 'package:smartlogproject/src/Entidades/Bloc/custo-bloc.dart';
@@ -24,9 +25,17 @@ class CardAjudaBloc extends BlocBase {
       this.contextoAplicacao, this.origem, this.origemDado, this.chaveConsulta);
 
   Future<void> eventoCliqueBotaoSalvar() async {
+    print(chaveConsulta);
     if (origemDado == 'USUARIO') {
-      UsuarioBloc blocUsuario = BlocProvider.of<UsuarioBloc>(contextoAplicacao);
-      await blocUsuario.insereDados(contextoAplicacao);
+      if (chaveConsulta == null) {
+        UsuarioBloc blocUsuario =
+            BlocProvider.of<UsuarioBloc>(contextoAplicacao);
+        await blocUsuario.insereDados(contextoAplicacao);
+      } else {
+        UsuarioBloc blocUsuario =
+            BlocProvider.of<UsuarioBloc>(contextoAplicacao);
+        await blocUsuario.atualizaDados(contextoAplicacao);
+      }
     }
     if (origemDado == 'EMBALAGEM') {
       if (chaveConsulta == null) {
@@ -40,8 +49,13 @@ class CardAjudaBloc extends BlocBase {
       }
     }
     if (origemDado == 'CUSTOS') {
-      CustoBloc blocCusto = BlocProvider.of<CustoBloc>(contextoAplicacao);
-      await blocCusto.insereDados(contextoAplicacao);
+      if (chaveConsulta == null) {
+        CustoBloc blocCusto = BlocProvider.of<CustoBloc>(contextoAplicacao);
+        await blocCusto.insereDados(contextoAplicacao);
+      } else {
+        CustoBloc blocCusto = BlocProvider.of<CustoBloc>(contextoAplicacao);
+        await blocCusto.atualizaDados(contextoAplicacao);
+      }
     }
     if (origemDado == 'EMPRESA') {
       if (chaveConsulta == null) {

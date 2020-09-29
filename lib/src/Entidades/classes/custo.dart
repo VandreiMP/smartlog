@@ -7,7 +7,7 @@ class Custo extends BaseModel {
   String modalidade;
   String periodicidade;
   String analiseGerencial;
-  String valor;
+  double valor;
 
   Custo();
 

@@ -6,6 +6,7 @@ import 'package:rxdart/rxdart.dart';
 import 'package:smartlogproject/src/Entidades/classes/usuario.dart';
 import 'package:smartlogproject/src/funcoes/alert.dart';
 import 'package:smartlogproject/src/funcoes/alertErro.dart';
+import 'package:smartlogproject/src/funcoes/alertFuncao.dart';
 
 class UsuarioBloc extends BlocBase {
   String _documentId;
@@ -109,12 +110,12 @@ class UsuarioBloc extends BlocBase {
     */
 
     if (usuario.nome == null) {
-      alert(contextoAplicacao, 'Campo Obrigatório',
+      TextError(
           'Para gravar o usuário no sistema, o campo "Nome" deve ser preenchido. Favor verificar!');
     }
 
     if (usuario.identificacao == null) {
-      alert(contextoAplicacao, 'Campo Obrigatório',
+      TextError(
           'Para gravar o usuário no sistema, o campo "Identificação" deve ser preenchido. Favor verificar!');
     }
 
@@ -124,12 +125,12 @@ class UsuarioBloc extends BlocBase {
     // }
 
     if (usuario.emailLogin == null) {
-      alert(contextoAplicacao, 'Campo Obrigatório',
+      TextError(
           'Para gravar o usuário no sistema, o campo "E-Mail Acesso" deve ser preenchido. Favor verificar!');
     }
 
     if (usuario.senha == null) {
-      alert(contextoAplicacao, 'Campo Obrigatório',
+      TextError(
           'Para gravar o usuário no sistema, o campo "Senha" deve ser preenchido. Favor verificar!');
     }
 
@@ -137,43 +138,30 @@ class UsuarioBloc extends BlocBase {
 
     try {
       await Firestore.instance
-          .collection('usuario')
-          .document(usuario.identificacao)
-          .setData({
-            'identificacao': usuario.identificacao,
-            'nome': usuario.nome,
-            // 'tipoUsuario': usuario.tpUsuario,
-            'email': usuario.email,
-            'emailLogin': usuario.emailLogin,
-            'senha': usuario.senha,
-            'telefone': usuario.telefone,
-            'celular': usuario.celular,
-            'ramal': usuario.ramal
-          })
-          .then((value) async => await alert(
-              contextoAplicacao,
-              'Notificação de Sucesso',
-              'Os dados do formulário foram salvos com sucesso no banco de dados!'))
-          .whenComplete(() async => await instanciaFirebaseAuth
-                  .createUserWithEmailAndPassword(
-                      email: usuario.emailLogin, password: usuario.senha)
-                  .whenComplete(() async {
-                await alert(contextoAplicacao, 'Notificação de Sucesso',
-                    'As credenciais de acesso ao sistema foram criadas para o usuário informado. Para realizar o acesso devem ser informados o E-Mail Acesso e a Senha na tela de Autenticação.');
-              }));
-      //   try {
-
-      //   } catch (on) {
-      //     alert(
-      //       contextoAplicacao,
-      //       'Inconsistência na validação',
-      //       'Erro ao efetuar a criação das credenciais de acesso ao sistema para o usuário informado!',
-      //     );
-      //   }
-      // } catch (on) {
-      //   alert(contextoAplicacao, 'Inconsistência na Validação',
-      //       'Erro ao salvar os dados do formulário no banco de dados!');
-      // }
+              .collection('usuario')
+              .document(usuario.identificacao)
+              .setData({
+        'identificacao': usuario.identificacao,
+        'nome': usuario.nome,
+        // 'tipoUsuario': usuario.tpUsuario,
+        'email': usuario.email,
+        'emailLogin': usuario.emailLogin,
+        'senha': usuario.senha,
+        'telefone': usuario.telefone,
+        'celular': usuario.celular,
+        'ramal': usuario.ramal
+      }).then((value) async => await alert(
+                  contextoAplicacao,
+                  'Notificação',
+                  'Os dados do formulário foram salvos com sucesso no banco de dados!'))
+          // .whenComplete(() async => await instanciaFirebaseAuth
+          //         .createUserWithEmailAndPassword(
+          //             email: usuario.emailLogin, password: usuario.senha)
+          //         .whenComplete(() async {
+          //       await alert(contextoAplicacao, 'Notificação de Sucesso',
+          //           'As credenciais de acesso ao sistema foram criadas para o usuário informado. Para realizar o acesso devem ser informados o E-Mail Acesso e a Senha na tela de Autenticação.');
+          //     }))
+          ;
     } catch (on) {
       TextError('Erro ao salvar os dados do formulário no banco de dados!');
     }
@@ -197,48 +185,58 @@ class UsuarioBloc extends BlocBase {
           .document(usuario.identificacao)
           .delete()
           .then(
-            (value) => alert(contextoAplicacao, 'Notificação de Sucesso',
-                'Os dados do formulário foram apagados com sucesso no banco de dados!'),
+            (value) => alertFuncao(contextoAplicacao, 'Notificação',
+                'Os dados do formulário foram apagados com sucesso no banco de dados!',
+                () {
+              Navigator.of(contextoAplicacao).pushNamed(
+                '/FormularioUsuario',
+              );
+            }),
           )
           .catchError((ErrorAndStacktrace erro) {
         print(erro.error);
       });
     } catch (on) {
-      alert(contextoAplicacao, 'Inconsistência na Validação',
+      alert(contextoAplicacao, 'Erro',
           'Erro ao apagar os dados do formulário no banco de dados!');
     }
   }
 
-  Future<Usuario> consultarDado(String identificaoFuncionario) async {
-    
-    // DocumentReference referenciaFuncionario = Firestore.instance
-    //     .collection('usuario')
-    //     .document(identificaoFuncionario);
+  Future<void> atualizaDados(BuildContext contextoAplicacao) async {
+    var usuario = Usuario();
 
-    // DocumentSnapshot consultaFuncionario = await referenciaFuncionario.get();
-    
-    // Usuario funcionario = Usuario.fromMap(consultaFuncionario);
-    // print('usuario_bloc antes');
-    // print(funcionario.nome);
-    // print('usuario_bloc depois');
-    // return funcionario;
-    return null;
+    usuario.identificacao = _idController.value;
+    usuario.nome = _nomeController.value;
+    usuario.tpUsuario = _tpUsuarioController.value;
+    usuario.email = _emailController.value;
+    usuario.emailLogin = _emailLoginController.value;
+    usuario.senha = _senhaController.value;
+    usuario.telefone = _telefoneController.value;
+    usuario.celular = _celularController.value;
+    usuario.ramal = _ramalController.value;
+
+    try {
+      await Firestore.instance
+          .collection('usuario')
+          .document(usuario.identificacao)
+          .updateData({
+        'identificacao': usuario.identificacao,
+        'nome': usuario.nome,
+        // 'tipoUsuario': usuario.tpUsuario,
+        'email': usuario.email,
+        'emailLogin': usuario.emailLogin,
+        'senha': usuario.senha,
+        'telefone': usuario.telefone,
+        'celular': usuario.celular,
+        'ramal': usuario.ramal
+      }).then((value) async => await alert(
+              contextoAplicacao,
+              'Notificação',
+              'Os dados do formulário foram atualizados com sucesso no banco de dados!'));
+    } catch (on) {
+      TextError('Erro ao atualizar os dados do formulário no banco de dados!');
+    }
   }
-
-Usuario getFuncionario(String identificaoFuncionario){
-
-  // Usuario funcionario;
-
-  
-  // print('antes de consultar os dados ${identificaoFuncionario}');
-  // consultarDado(identificaoFuncionario).then((value) => funcionario);
-  // print('usuario_bloc 2 antes');
-  // print(funcionario.nome);
-  // print('usuario_bloc 2 depois');
-  // return funcionario;
-  return null;
-
-}
 
   @override
   void dispose() {}

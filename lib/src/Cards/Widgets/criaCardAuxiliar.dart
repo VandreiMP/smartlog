@@ -3,15 +3,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:smartlogproject/src/Cards/Bloc/card-ajuda-bloc.dart';
 import '../../screen/screenUser.dart';
-import '../../funcoes/appText.dart';
-import 'criaCardAjuda.dart';
-import 'criaCardAjudaAdicionais.dart';
-import 'criaCardAjudaCarga.dart';
-import 'criaCardAjudaContrato.dart';
-import 'criaCardAjudaCustos.dart';
-import 'criaCardAjudaDetalhes.dart';
-import 'criaCardAjudaEmpresa.dart';
-import 'criaCardAjudaRomaneio.dart';
 
 class CriaCardAuxiliar extends StatelessWidget {
   final String caminhoImagem;
@@ -124,6 +115,14 @@ class CardAjuda extends StatelessWidget {
                                       } else if (origem == 'EMBALAGEM') {
                                         Navigator.of(context).pushNamed(
                                           '/ListaEmbalagens',
+                                        );
+                                      } else if (origem == 'CUSTOS') {
+                                        Navigator.of(context).pushNamed(
+                                          '/ListaCustos',
+                                        );
+                                      } else if (origem == 'USUARIO') {
+                                        Navigator.of(context).pushNamed(
+                                          '/ListaFuncionarios',
                                         );
                                       }
                                     },

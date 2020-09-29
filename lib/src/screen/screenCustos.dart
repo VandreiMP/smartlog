@@ -52,6 +52,7 @@ class _BodyState extends State<Body> {
                     nomeFormulario: "Cadastro de Custos",
                     origem: 'CUSTOS',
                     origemDado: 'CUSTOS',
+                    chaveConsulta: ModalRoute.of(context).settings.arguments,
                   ),
                   // CriaCardAjuda(),
                 ],
@@ -108,25 +109,37 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
 
     final Firestore firestore = Firestore.instance;
     String identificacaoCusto = ModalRoute.of(context).settings.arguments;
+    bool campoHabilitado = true;
 
-    Future consultaValor(DocumentSnapshot campo) async {
-      tId.text = identificacaoCusto;
-      tDetalhes.text = campo.data['detalhes'];
-      tValor.text = campo.data['valor'];
+    Future consultaValor(DocumentSnapshot coluna) async {
+      if (identificacaoCusto.isNotEmpty) {
+        tId.text = identificacaoCusto;
+      }
+      tDetalhes.text = coluna.data['detalhes'];
+      tValor.text = coluna.data['valor'].toString();
+
+      blocCusto.setId(tId.text);
+      blocCusto.setDetalhes(tDetalhes.text);
+      blocCusto.setValor(double.parse(tValor.text));
     }
 
-    Future<dynamic> consultaDetalhes = firestore
-        .collection("custos")
-        .document(identificacaoCusto)
-        .get()
-        .then((value) async => consultaValor(value));
-
-    tDetalhes.text = blocCusto.consultarDados(context, '1');
+    /*
+    Aqui consulta os dados e seta o retorno da tabela nos controllers
+    para exibir no formulário. Também seta no objeto através dos setters
+    para atualizar os dados no banco, caso sejam alterados.
+    */
+    if (identificacaoCusto != null) {
+      campoHabilitado = false;
+      firestore
+          .collection("custos")
+          .document(identificacaoCusto)
+          .get()
+          .then((coluna) async => consultaValor(coluna));
+    }
 
     return StreamBuilder<QuerySnapshot>(
         stream: null,
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-          //print(descricao);
           return Scroll(
             height: double.infinity,
             child: Column(
@@ -188,19 +201,11 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
                                               child: constroiCampo(
                                                 labelCampo: 'Identificação',
                                                 largura: 150,
+                                                enabled: campoHabilitado,
                                                 altura: 30,
                                                 controller: tId,
                                                 obrigaCampo: true,
                                                 onChanged: (String valor) {
-                                                  DocumentSnapshot document =
-                                                      snapshot
-                                                          .data.documents[0];
-                                                  final dynamic descricao =
-                                                      document['detalhes'];
-                                                  print(descricao);
-                                                  // blocCusto
-                                                  //     .consultarDados(context);
-                                                  //print(blocCusto.outDetalhes);
                                                   blocCusto.setId(tId.text);
                                                 },
                                                 mascara:
@@ -308,8 +313,9 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
                                                 controller: tValor,
                                                 altura: 30,
                                                 onChanged: (String valor) {
-                                                  blocCusto
-                                                      .setValor(tValor.text);
+                                                  blocCusto.setValor(
+                                                      double.parse(
+                                                          tValor.text));
                                                 },
                                                 obrigaCampo: false,
                                                 mascara:
@@ -356,6 +362,7 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
     bool obrigaCampo,
     BuildContext contextoAplicacao,
     TextEditingController mascara,
+    bool enabled,
     TextEditingController controller,
     String valorInicial,
   }) {
@@ -372,6 +379,7 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
               cursorColor: Colors.black,
               controller: controller,
               onChanged: onChanged,
+              enabled: enabled,
               style: TextStyle(
                 fontSize: 16,
                 color: Colors.black,

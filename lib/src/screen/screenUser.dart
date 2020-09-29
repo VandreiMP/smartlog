@@ -1,4 +1,5 @@
 import 'package:bloc_pattern/bloc_pattern.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:smartlogproject/src/Components/scroll/scroll.dart';
@@ -11,18 +12,14 @@ import '../funcoes/criaLista.dart';
 import '../funcoes/requiredLabel.dart';
 import 'screenPattern.dart';
 
-class ScreenArguments {
-  final String identificacao;
+// class ScreenArguments {
+//   final String identificacao;
 
-  ScreenArguments(this.identificacao);
-}
+//   ScreenArguments(this.identificacao);
+// }
 
 class ScreenUser extends StatelessWidget {
   Widget build(BuildContext context) {
-   // print('antes screenUser${ModalRoute.of(context).settings.arguments}');
-    // final ScreenArguments arguments = ModalRoute.of(context).settings.arguments;
-  //  print('depois ScreenUser');
-    // print('screenUser${arguments}');
     return ScreenPattern(
       child: Body(ModalRoute.of(context).settings.arguments),
     );
@@ -35,13 +32,6 @@ class Body extends StatelessWidget {
   final String argument;
 
   Widget build(BuildContext context) {
-    String nomeFuncionario;
-
-    // UsuarioBloc usuarioBloc = UsuarioBloc(context);
-    // print('antes');
-
-   //nomeFuncionario = usuarioBloc.getFuncionario(argument).getNome;
-   
     return Container(
       padding: EdgeInsets.only(top: 4.0, left: 4.0),
       child: BlocProvider<UsuarioBloc>(
@@ -55,13 +45,14 @@ class Body extends StatelessWidget {
                 CriaCardAuxiliar(
                   caminhoImagem: "Images/user_logo.png",
                   nomeFormulario: "Cadastro de Usuários",
-                  origem: 'GERAL',
+                  origem: 'USUARIO',
                   origemDado: 'USUARIO',
+                  chaveConsulta: ModalRoute.of(context).settings.arguments,
                 ),
                 // CriaCardAjuda(),
               ],
             ),
-            CriaCardFormulario(nomeFuncionario)
+            CriaCardFormulario()
           ],
         ),
       ),
@@ -76,10 +67,6 @@ class CriaCardFormulario extends StatelessWidget {
     'Motorista',
   ];
 
-  CriaCardFormulario(this.funcionario);
-
-  final String funcionario;
-
   /*
     Variáveis usadas para capturar o valor dos campos do formulário
     e salvar no banco
@@ -87,24 +74,62 @@ class CriaCardFormulario extends StatelessWidget {
   final tNome = TextEditingController();
   final tId = TextEditingController();
   final tTpUsuario = TextEditingController();
-  final tLogin = TextEditingController();
   final tEmailLogin = TextEditingController();
   final tSenha = TextEditingController();
   final tEmail = TextEditingController();
-  final tTelefone = TextEditingController();
-  final tCelular = TextEditingController();
+  final tTelefone = MaskedTextController(mask: mascaraTelefone);
+  final tCelular = MaskedTextController(mask: mascaraCelular);
   final tRamal = TextEditingController();
-  bool saved = false;
 
   @override
   Widget build(BuildContext context) {
-    UsuarioBloc blocUsuario = BlocProvider.of<UsuarioBloc>(context);
+    UsuarioBloc blocFuncionario = BlocProvider.of<UsuarioBloc>(context);
+
+    final Firestore firestore = Firestore.instance;
+    String idFuncionario = ModalRoute.of(context).settings.arguments;
+    bool campoHabilitado = true;
+
+    Future consultaValor(DocumentSnapshot coluna) async {
+      if (idFuncionario.isNotEmpty) {
+        tId.text = idFuncionario;
+      }
+      tNome.text = coluna.data['nome'];
+      tEmailLogin.text = coluna.data['emailLogin'];
+      tSenha.text = coluna.data['senha'];
+      tEmail.text = coluna.data['email'];
+      tTelefone.text = coluna.data['telefone'];
+      tCelular.text = coluna.data['celular'];
+      tRamal.text = coluna.data['ramal'];
+
+      blocFuncionario.setId(tId.text);
+      blocFuncionario.setNome(tNome.text);
+      blocFuncionario.setEmailLogin(tEmailLogin.text);
+      blocFuncionario.setSenha(tSenha.text);
+      blocFuncionario.setEmail(tEmail.text);
+      blocFuncionario.setTelefone(tTelefone.text);
+      blocFuncionario.setCelular(tCelular.text);
+      blocFuncionario.setRamal(tRamal.text);
+    }
+
+    /*
+    Aqui consulta os dados e seta o retorno da tabela nos controllers
+    para exibir no formulário. Também seta no objeto através dos setters
+    para atualizar os dados no banco, caso sejam alterados.
+    */
+    if (idFuncionario != null) {
+      campoHabilitado = false;
+      firestore
+          .collection("usuario")
+          .document(idFuncionario)
+          .get()
+          .then((coluna) async => consultaValor(coluna));
+    }
+
     return StreamBuilder<Object>(
         stream: null,
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           return Scroll(
             height: double.infinity,
-            // width: double.infinity,
             child: Column(
               children: [
                 Container(
@@ -135,7 +160,6 @@ class CriaCardFormulario extends StatelessWidget {
                           Row(
                             children: [
                               Container(
-                                //height: 150.0,
                                 padding: EdgeInsets.all(10.0),
                                 decoration: BoxDecoration(
                                   color: Colors.white,
@@ -160,12 +184,10 @@ class CriaCardFormulario extends StatelessWidget {
                                             altura: 30,
                                             contextoAplicacao: context,
                                             obrigaCampo: true,
-                                            // valorInicial: 'teste',
-                                            controller: tNome
-                                              ..text = 'funcionario.nome',
+                                            controller: tNome,
                                             onChanged: (String valor) {
-                                            //  print('controller${tNome.text}');
-                                              blocUsuario.setNome(tNome.text);
+                                              blocFuncionario
+                                                  .setNome(tNome.text);
                                             },
                                           ),
                                         ),
@@ -181,11 +203,13 @@ class CriaCardFormulario extends StatelessWidget {
                                                 labelCampo: 'Identificação',
                                                 largura: 150,
                                                 altura: 30,
+                                                enabled: campoHabilitado,
                                                 obrigaCampo: true,
                                                 contextoAplicacao: context,
                                                 controller: tId,
                                                 onChanged: (String valor) {
-                                                  blocUsuario.setId(tId.text);
+                                                  blocFuncionario
+                                                      .setId(tId.text);
                                                 },
                                                 mascara:
                                                     new MaskedTextController(
@@ -232,14 +256,11 @@ class CriaCardFormulario extends StatelessWidget {
                                                 obrigaCampo: true,
                                                 controller: tEmailLogin,
                                                 onChanged: (String valor) {
-                                                  blocUsuario.setEmailLogin(
+                                                  blocFuncionario.setEmailLogin(
                                                       tEmailLogin.text);
                                                 },
                                               ),
                                             ),
-                                            /*SizedBox(
-                                              width: 360,
-                                            ),*/
                                             Padding(
                                               padding: const EdgeInsets.only(
                                                   left: 20.0),
@@ -254,7 +275,7 @@ class CriaCardFormulario extends StatelessWidget {
                                                   obrigaCampo: true,
                                                   controller: tSenha,
                                                   onChanged: (String valor) {
-                                                    blocUsuario
+                                                    blocFuncionario
                                                         .setSenha(tSenha.text);
                                                   },
                                                 ),
@@ -284,7 +305,6 @@ class CriaCardFormulario extends StatelessWidget {
                           Row(
                             children: [
                               Container(
-                                //height: 150.0,
                                 padding: EdgeInsets.all(10.0),
                                 decoration: BoxDecoration(
                                   color: Colors.white,
@@ -311,7 +331,8 @@ class CriaCardFormulario extends StatelessWidget {
                                             obrigaCampo: false,
                                             controller: tEmail,
                                             onChanged: (String valor) {
-                                             blocUsuario.setEmail(tEmail.text);
+                                              blocFuncionario
+                                                  .setEmail(tEmail.text);
                                             },
                                           ),
                                         ),
@@ -330,7 +351,7 @@ class CriaCardFormulario extends StatelessWidget {
                                                 obrigaCampo: false,
                                                 controller: tTelefone,
                                                 onChanged: (String valor) {
-                                                  blocUsuario.setTelefone(
+                                                  blocFuncionario.setTelefone(
                                                       tTelefone.text);
                                                 },
                                                 mascara:
@@ -351,13 +372,9 @@ class CriaCardFormulario extends StatelessWidget {
                                                   obrigaCampo: false,
                                                   controller: tCelular,
                                                   onChanged: (String valor) {
-                                                    blocUsuario.setCelular(
+                                                    blocFuncionario.setCelular(
                                                         tCelular.text);
                                                   },
-                                                  // mascara:
-                                                  //     new MaskedTextController(
-                                                  //   mask: mascaraCelular,
-                                                  // ),
                                                 ),
                                               ),
                                             ),
@@ -373,15 +390,8 @@ class CriaCardFormulario extends StatelessWidget {
                                                   obrigaCampo: false,
                                                   controller: tRamal,
                                                   onChanged: (String valor) {
-                                                    // print(tRamal.text);
-                                                    blocUsuario
+                                                    blocFuncionario
                                                         .setRamal(tRamal.text);
-                                                    // print(1213);
-                                                    // blocUsuario
-                                                    //     .insertOrUpdate();
-                                                    var usuario = Usuario();
-
-                                                    // print(usuario.ramal);
                                                   },
                                                 ),
                                               ),
@@ -411,61 +421,6 @@ class CriaCardFormulario extends StatelessWidget {
                           SizedBox(
                             height: 10,
                           ),
-                          // Row(
-                          //   children: [
-                          //     Container(
-                          //       padding: EdgeInsets.all(10.0),
-                          //       decoration: BoxDecoration(
-                          //         color: Colors.white,
-                          //         borderRadius: BorderRadius.all(Radius.circular(5)),
-                          //         border: new Border.all(
-                          //           color: Colors.black,
-                          //         ),
-                          //       ),
-                          //       child: Row(
-                          //         children: [
-                          //           GestureDetector(
-                          //             onTap: () {
-                          //               // print('1');
-                          //               // saved = true;
-                          //               // blocUsuario
-                          //               //     .setRamal(tRamal.text as int);
-                          //               // blocUsuario.insertOrUpdate();
-                          //               // UserDao.salvarDados(
-                          //               //   tNome.text,
-                          //               //   tId.text,
-                          //               //   tTpUsuario.text,
-                          //               //   tLogin.text,
-                          //               //   tSenha.text,
-                          //               //   tEmail.text,
-                          //               //   tTelefone.text,
-                          //               //   tCelular.text,
-                          //               //   tRamal.text,
-                          //               // );
-                          //             },
-                          //             child: CircleAvatar(
-                          //               backgroundColor: Colors.black45,
-                          //               child: Icon(
-                          //                 Icons.save,
-                          //                 size: 10.0,
-                          //                 color: Colors.white,
-                          //               ),
-                          //             ),
-
-                          //             // child: Icon(
-                          //             //   Icons.save,
-                          //             //   size: 25.0,
-                          //             //   color: Colors.white,
-                          //             // ),
-                          //           ),
-                          //           SizedBox(
-                          //             width: 10.0,
-                          //           ),
-                          //         ],
-                          //       ),
-                          //     ),
-                          //   ],
-                          // )
                         ],
                       ),
                     ),
@@ -479,40 +434,17 @@ class CriaCardFormulario extends StatelessWidget {
         });
   }
 
-  // Widget constroiCampo({
-  //   String labelCampo,
-  //   Function onChanged,
-  //   double largura,
-  //   double altura,
-  //   bool obrigaCampo,
-  //   TextEditingController mascara,
-  //   controller,
-  //   //int tamanhoMaximo,
-  // }) {
-  //   return Form(
-  //     child: AppTextField(
-  //       label: labelCampo,
-  //       width: largura,
-  //       onChanged: onChanged,
-  //       heigth: altura,
-  //       required: obrigaCampo,
-  //       controller: controller,
-  //       //tamanhoMaximo: tamanhoMaximo,
-  //     ),
-  //   );
-  // }
-
   Widget constroiCampo({
     String labelCampo,
     Function onChanged,
     double largura,
     double altura,
+    bool enabled,
     bool obrigaCampo,
     BuildContext contextoAplicacao,
     TextEditingController mascara,
     TextEditingController controller,
     String valorInicial,
-    //int tamanhoMaximo,
   }) {
     return Form(
       child: Column(
@@ -524,41 +456,15 @@ class CriaCardFormulario extends StatelessWidget {
             width: largura ?? double.maxFinite,
             child: TextFormField(
               initialValue: valorInicial,
-              //maxLength: tamanhoMaximo,
               cursorColor: Colors.black,
-              // initialValue: valorInicial,
-              // onFieldSubmitted: onChanged,
-              //key: Key(label),
+              enabled: enabled,
               controller: controller,
-              // obscureText: password,
-              // validator: validator,
-              // keyboardType: keyboardType,
-              // textInputAction: textInputAction,
-              // focusNode: focusNode,
               onChanged: onChanged,
-              // onFieldSubmitted: (String text) {
-              //   if (nextFocus != null) {
-              //     FocusScope.of(context).requestFocus(nextFocus);
-              //   }
-              // },
               style: TextStyle(
                 fontSize: 16,
                 color: Colors.black,
               ),
-              decoration: InputDecoration(
-                  /*border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16)
-       ),*/
-                  /*labelText: label,
-          labelStyle: TextStyle(
-            fontSize: 20,
-            color: Colors.blue,
-          ),*/
-                  /*hintText: hint,
-          hintStyle: TextStyle(
-            fontSize: 14,
-          ),*/
-                  ),
+              decoration: InputDecoration(),
             ),
           ),
           SizedBox(

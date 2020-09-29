@@ -7,6 +7,7 @@ import 'package:smartlogproject/src/Entidades/classes/custo.dart';
 import 'package:smartlogproject/src/Entidades/classes/embalagem.dart';
 import 'package:smartlogproject/src/funcoes/alert.dart';
 import 'package:smartlogproject/src/funcoes/alertErro.dart';
+import 'package:smartlogproject/src/funcoes/alertFuncao.dart';
 
 class CustoBloc extends BlocBase {
   String _documentId;
@@ -14,7 +15,7 @@ class CustoBloc extends BlocBase {
   String _modalidade;
   String _periodicidade;
   String _analiseGerencial;
-  String _valor;
+  double _valor;
 
   BuildContext contextoAplicacao;
 
@@ -31,7 +32,7 @@ class CustoBloc extends BlocBase {
       _periodicidadeController.sink.add(value);
   void setAnaliseGerencial(String value) =>
       _analiseGerencialController.sink.add(value);
-  void setValor(String value) => _valorController.sink.add(value);
+  void setValor(double value) => _valorController.sink.add(value);
 
   /*
   Aqui seta os valores dos controllers para as variáveis de saída do BLOC.
@@ -52,11 +53,8 @@ class CustoBloc extends BlocBase {
   var _analiseGerencialController = BehaviorSubject<String>();
   Stream<String> get outAnaliseGerencial => _analiseGerencialController.stream;
 
-  var _valorController = BehaviorSubject<String>();
-  Stream<String> get outValor => _valorController.stream;
-
-  var _custoController = BehaviorSubject<QuerySnapshot>();
-  Stream<QuerySnapshot> get outCustos => _custoController.stream;
+  var _valorController = BehaviorSubject<double>();
+  Stream<double> get outValor => _valorController.stream;
 
   /*
   Método que insere os dados do formulário na tabela do Firebase.
@@ -74,6 +72,15 @@ class CustoBloc extends BlocBase {
     custo.periodicidade = _periodicidadeController.value;
     custo.analiseGerencial = _analiseGerencialController.value;
     custo.valor = _valorController.value;
+
+    if (_idController.value == null) {
+      TextError(
+          'Para salvar o registro é necessário preencher o número de identificação do custo!');
+    } else if (_detalhesController.value == null) {
+      print('else if');
+      alert(contextoAplicacao, 'Atenção',
+          'Para salvar o registro é necessário preencher os detalhes do custo!');
+    }
 
     try {
       await Firestore.instance
@@ -95,27 +102,6 @@ class CustoBloc extends BlocBase {
     }
   }
 
-  /*
-  Método que consulta os dados do formulário na tabela do Firebase.
-  */
-
-  String consultarDados(BuildContext contextoAplicacao, String identificacao) {
-    var custo = Custo();
-    final valor = TextEditingController();
-    final Firestore firestore = Firestore.instance;
-    void consultaValor(DocumentSnapshot campo) {
-      valor.text = campo.data['detalhes'];
-    }
-
-    Future<dynamic> consultaDetalhes = firestore
-        .collection("custos")
-        .document('1')
-        .get()
-        .then((value) => consultaValor(value));
-
-    return valor.text;
-  }
-
   Future<void> apagarDados(BuildContext contextoAplicacao) async {
     var custo = Custo();
 
@@ -127,12 +113,15 @@ class CustoBloc extends BlocBase {
           .document(custo.identificacao)
           .delete()
           .then(
-            (value) => alert(contextoAplicacao, 'Notificação de Sucesso',
-                'Os dados do formulário foram apagados com sucesso no banco de dados!'),
+            (value) => alertFuncao(contextoAplicacao, 'Notificação de Sucesso',
+                'Os dados do formulário foram apagados com sucesso no banco de dados!',
+                () {
+              Navigator.of(contextoAplicacao).pushNamed(
+                '/FormularioCustos',
+              );
+            }),
           )
-          .catchError((ErrorAndStacktrace erro) {
-        print(erro.error);
-      });
+          .catchError((ErrorAndStacktrace erro) {});
     } catch (on) {
       TextError('Erro ao apagar os dados do formulário no banco de dados!');
     }
@@ -147,6 +136,14 @@ class CustoBloc extends BlocBase {
     custo.periodicidade = _periodicidadeController.value;
     custo.analiseGerencial = _analiseGerencialController.value;
     custo.valor = _valorController.value;
+
+    if (_idController.value == null) {
+      TextError(
+          'Para salvar o registro é necessário preencher o número de identificação do custo!');
+    } else if (_detalhesController.value == null) {
+      TextError(
+          'Para salvar o registro é necessário preencher os detalhes do custo!');
+    }
 
     try {
       await Firestore.instance

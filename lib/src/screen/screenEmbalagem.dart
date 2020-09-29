@@ -108,10 +108,6 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
     bool campoHabilitado = true;
     String valorSelecionado;
 
-    if (codigoEmbalagem != null) {
-      campoHabilitado = false;
-    }
-
     /*
     Aqui consulta os dados e seta o retorno da tabela nos controllers
     para exibir no formulário. Também seta no objeto através dos setters
@@ -144,14 +140,14 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
     }
 
     if (codigoEmbalagem != null) {
+      campoHabilitado = false;
       firestore
           .collection("embalagem")
           .document(codigoEmbalagem)
           .get()
           .then((coluna) async => consultaDados(coluna));
     }
-    print('fora do select');
-    print(tTipoUnidade.text.toString());
+
     return StreamBuilder<Object>(
         stream: blocEmbalagem.outValorLista,
         builder: (context, snapshot) {
@@ -337,49 +333,50 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
                                                           .outValorLista,
                                                       builder: (context,
                                                           retornoStream) {
-                                                        firestore
-                                                            .collection(
-                                                                "embalagem")
-                                                            .document(
-                                                                codigoEmbalagem)
-                                                            .get()
-                                                            .then(
-                                                                (coluna) async =>
-                                                                    Container(
-                                                                      height:
-                                                                          50.0,
-                                                                      child:
-                                                                          Column(
-                                                                        crossAxisAlignment:
-                                                                            CrossAxisAlignment.center,
-                                                                        children: <
-                                                                            Widget>[
-                                                                          DropdownButton<
-                                                                              String>(
-                                                                            items:
-                                                                                tipoCapacidade.map((
-                                                                              String dropDownStringItem,
-                                                                            ) {
-                                                                              return DropdownMenuItem<String>(
-                                                                                value: dropDownStringItem,
-                                                                                child: Text(dropDownStringItem),
-                                                                              );
-                                                                            }).toList(),
-                                                                            onChanged:
-                                                                                (
-                                                                              String novoValorSelecionado,
-                                                                            ) async {
-                                                                              print(snapshot.data);
-                                                                              blocEmbalagem.eventoAlteralista(novoValorSelecionado);
-                                                                              valorSelecionado = novoValorSelecionado;
-                                                                              blocEmbalagem.setTipoUnidade(novoValorSelecionado);
-                                                                            },
-                                                                            value:
-                                                                                valorSelecionado,
-                                                                          ),
-                                                                        ],
-                                                                      ),
-                                                                    ));
+                                                        Container(
+                                                          height: 50.0,
+                                                          child: Column(
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .center,
+                                                            children: <Widget>[
+                                                              DropdownButton<
+                                                                  String>(
+                                                                items:
+                                                                    tipoCapacidade
+                                                                        .map((
+                                                                  String
+                                                                      dropDownStringItem,
+                                                                ) {
+                                                                  return DropdownMenuItem<
+                                                                      String>(
+                                                                    value:
+                                                                        dropDownStringItem,
+                                                                    child: Text(
+                                                                        dropDownStringItem),
+                                                                  );
+                                                                }).toList(),
+                                                                onChanged: (
+                                                                  String
+                                                                      novoValorSelecionado,
+                                                                ) async {
+                                                                  print(snapshot
+                                                                      .data);
+                                                                  blocEmbalagem
+                                                                      .eventoAlteralista(
+                                                                          novoValorSelecionado);
+                                                                  valorSelecionado =
+                                                                      novoValorSelecionado;
+                                                                  blocEmbalagem
+                                                                      .setTipoUnidade(
+                                                                          novoValorSelecionado);
+                                                                },
+                                                                value:
+                                                                    valorSelecionado,
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        );
 
                                                         // return Container(
                                                         //   height: 50.0,

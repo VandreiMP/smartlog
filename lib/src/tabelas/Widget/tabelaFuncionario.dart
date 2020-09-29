@@ -90,6 +90,7 @@ class CriaCardFormulario extends StatelessWidget {
                       height: 10.0,
                     ),
                     Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Container(
                           //height: 150.0,
@@ -166,6 +167,29 @@ class CriaCardFormulario extends StatelessWidget {
                             ],
                           ),
                         ),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.of(context).pushNamed(
+                              '/FormularioUsuario',
+                            );
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 7.0),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Colors.blue[900],
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(2.0),
+                                ),
+                              ),
+                              child: Icon(
+                                Icons.add,
+                                size: 50.0,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                     SizedBox(
@@ -186,7 +210,7 @@ class CriaCardFormulario extends StatelessWidget {
                           Navigator.of(context).pushNamed(
                             '/FormularioUsuario',
                           );
-                        })
+                        }, null)
                       ],
                     )
                   ],
