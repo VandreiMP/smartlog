@@ -89,7 +89,7 @@ class CriaCardFormulario extends StatelessWidget {
                     ),
                     Row(
                       children: [
-                        BuscaCaminhao(Icons.add, () {}),
+                        BuscaCaminhao(Icons.add, () {}, 'CARGA'),
                       ],
                     )
                   ],

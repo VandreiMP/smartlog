@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:smartlogproject/src/Components/scroll/scroll.dart';
 import 'package:smartlogproject/src/Entidades/Bloc/embalagem-bloc.dart';
-import 'package:smartlogproject/src/funcoes/calculaCubagemEmbalagem.dart';
+import 'package:smartlogproject/src/funcoes/calculaCubagem.dart';
 import '../constantes/mascaras.dart';
 import '../funcoes/appText.dart';
 import '../funcoes/appTextField.dart';
@@ -360,8 +360,6 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
                                                                   String
                                                                       novoValorSelecionado,
                                                                 ) async {
-                                                                  print(snapshot
-                                                                      .data);
                                                                   blocEmbalagem
                                                                       .eventoAlteralista(
                                                                           novoValorSelecionado);
@@ -480,18 +478,16 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
                                                       double.parse(
                                                           tLargura.text),
                                                     );
-                                                    tCubagem.text =
-                                                        calculaCubagemEmbalagem(
-                                                                double.parse(
-                                                                    tLargura
-                                                                        .text),
-                                                                double.parse(
-                                                                    tComprimento
-                                                                        .text),
-                                                                double.parse(
-                                                                    tAltura
-                                                                        .text))
-                                                            .toString();
+                                                    tCubagem
+                                                        .text = calculaCubagem(
+                                                            double.parse(
+                                                                tLargura.text),
+                                                            double.parse(
+                                                                tComprimento
+                                                                    .text),
+                                                            double.parse(
+                                                                tAltura.text))
+                                                        .toString();
                                                     blocEmbalagem.setCubagem(
                                                         double.parse(
                                                             tCubagem.text));
@@ -511,17 +507,16 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
                                                   blocEmbalagem.setComprimento(
                                                       double.parse(
                                                           tComprimento.text));
-                                                  tCubagem.text =
-                                                      calculaCubagemEmbalagem(
-                                                              double.parse(
-                                                                  tLargura
-                                                                      .text),
-                                                              double.parse(
-                                                                  tComprimento
-                                                                      .text),
-                                                              double.parse(
-                                                                  tAltura.text))
-                                                          .toString();
+                                                  tCubagem
+                                                      .text = calculaCubagem(
+                                                          double.parse(
+                                                              tLargura.text),
+                                                          double.parse(
+                                                              tComprimento
+                                                                  .text),
+                                                          double.parse(
+                                                              tAltura.text))
+                                                      .toString();
                                                   blocEmbalagem.setCubagem(
                                                       double.parse(
                                                           tCubagem.text));
@@ -542,17 +537,16 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
                                                   blocEmbalagem.setAltura(
                                                       double.parse(
                                                           tAltura.text));
-                                                  tCubagem.text =
-                                                      calculaCubagemEmbalagem(
-                                                              double.parse(
-                                                                  tLargura
-                                                                      .text),
-                                                              double.parse(
-                                                                  tComprimento
-                                                                      .text),
-                                                              double.parse(
-                                                                  tAltura.text))
-                                                          .toString();
+                                                  tCubagem
+                                                      .text = calculaCubagem(
+                                                          double.parse(
+                                                              tLargura.text),
+                                                          double.parse(
+                                                              tComprimento
+                                                                  .text),
+                                                          double.parse(
+                                                              tAltura.text))
+                                                      .toString();
                                                   blocEmbalagem.setCubagem(
                                                       double.parse(
                                                           tCubagem.text));

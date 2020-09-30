@@ -8,6 +8,7 @@ import 'package:smartlogproject/src/Entidades/Bloc/carregamentoMercadoria-bloc.d
 import 'package:smartlogproject/src/Entidades/Bloc/custo-bloc.dart';
 import 'package:smartlogproject/src/Entidades/Bloc/embalagem-bloc.dart';
 import 'package:smartlogproject/src/Entidades/Bloc/empresa-bloc.dart';
+import 'package:smartlogproject/src/Entidades/Bloc/fichaCaminhao-bloc.dart';
 import 'package:smartlogproject/src/Entidades/Bloc/responsavelEmpresa-bloc.dart';
 import 'package:smartlogproject/src/Entidades/Bloc/romaneio-bloc.dart';
 import 'package:smartlogproject/src/Entidades/Bloc/solicitacaoAbastecimento-bloc.dart';
@@ -74,9 +75,20 @@ class CardAjudaBloc extends BlocBase {
       await blocResponsavelEmpresa.insereDados(contextoAplicacao);
     }
     if (origemDado == 'CAMINHAO') {
-      CaminhaoBloc blocCaminhao =
-          BlocProvider.of<CaminhaoBloc>(contextoAplicacao);
-      await blocCaminhao.insereDados(contextoAplicacao);
+      if (chaveConsulta == null) {
+        CaminhaoBloc blocCaminhao =
+            BlocProvider.of<CaminhaoBloc>(contextoAplicacao);
+        await blocCaminhao.insereDados(contextoAplicacao);
+      } else {
+        CaminhaoBloc blocCaminhao =
+            BlocProvider.of<CaminhaoBloc>(contextoAplicacao);
+        await blocCaminhao.atualizaDados(contextoAplicacao);
+      }
+    }
+    if (origemDado == 'DETALHES_CAMINHAO') {
+      FichaCaminhaoBloc blocFichaCaminhao =
+          BlocProvider.of<FichaCaminhaoBloc>(contextoAplicacao);
+      await blocFichaCaminhao.insereDados(contextoAplicacao);
     }
     if (origemDado == 'CARGA') {
       CarregamentoMercadoriaBloc blocCarregamentoMercadoria =
@@ -141,6 +153,11 @@ class CardAjudaBloc extends BlocBase {
       CaminhaoBloc blocCaminhao =
           BlocProvider.of<CaminhaoBloc>(contextoAplicacao);
       await blocCaminhao.apagarDados(contextoAplicacao);
+    }
+     if (origemDado == 'DETALHES_CAMINHAO') {
+      FichaCaminhaoBloc blocFichaCaminhao =
+          BlocProvider.of<FichaCaminhaoBloc>(contextoAplicacao);
+      await blocFichaCaminhao.apagarDados(contextoAplicacao);
     }
     if (origemDado == 'CARGA') {
       CarregamentoMercadoriaBloc blocCarregamentoMercadoria =

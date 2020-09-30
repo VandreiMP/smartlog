@@ -124,8 +124,7 @@ class ResponsavelEmpresaBloc extends BlocBase {
     }
   }
 
-  Future<void> atualizaDados(
-      BuildContext contextoAplicacao, String chaveConsulta) async {
+  Future<void> atualizaDados(BuildContext contextoAplicacao) async {
     var responsavelEmpresa = ResponsavelEmpresa();
 
     responsavelEmpresa.identificacaoEmpresa =
@@ -139,7 +138,7 @@ class ResponsavelEmpresaBloc extends BlocBase {
     try {
       await Firestore.instance
           .collection('responsavelEmpresa')
-          .document(chaveConsulta)
+          .document(responsavelEmpresa.identificacaoEmpresa)
           .updateData({
         'identificacaoEmpresa': responsavelEmpresa.identificacaoEmpresa,
         'nome': responsavelEmpresa.nome,

@@ -162,13 +162,7 @@ class CriaCardFormulario extends StatelessWidget {
                     ),
                     Row(
                       children: [
-                        BuscaCaminhao(
-                          Icons.search,
-                          () {
-                            Navigator.of(context)
-                                .pushNamed('/FormularioCaminhao');
-                          },
-                        )
+                        BuscaCaminhao(Icons.search, () {}, null),
                       ],
                     )
                   ],

@@ -1,6 +1,6 @@
 import 'package:intl/intl.dart';
 
-double calculaCubagemEmbalagem(
+double calculaCubagem(
   double largura,
   double comprimento,
   double altura,

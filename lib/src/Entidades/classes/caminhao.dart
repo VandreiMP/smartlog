@@ -4,15 +4,15 @@ import '../../shared/base_model.dart';
 class Caminhao extends BaseModel {
   String identificacao;
   String placa;
-  String anoFabricacao;
+  int anoFabricacao;
   String uf;
   String descricao;
   String modeloCaminhao;
   String fabricante;
   String tipoCarroceria;
   String chassiCaminhao;
-  String numeroRenavam;
-  String numeroRntrc;
+  int numeroRenavam;
+  int numeroRntrc;
   String tipoCombustivel;
 
   Caminhao();

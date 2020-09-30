@@ -1,4 +1,5 @@
 import 'package:bloc_pattern/bloc_pattern.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:smartlogproject/src/Components/scroll/scroll.dart';
@@ -47,8 +48,9 @@ class _BodyState extends State<Body> {
                 CriaCardAuxiliar(
                   caminhoImagem: "Images/veiculo.png",
                   nomeFormulario: "Cadastro de Frota",
-                  origem: 'ADICIONAIS',
+                  origem: 'CAMINHAO',
                   origemDado: 'CAMINHAO',
+                  chaveConsulta: ModalRoute.of(context).settings.arguments,
                 ),
                 // CriaCardAjudaCaminhao(),
               ],
@@ -120,7 +122,52 @@ class CriaCardFormulario extends StatelessWidget {
     final tNumeroRntrc = TextEditingController();
     final tTipoCombustivel = TextEditingController();
 
+    String codigoCaminhao = ModalRoute.of(context).settings.arguments;
     CaminhaoBloc blocCaminhao = BlocProvider.of<CaminhaoBloc>(context);
+    final Firestore firestore = Firestore.instance;
+    bool campoHabilitado = true;
+
+    /*
+    Aqui consulta os dados e seta o retorno da tabela nos controllers
+    para exibir no formulário. Também seta no objeto através dos setters
+    para atualizar os dados no banco, caso sejam alterados.
+    */
+
+    Future consultaDados(DocumentSnapshot coluna) async {
+      if (codigoCaminhao.isNotEmpty) {
+        tId.text = codigoCaminhao;
+      }
+      tPlaca.text = coluna.data['placa'];
+      tAnoFabricacao.text = coluna.data['anoFabricacao'].toString();
+      tUf.text = coluna.data['uf'];
+      tDescricao.text = coluna.data['descricao'];
+      tModeloCaminhao.text = coluna.data['modeloCaminhao'];
+      tFabricante.text = coluna.data['fabricante'];
+      tChassiCaminhao.text = coluna.data['chassiCaminhao'];
+      tNumeroRenavam.text = coluna.data['numeroRenavam'].toString();
+      tNumeroRntrc.text = coluna.data['numeroRntrc'].toString();
+
+      blocCaminhao.setIdentificacao(tId.text);
+      blocCaminhao.setDescricao(tDescricao.text);
+      blocCaminhao.setPlaca(tPlaca.text);
+      blocCaminhao.setAnoFabricacao(int.parse(tAnoFabricacao.text));
+      blocCaminhao.setUf(tUf.text);
+      blocCaminhao.setModeloCaminhao(tModeloCaminhao.text);
+      blocCaminhao.setFabricante(tFabricante.text);
+      blocCaminhao.setChassiCaminhao(tChassiCaminhao.text);
+      blocCaminhao.setNumeroRenavam(int.parse(tNumeroRenavam.text));
+      blocCaminhao.setNumeroRntrc(int.parse(tNumeroRntrc.text));
+    }
+
+    if (codigoCaminhao != null) {
+      campoHabilitado = false;
+      firestore
+          .collection("caminhao")
+          .document(codigoCaminhao)
+          .get()
+          .then((coluna) async => consultaDados(coluna));
+    }
+
     return Scroll(
       height: double.infinity,
       child: Column(
@@ -216,7 +263,7 @@ class CriaCardFormulario extends StatelessWidget {
                                           obrigaCampo: true,
                                           onChanged: (String valor) {
                                             blocCaminhao.setAnoFabricacao(
-                                                tAnoFabricacao.text);
+                                                int.parse(tAnoFabricacao.text));
                                           },
                                         ),
                                       ),
@@ -288,8 +335,9 @@ class CriaCardFormulario extends StatelessWidget {
                                                     const EdgeInsets.all(2.0),
                                                 child: GestureDetector(
                                                   onTap: () {
-                                                    Navigator.of(context).pushNamed(
-                                                        '/FormularioCaminhaoDetalhes');
+                                                    blocCaminhao
+                                                        .verificaCaminhao(
+                                                            tId.text, context);
                                                   },
                                                   child: Container(
                                                     decoration: BoxDecoration(
@@ -453,7 +501,7 @@ class CriaCardFormulario extends StatelessWidget {
                                     children: <Widget>[
                                       constroiCampo(
                                           labelCampo: 'Chassi',
-                                          largura: 100,
+                                          largura: 200,
                                           controller: tChassiCaminhao,
                                           onChanged: (String valor) {
                                             blocCaminhao.setChassiCaminhao(
@@ -472,7 +520,8 @@ class CriaCardFormulario extends StatelessWidget {
                                           controller: tNumeroRenavam,
                                           onChanged: (String valor) {
                                             blocCaminhao.setNumeroRenavam(
-                                                tNumeroRenavam.text);
+                                              int.parse(tNumeroRenavam.text),
+                                            );
                                           },
                                         ),
                                       ),
@@ -486,7 +535,8 @@ class CriaCardFormulario extends StatelessWidget {
                                           controller: tNumeroRntrc,
                                           onChanged: (String valor) {
                                             blocCaminhao.setNumeroRntrc(
-                                                tNumeroRntrc.text);
+                                              int.parse(tNumeroRntrc.text),
+                                            );
                                           },
                                           obrigaCampo: true,
                                         ),

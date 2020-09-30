@@ -148,8 +148,6 @@ class CriaCardFormulario extends StatelessWidget {
       blocEmpresa.setCep(tCep.text);
     }
 
-    // print(codigoEmpresa);
-
     if (codigoEmpresa != null) {
       firestore
           .collection("empresa")

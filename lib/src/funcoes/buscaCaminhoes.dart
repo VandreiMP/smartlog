@@ -8,17 +8,20 @@ import 'package:smartlogproject/src/funcoes/appText.dart';
 class BuscaCaminhao extends StatefulWidget {
   final IconData iconeLista;
   final Function funcaoLista;
+  final String origem;
 
-  const BuscaCaminhao(this.iconeLista, this.funcaoLista);
+  const BuscaCaminhao(this.iconeLista, this.funcaoLista, this.origem);
   @override
-  _BuscaCaminhaoState createState() => _BuscaCaminhaoState(iconeLista, funcaoLista);
+  _BuscaCaminhaoState createState() =>
+      _BuscaCaminhaoState(iconeLista, funcaoLista, origem);
 }
 
 class _BuscaCaminhaoState extends State<BuscaCaminhao> {
   final IconData iconeLista;
   final Function funcaoLista;
+  final String origem;
 
-  _BuscaCaminhaoState(this.iconeLista, this.funcaoLista);
+  _BuscaCaminhaoState(this.iconeLista, this.funcaoLista, this.origem);
   @override
   Widget build(BuildContext context) {
     final Firestore firestore = Firestore.instance;
@@ -102,6 +105,8 @@ class _BuscaCaminhaoState extends State<BuscaCaminhao> {
                                   final dynamic descricao =
                                       document['descricao'];
                                   final dynamic placa = document['placa'];
+                                  final dynamic identificacao =
+                                      document['identificacao'];
                                   return Container(
                                     child: Row(
                                       children: [
@@ -141,7 +146,12 @@ class _BuscaCaminhaoState extends State<BuscaCaminhao> {
                                         ),
                                         GestureDetector(
                                           onTap: () {
-                                            funcaoLista();
+                                            if (origem == 'CARGA') {
+                                            } else {
+                                              Navigator.of(context).pushNamed(
+                                                  '/FormularioCaminhao',
+                                                  arguments: identificacao);
+                                            }
                                           },
                                           child: Padding(
                                             padding: const EdgeInsets.only(

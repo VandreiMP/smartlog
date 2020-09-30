@@ -9,19 +9,20 @@ import 'package:smartlogproject/src/Entidades/classes/embalagem.dart';
 import 'package:smartlogproject/src/Entidades/classes/empresa.dart';
 import 'package:smartlogproject/src/funcoes/alert.dart';
 import 'package:smartlogproject/src/funcoes/alertErro.dart';
+import 'package:smartlogproject/src/funcoes/alertFuncao.dart';
 
 class CaminhaoBloc extends BlocBase {
   String _identificacao;
   String _placa;
-  String _anoFabricacao;
+  int _anoFabricacao;
   String _uf;
   String _descricao;
   String _modeloCaminhao;
   String _fabricante;
   String _tipoCarroceria;
   String _chassiCaminhao;
-  String _numeroRenavam;
-  String _numeroRntrc;
+  int _numeroRenavam;
+  int _numeroRntrc;
   String _tipoCombustivel;
 
   BuildContext contextoAplicacao;
@@ -34,7 +35,7 @@ class CaminhaoBloc extends BlocBase {
 
   void setIdentificacao(String value) => _idController.sink.add(value);
   void setPlaca(String value) => _placaController.sink.add(value);
-  void setAnoFabricacao(String value) =>
+  void setAnoFabricacao(int value) =>
       _anoFabricacaoController.sink.add(value);
   void setUf(String value) => _ufController.sink.add(value);
   void setDescricao(String value) => _descricaoController.sink.add(value);
@@ -45,9 +46,9 @@ class CaminhaoBloc extends BlocBase {
       _tipoCarroceriaController.sink.add(value);
   void setChassiCaminhao(String value) =>
       _chassiCaminhaoController.sink.add(value);
-  void setNumeroRenavam(String value) =>
+  void setNumeroRenavam(int value) =>
       _numeroRenavamController.sink.add(value);
-  void setNumeroRntrc(String value) => _numeroRntrcController.sink.add(value);
+  void setNumeroRntrc(int value) => _numeroRntrcController.sink.add(value);
   void setTipoCombustivel(String value) =>
       _tipoCombustivelController.sink.add(value);
 
@@ -61,8 +62,8 @@ class CaminhaoBloc extends BlocBase {
   var _placaController = BehaviorSubject<String>();
   Stream<String> get outPlaca => _placaController.stream;
 
-  var _anoFabricacaoController = BehaviorSubject<String>();
-  Stream<String> get outAnoFabricacao => _anoFabricacaoController.stream;
+  var _anoFabricacaoController = BehaviorSubject<int>();
+  Stream<int> get outAnoFabricacao => _anoFabricacaoController.stream;
 
   var _ufController = BehaviorSubject<String>();
   Stream<String> get outUf => _ufController.stream;
@@ -82,11 +83,11 @@ class CaminhaoBloc extends BlocBase {
   var _chassiCaminhaoController = BehaviorSubject<String>();
   Stream<String> get outChassiCaminhao => _chassiCaminhaoController.stream;
 
-  var _numeroRenavamController = BehaviorSubject<String>();
-  Stream<String> get outNumeroRenavam => _numeroRenavamController.stream;
+  var _numeroRenavamController = BehaviorSubject<int>();
+  Stream<int> get outNumeroRenavam => _numeroRenavamController.stream;
 
-  var _numeroRntrcController = BehaviorSubject<String>();
-  Stream<String> get outNumeroRntrc => _numeroRntrcController.stream;
+  var _numeroRntrcController = BehaviorSubject<int>();
+  Stream<int> get outNumeroRntrc => _numeroRntrcController.stream;
 
   var _tipoCombustivelController = BehaviorSubject<String>();
   Stream<String> get outTipoCombustivel => _tipoCombustivelController.stream;
@@ -158,8 +159,15 @@ class CaminhaoBloc extends BlocBase {
           .document(caminhao.identificacao)
           .delete()
           .then(
-            (value) => alert(contextoAplicacao, 'Notificação de Sucesso',
-                'Os dados do formulário foram apagados com sucesso no banco de dados!'),
+            (value) => alertFuncao(
+                  contextoAplicacao,
+                  'Notificação de Sucesso',
+                  'Os dados do formulário foram apagados com sucesso no banco de dados!',
+                  () {
+                Navigator.of(contextoAplicacao).pushNamed(
+                  '/FormularioCaminhao',
+                );
+              }),
           )
           .catchError((ErrorAndStacktrace erro) {
        TextError('Erro ao salvar os dados do formulário no banco de dados!');
@@ -204,10 +212,32 @@ class CaminhaoBloc extends BlocBase {
         'tipoCombustivel': caminhao.tipoCombustivel,
       }).then((value) async => await alert(
               contextoAplicacao,
-              'Notificação de Sucesso',
+              'Notificação',
               'Os dados do formulário foram salvos com sucesso no banco de dados!'));
     } catch (on) {
       TextError('Erro ao salvar os dados do formulário no banco de dados!');
+    }
+  }
+
+  Future<void> verificaCaminhao(
+      String codigoCaminhao, BuildContext contextoAplicacao) async {
+    if (codigoCaminhao.isNotEmpty) {
+      await Firestore.instance
+          .collection("caminhao")
+          .document(codigoCaminhao)
+          .get()
+          .then(
+            (coluna) async => coluna.exists == false
+                ? alert(contextoAplicacao, 'Atenção',
+                    'Para abrir a ficha técnica no caminhão, é necessário salvar os dados do formulario!')
+                : Navigator.of(contextoAplicacao).pushNamed(
+                    '/FormularioCaminhaoDetalhes',
+                    arguments: codigoCaminhao,
+                  ),
+          );
+    } else {
+      alert(contextoAplicacao, 'Atenção',
+          'Para abrir a ficha técnica do caminhão, é necessário salvar os dados do formulario!');
     }
   }
 
