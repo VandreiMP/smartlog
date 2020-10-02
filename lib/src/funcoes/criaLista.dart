@@ -1,12 +1,16 @@
+import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:flutter/material.dart';
+import 'package:smartlogproject/src/Entidades/Bloc/embalagem-bloc.dart';
+
+String criaLista() {}
 
 class DropDown extends StatefulWidget {
   final List<String> valores;
-  final Function retornaValor;
+  final Function funcaoLista;
 
   const DropDown({
     this.valores,
-    this.retornaValor,
+    this.funcaoLista,
   });
   @override
   _DropDownState createState() => _DropDownState();
@@ -34,11 +38,12 @@ class _DropDownState extends State<DropDown> {
             onChanged: (
               String novoValorSelecionado,
             ) async {
+              widget.funcaoLista;
               setState(() {
+                // EmbalagemBloc blocEmbalagem =
+                //     BlocProvider.of<EmbalagemBloc>(context);
+                // blocEmbalagem.setTipoUnidade(novoValorSelecionado);
                 this.valorSelecionado = novoValorSelecionado;
-                retornaValor(novoValorSelecionado) async {
-                  return novoValorSelecionado;
-                }
               });
             },
             value: valorSelecionado,

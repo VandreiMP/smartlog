@@ -4,12 +4,13 @@ import 'package:smartlogproject/src/Components/scroll/scroll.dart';
 import 'package:smartlogproject/src/Entidades/Bloc/embalagem-bloc.dart';
 import 'package:smartlogproject/src/funcoes/appText.dart';
 import 'package:smartlogproject/src/funcoes/buscaEmbalagens.dart';
-import 'package:smartlogproject/src/screen/screenPattern.dart';
 
 class ListaValoresEmbalagem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return ScreenPattern(
+    return Container(
+      alignment: Alignment.center,
+      color: Color.fromARGB(120, 0, 0, 0),
       child: BlocProvider(
         bloc: EmbalagemBloc(context),
         child: CriaCardFormulario(),
@@ -24,9 +25,9 @@ class CriaCardFormulario extends StatelessWidget {
     String numeroCarga = ModalRoute.of(context).settings.arguments;
     return Scroll(
       width: 720,
-      height: double.infinity,
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Container(
             alignment: Alignment.center,

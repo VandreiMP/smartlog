@@ -1,9 +1,5 @@
-import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:smartlogproject/src/Entidades/Bloc/embalagem-bloc.dart';
-import 'package:smartlogproject/src/Entidades/Bloc/usuario-bloc.dart';
-import 'package:smartlogproject/src/Entidades/classes/listaValores.dart';
 import 'package:smartlogproject/src/funcoes/appText.dart';
 import 'package:smartlogproject/src/screen/screenCarga.dart';
 
@@ -157,12 +153,7 @@ class _BuscaEmbalagensState extends State<BuscaEmbalagens> {
                                           */
                                           ScreenCarga();
                                           if (origem == 'CARGA') {
-                                            // if (chaveListaValores.isNotEmpty) {
-                                            //   Navigator.pop(context);
-                                            // } else {
-                                            //   Navigator.pop(context);
-                                            // }
-
+                                            Navigator.pop(context, identificacao);
                                           } else {
                                             Navigator.of(context).pushNamed(
                                               '/FormularioEmbalagem',

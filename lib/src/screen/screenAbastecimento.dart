@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:smartlogproject/src/Components/scroll/scroll.dart';
 import 'package:smartlogproject/src/Entidades/Bloc/solicitacaoAbastecimento-bloc.dart';
-import 'package:smartlogproject/src/Entidades/Bloc/usuario-bloc.dart';
 import 'package:smartlogproject/src/funcoes/appTextField.dart';
+import 'package:smartlogproject/src/funcoes/calculaCustoSolicitacao.dart';
 import '../constantes/mascaras.dart';
 import '../funcoes/appText.dart';
 import '../Cards/Widgets/criaCardAuxiliar.dart';
@@ -46,8 +46,9 @@ class _BodyState extends State<Body> {
                 CriaCardAuxiliar(
                   caminhoImagem: "Images/combustivel.png",
                   nomeFormulario: "Solicitação de Abastecimento",
-                  origem: 'GERAL',
+                  origem: 'COMBUSTIVEL',
                   origemDado: 'COMBUSTIVEL',
+                  chaveConsulta: ModalRoute.of(context).settings.arguments,
                 ),
                 // CriaCardAjuda(),
               ],
@@ -71,8 +72,8 @@ class CriaCardFormulario extends StatelessWidget {
     final tId = TextEditingController();
     final tSituacao = TextEditingController();
     final tSolicitante = TextEditingController();
-    final tDataAbertura = TextEditingController();
-    final tDataEfetivacao = TextEditingController();
+    final tDataAbertura = MaskedTextController(mask: mascaraData);
+    final tDataEfetivacao = MaskedTextController(mask: mascaraData);
     final tPosto = TextEditingController();
     final tTipoCombustivel = TextEditingController();
     final tPrecoLitro = TextEditingController();
@@ -97,6 +98,52 @@ class CriaCardFormulario extends StatelessWidget {
     ];
     SolicitacaoAbastecimentoBloc blocSolicitacaoAbastecimento =
         BlocProvider.of<SolicitacaoAbastecimentoBloc>(context);
+    String codigoSolicitacao = ModalRoute.of(context).settings.arguments;
+    final Firestore firestore = Firestore.instance;
+    bool campoHabilitado = true;
+
+    /*
+    Aqui consulta os dados e seta o retorno da tabela nos controllers
+    para exibir no formulário. Também seta no objeto através dos setters
+    para atualizar os dados no banco, caso sejam alterados.
+    */
+
+    Future consultaDados(DocumentSnapshot coluna) async {
+      if (codigoSolicitacao.isNotEmpty) {
+        tId.text = codigoSolicitacao;
+      }
+      tDetalhes.text = coluna.data['detalhes'];
+      tSolicitante.text = coluna.data['solicitante'];
+      tDataAbertura.text = coluna.data['dataAbertura'];
+      tDataEfetivacao.text = coluna.data['dataEfetivacao'];
+      tPosto.text = coluna.data['posto'];
+      tPrecoLitro.text = coluna.data['precoLitro'].toString();
+      tQuantidade.text = coluna.data['quantidade'].toString();
+      tCustoTotal.text = coluna.data['custoTotal'].toString();
+
+      blocSolicitacaoAbastecimento.setId(tId.text);
+      blocSolicitacaoAbastecimento.setDetalhes(tDetalhes.text);
+      blocSolicitacaoAbastecimento.setSolicitante(tSolicitante.text);
+      blocSolicitacaoAbastecimento.setDataAbertura(tDataAbertura.text);
+      blocSolicitacaoAbastecimento.setDataEfetivacao(tDataEfetivacao.text);
+      blocSolicitacaoAbastecimento.setPosto(tPosto.text);
+      blocSolicitacaoAbastecimento
+          .setPrecoLitro(double.parse(tPrecoLitro.text));
+      blocSolicitacaoAbastecimento
+          .setQuantidade(double.parse(tQuantidade.text));
+      blocSolicitacaoAbastecimento
+          .setCustoTotal(double.parse(tCustoTotal.text));
+    }
+
+    if (codigoSolicitacao != null) {
+      campoHabilitado = false;
+      firestore
+          .collection("solicitacaoAbastecimento")
+          .document(codigoSolicitacao)
+          .get()
+          .then((coluna) async => consultaDados(coluna));
+    }
+
     return StreamBuilder<QuerySnapshot>(
         stream: null,
         builder: (context, snapshot) {
@@ -368,6 +415,13 @@ class CriaCardFormulario extends StatelessWidget {
                                                           double.parse(
                                                               tPrecoLitro
                                                                   .text));
+                                                  tCustoTotal.text =
+                                                      calculaValorTotalSolicitacao(
+                                                    double.parse(
+                                                        tPrecoLitro.text),
+                                                    double.parse(
+                                                        tQuantidade.text),
+                                                  ).toString();
                                                 },
                                                 obrigaCampo: false,
                                               ),
@@ -394,6 +448,13 @@ class CriaCardFormulario extends StatelessWidget {
                                                           double.parse(
                                                               tQuantidade
                                                                   .text));
+                                                  tCustoTotal.text =
+                                                      calculaValorTotalSolicitacao(
+                                                    double.parse(
+                                                        tPrecoLitro.text),
+                                                    double.parse(
+                                                        tQuantidade.text),
+                                                  ).toString();
                                                 },
                                                 obrigaCampo: false,
                                               ),
@@ -413,6 +474,7 @@ class CriaCardFormulario extends StatelessWidget {
                                                 labelCampo: 'Custo Total',
                                                 largura: 85,
                                                 altura: 30,
+                                                controller: tCustoTotal,
                                                 obrigaCampo: false,
                                               ),
                                             ),

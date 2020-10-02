@@ -129,7 +129,7 @@ class CriaCardFormulario extends StatelessWidget {
       tDataEntrega.text = campo.data['dataEntrega'];
       tSituacaoEntrega.text = campo.data['situacaoEntrega'];
       tProduto.text = campo.data['produto'];
-      // tCodEmbalagem.text = campo.data['embalagem'];
+      tCodEmbalagem.text = campo.data['embalagem'];
       tQuantidadeEmbalagem.text = campo.data['quantidadeEmbalagem'].toString();
       tPesoBruto.text = campo.data['pesoBruto'].toString();
 
@@ -151,11 +151,13 @@ class CriaCardFormulario extends StatelessWidget {
       blocCarregamentoMercadoria.setSituacaoEntrega(tSituacaoEntrega.text);
       blocCarregamentoMercadoria.setProduto(tProduto.text);
 
-      // firestore
-      //     .collection("embalagem")
-      //     .document(tCodEmbalagem.text)
-      //     .get()
-      //     .then((value) async => tEmbalagem.text = value.data['descricao']);
+      firestore
+          .collection("embalagem")
+          .document(tCodEmbalagem.text)
+          .get()
+          .then((value) async => tEmbalagem.text = value.data['descricao']);
+
+      blocCarregamentoMercadoria.setEmbalagem(tCodEmbalagem.text);
 
       blocCarregamentoMercadoria
           .setQuantidadeEmbalagem(double.parse(tQuantidadeEmbalagem.text));
@@ -664,13 +666,36 @@ class CriaCardFormulario extends StatelessWidget {
                                                       CrossAxisAlignment.start,
                                                   children: [
                                                     GestureDetector(
-                                                      onTap: () {
-                                                        Navigator.of(context)
-                                                            .pushNamed(
-                                                                '/ListaValoresEmbalagem',
-                                                                arguments:
-                                                                    tCarga
-                                                                        .text);
+                                                      onTap: () async {
+                                                        tCodEmbalagem
+                                                            .text = await Navigator
+                                                                .of(context)
+                                                            .push(
+                                                                PageRouteBuilder(
+                                                          opaque: false,
+                                                          pageBuilder: (_, __,
+                                                                  ___) =>
+                                                              ListaValoresEmbalagem(),
+                                                        ));
+                                                        if (tCodEmbalagem
+                                                            .text.isNotEmpty) {
+                                                          firestore
+                                                              .collection(
+                                                                  "embalagem")
+                                                              .document(
+                                                                  tCodEmbalagem
+                                                                      .text)
+                                                              .get()
+                                                              .then((value) async =>
+                                                                  tEmbalagem
+                                                                      .text = value
+                                                                          .data[
+                                                                      'descricao']);
+                                                          blocCarregamentoMercadoria
+                                                              .setEmbalagem(
+                                                                  tCodEmbalagem
+                                                                      .text);
+                                                        }
                                                       },
                                                       child: Container(
                                                         decoration:

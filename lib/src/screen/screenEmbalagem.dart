@@ -75,9 +75,11 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
   ];
 
   List<String> tipoCapacidade = [
-    'Ovo',
-    'Forma',
-    'Caixa',
+    'Unidade/Ovo',
+    'Quilo',
+    'Grama',
+    'Milheiro',
+    'Tonelada',
   ];
 
   final tDescricao = TextEditingController();
@@ -100,13 +102,20 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
 
   final tTara = TextEditingController();
 
+  /*
+  Variáveis de Controle para exibição das listas.
+  */
+  String valorSelecionadoUnidade;
+  bool consultaListaUnidade = true;
+  String valorSelecionadoCategoria;
+  bool consultaListaCategoria = true;
+
   @override
   Widget build(BuildContext context) {
     String codigoEmbalagem = ModalRoute.of(context).settings.arguments;
     EmbalagemBloc blocEmbalagem = BlocProvider.of<EmbalagemBloc>(context);
     final Firestore firestore = Firestore.instance;
     bool campoHabilitado = true;
-    String valorSelecionado;
 
     /*
     Aqui consulta os dados e seta o retorno da tabela nos controllers
@@ -114,14 +123,40 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
     para atualizar os dados no banco, caso sejam alterados.
     */
 
+    void atualizaTipoUnidade(String valor) {
+      if (valor.isNotEmpty) {
+        setState(() {
+          valorSelecionadoUnidade = valor;
+          blocEmbalagem.setTipoUnidade(valorSelecionadoUnidade);
+          consultaListaUnidade = false;
+        });
+      }
+    }
+
+    void atualizaCategoria(String valor) {
+      if (valor.isNotEmpty) {
+        setState(() {
+          valorSelecionadoCategoria = valor;
+          blocEmbalagem.setcategoriaEmbalagem(valorSelecionadoCategoria);
+          consultaListaCategoria = false;
+        });
+      }
+    }
+
     Future consultaDados(DocumentSnapshot coluna) async {
       if (codigoEmbalagem.isNotEmpty) {
         tId.text = codigoEmbalagem;
       }
       tDescricao.text = coluna.data['descricao'];
       tCapacidade.text = coluna.data['capacidade'].toString();
-      tTipoUnidade.text = coluna.data['tipoUnidade'];
-      print(tTipoUnidade.text);
+      if (consultaListaUnidade == true) {
+        tTipoUnidade.text = coluna.data['tipoUnidade'];
+        atualizaTipoUnidade(tTipoUnidade.text);
+      }
+      if (consultaListaCategoria == true) {
+        tCategoriaEmbalagem.text = coluna.data['categoriaEmbalagem'];
+        atualizaCategoria(tCategoriaEmbalagem.text);
+      }
       tLargura.text = coluna.data['largura'].toString();
       tComprimento.text = coluna.data['comprimento'].toString();
       tAltura.text = coluna.data['altura'].toString();
@@ -130,8 +165,6 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
 
       blocEmbalagem.setId(tId.text);
       blocEmbalagem.setDescricao(tDescricao.text);
-      blocEmbalagem.setCapacidade(double.parse(tCapacidade.text));
-      blocEmbalagem.setTipoUnidade(valorSelecionado);
       blocEmbalagem.setLargura(double.parse(tLargura.text));
       blocEmbalagem.setComprimento(double.parse(tComprimento.text));
       blocEmbalagem.setAltura(double.parse(tAltura.text));
@@ -165,7 +198,7 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
                         color: Colors.white,
                         borderRadius: BorderRadius.all(Radius.circular(5)),
                         border: new Border.all(
-                          color: Colors.black,
+                          color: Colors.grey[600],
                         ),
                       ),
                       child: Column(
@@ -190,7 +223,7 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(5)),
                                   border: new Border.all(
-                                    color: Colors.black,
+                                    color: Colors.grey[600],
                                   ),
                                 ),
                                 child: Row(
@@ -236,19 +269,49 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
                                               padding: const EdgeInsets.only(
                                                   left: 20.0),
                                               child: Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.start,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
                                                 children: [
                                                   RequiredLabel(
                                                     'Categ.',
                                                     true,
                                                   ),
-                                                  Container(
-                                                    child: DropDown(
-                                                        valores:
-                                                            tipoEmbalagens),
+                                                  Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      Container(
+                                                        height: 50.0,
+                                                        child: Column(
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .center,
+                                                          children: <Widget>[
+                                                            DropdownButton<
+                                                                String>(
+                                                              items:
+                                                                  tipoEmbalagens
+                                                                      .map((
+                                                                String
+                                                                    dropDownStringItem,
+                                                              ) {
+                                                                return DropdownMenuItem<
+                                                                    String>(
+                                                                  value:
+                                                                      dropDownStringItem,
+                                                                  child: Text(
+                                                                      dropDownStringItem),
+                                                                );
+                                                              }).toList(),
+                                                              onChanged: (novoValorSelecionado) =>
+                                                                  atualizaCategoria(
+                                                                      novoValorSelecionado),
+                                                              value:
+                                                                  valorSelecionadoCategoria,
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ],
                                                   ),
                                                 ],
                                               ),
@@ -284,7 +347,7 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(5)),
                                   border: new Border.all(
-                                    color: Colors.black,
+                                    color: Colors.grey[600],
                                   ),
                                 ),
                                 child: Row(
@@ -304,14 +367,13 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
                                             Container(
                                               child: constroiCampo(
                                                 labelCampo: 'Capacidade',
-                                                largura: 100,
+                                                largura: 71,
                                                 altura: 30,
                                                 controller: tCapacidade,
-                                                onChanged: (String valor) {
-                                                  blocEmbalagem.setCapacidade(
-                                                      double.parse(
-                                                          tCapacidade.text));
-                                                },
+                                                onChanged: (String valor) =>
+                                                    blocEmbalagem.setCapacidade(
+                                                        double.parse(
+                                                            tCapacidade.text)),
                                                 obrigaCampo: true,
                                               ),
                                             ),
@@ -319,144 +381,44 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
                                               padding: const EdgeInsets.only(
                                                   left: 20.0),
                                               child: Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.start,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
                                                 children: [
                                                   RequiredLabel(
                                                     'Unidade',
                                                     true,
                                                   ),
-                                                  StreamBuilder<Object>(
-                                                      stream: blocEmbalagem
-                                                          .outValorLista,
-                                                      builder: (context,
-                                                          retornoStream) {
-                                                        Container(
-                                                          height: 50.0,
-                                                          child: Column(
-                                                            crossAxisAlignment:
-                                                                CrossAxisAlignment
-                                                                    .center,
-                                                            children: <Widget>[
-                                                              DropdownButton<
-                                                                  String>(
-                                                                items:
-                                                                    tipoCapacidade
-                                                                        .map((
-                                                                  String
-                                                                      dropDownStringItem,
-                                                                ) {
-                                                                  return DropdownMenuItem<
-                                                                      String>(
-                                                                    value:
-                                                                        dropDownStringItem,
-                                                                    child: Text(
-                                                                        dropDownStringItem),
-                                                                  );
-                                                                }).toList(),
-                                                                onChanged: (
-                                                                  String
-                                                                      novoValorSelecionado,
-                                                                ) async {
-                                                                  blocEmbalagem
-                                                                      .eventoAlteralista(
-                                                                          novoValorSelecionado);
-                                                                  valorSelecionado =
-                                                                      novoValorSelecionado;
-                                                                  blocEmbalagem
-                                                                      .setTipoUnidade(
-                                                                          novoValorSelecionado);
-                                                                },
-                                                                value:
-                                                                    valorSelecionado,
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        );
-
-                                                        // return Container(
-                                                        //   height: 50.0,
-                                                        //   child: Column(
-                                                        //     crossAxisAlignment:
-                                                        //         CrossAxisAlignment
-                                                        //             .center,
-                                                        //     children: <Widget>[
-                                                        //       DropdownButton<
-                                                        //           String>(
-                                                        //         items:
-                                                        //             tipoCapacidade
-                                                        //                 .map((
-                                                        //           String
-                                                        //               dropDownStringItem,
-                                                        //         ) {
-                                                        //           return DropdownMenuItem<
-                                                        //               String>(
-                                                        //             value:
-                                                        //                 dropDownStringItem,
-                                                        //             child: Text(
-                                                        //                 dropDownStringItem),
-                                                        //           );
-                                                        //         }).toList(),
-                                                        //         onChanged: (
-                                                        //           String
-                                                        //               novoValorSelecionado,
-                                                        //         ) async {
-                                                        //           print(snapshot
-                                                        //               .data);
-                                                        //           blocEmbalagem
-                                                        //               .eventoAlteralista(
-                                                        //                   novoValorSelecionado);
-                                                        //           valorSelecionado =
-                                                        //               novoValorSelecionado;
-                                                        //           blocEmbalagem
-                                                        //               .setTipoUnidade(
-                                                        //                   novoValorSelecionado);
-                                                        //         },
-                                                        //         value:
-                                                        //             valorSelecionado,
-                                                        //       ),
-                                                        //     ],
-                                                        //   ),
-                                                        // );
-                                                      }),
+                                                  Container(
+                                                    height: 50.0,
+                                                    child: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .center,
+                                                      children: <Widget>[
+                                                        DropdownButton<String>(
+                                                          items: tipoCapacidade
+                                                              .map((
+                                                            String
+                                                                dropDownStringItem,
+                                                          ) {
+                                                            return DropdownMenuItem<
+                                                                String>(
+                                                              value:
+                                                                  dropDownStringItem,
+                                                              child: Text(
+                                                                  dropDownStringItem),
+                                                            );
+                                                          }).toList(),
+                                                          onChanged: (novoValorSelecionado) =>
+                                                              atualizaTipoUnidade(
+                                                                  novoValorSelecionado),
+                                                          value:
+                                                              valorSelecionadoUnidade,
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
                                                 ],
                                               ),
                                             ),
-                                            // StreamBuilder<Object>(
-                                            //   initialData: false,
-                                            //   stream:
-                                            //       blocEmbalagem.outValorLista,
-                                            //   builder: (BuildContext context,
-                                            //       AsyncSnapshot snapshot) {
-                                            //     return Padding(
-                                            //       padding:
-                                            //           const EdgeInsets.only(
-                                            //               top: 10.0),
-                                            //       child: Container(
-                                            //         alignment:
-                                            //             Alignment.centerLeft,
-                                            //         child: Checkbox(
-                                            //           visualDensity:
-                                            //               VisualDensity(
-                                            //                   horizontal: 2.0,
-                                            //                   vertical: 2.0),
-                                            //           value: snapshot.data,
-                                            //           onChanged:
-                                            //               (bool novoValor) {
-                                            //             blocAcesso
-                                            //                 .eventoCliqueCheckBox(
-                                            //                     novoValor,
-                                            //                     tSenha);
-                                            //             escondeSenha =
-                                            //                 snapshot.data;
-                                            //           },
-                                            //         ),
-                                            //       ),
-                                            //     );
-                                            //   },
-                                            // ),
                                           ],
                                         ),
                                         Row(
@@ -635,13 +597,13 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
             width: largura ?? double.maxFinite,
             child: TextFormField(
               initialValue: valorInicial,
-              cursorColor: Colors.black,
+              cursorColor: Colors.grey[600],
               enabled: enabled,
               controller: controller,
               onChanged: onChanged,
               style: TextStyle(
                 fontSize: 16,
-                color: Colors.black,
+                color: Colors.grey[600],
               ),
               decoration: InputDecoration(),
             ),

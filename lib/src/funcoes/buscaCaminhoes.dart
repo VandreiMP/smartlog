@@ -68,7 +68,7 @@ class _BuscaCaminhaoState extends State<BuscaCaminhao> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.only(left: 111.0, top: 15),
+                          padding: const EdgeInsets.only(left: 165.0, top: 15),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -81,7 +81,7 @@ class _BuscaCaminhaoState extends State<BuscaCaminhao> {
                                 width: 5.0,
                               ),
                               Padding(
-                                padding: const EdgeInsets.only(left: 5.0),
+                                padding: const EdgeInsets.only(left: 2.0),
                                 child: AppText(
                                   'Decrição',
                                   bold: true,

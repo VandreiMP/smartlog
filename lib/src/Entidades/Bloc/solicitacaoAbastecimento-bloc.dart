@@ -8,6 +8,7 @@ import 'package:smartlogproject/src/Entidades/classes/solicitacaoAbastecimento.d
 import 'package:smartlogproject/src/Entidades/classes/embalagem.dart';
 import 'package:smartlogproject/src/funcoes/alert.dart';
 import 'package:smartlogproject/src/funcoes/alertErro.dart';
+import 'package:smartlogproject/src/funcoes/alertFuncao.dart';
 import 'package:smartlogproject/src/funcoes/calculaCustoSolicitacao.dart';
 
 class SolicitacaoAbastecimentoBloc extends BlocBase {
@@ -45,6 +46,7 @@ class SolicitacaoAbastecimentoBloc extends BlocBase {
       _tipoCombustivelController.sink.add(value);
   void setPrecoLitro(double value) => _precoLitroController.sink.add(value);
   void setQuantidade(double value) => _quantidadeController.sink.add(value);
+  void setCustoTotal(double value) => _custoTotalController.sink.add(value);
   void setCustoVinculado(String value) =>
       _custoVinculadoController.sink.add(value);
 
@@ -83,8 +85,8 @@ class SolicitacaoAbastecimentoBloc extends BlocBase {
   var _quantidadeController = BehaviorSubject<double>();
   Stream<double> get outQuantidade => _quantidadeController.stream;
 
-  // var _custoTotalController = BehaviorSubject<double>();
-  // Stream<double> get outCustoTotal => _custoTotalController.stream;
+  var _custoTotalController = BehaviorSubject<double>();
+  Stream<double> get outCustoTotal => _custoTotalController.stream;
 
   var _custoVinculadoController = BehaviorSubject<String>();
   Stream<String> get outCustoVinculado => _custoVinculadoController.stream;
@@ -160,8 +162,13 @@ class SolicitacaoAbastecimentoBloc extends BlocBase {
           .document(solicitacaoAbastecimento.identificacao)
           .delete()
           .then(
-            (value) => alert(contextoAplicacao, 'Notificação de Sucesso',
-                'Os dados do formulário foram apagados com sucesso no banco de dados!'),
+            (value) => alertFuncao(contextoAplicacao, 'Notificação de Sucesso',
+                'Os dados do formulário foram apagados com sucesso no banco de dados!',
+                () {
+              Navigator.of(contextoAplicacao).pushNamed(
+                '/FormularioAbastecimento',
+              );
+            }),
           )
           .catchError((ErrorAndStacktrace erro) {
         print(erro.error);
@@ -185,12 +192,12 @@ class SolicitacaoAbastecimentoBloc extends BlocBase {
     solicitacaoAbastecimento.tipoCombustivel = _tipoCombustivelController.value;
     solicitacaoAbastecimento.precoLitro = _precoLitroController.value;
     solicitacaoAbastecimento.quantidade = _quantidadeController.value;
-    solicitacaoAbastecimento.custoTotal = calculaValorTotalSolicitacao(
-      _precoLitroController.value,
-      _quantidadeController.value,
-    );
+    // solicitacaoAbastecimento.custoTotal = calculaValorTotalSolicitacao(
+    //   _precoLitroController.value,
+    //   _quantidadeController.value,
+    // );
     solicitacaoAbastecimento.custoVinculado = _custoVinculadoController.value;
-
+    print(solicitacaoAbastecimento.identificacao);
     try {
       await Firestore.instance
           .collection('solicitacaoAbastecimento')
@@ -201,7 +208,7 @@ class SolicitacaoAbastecimentoBloc extends BlocBase {
         'situacaoSolicitacao': solicitacaoAbastecimento.situacaoSolicitacao,
         'solicitante': solicitacaoAbastecimento.solicitante,
         'dataAbertura': solicitacaoAbastecimento.dataAbertura,
-        'dataEfetivacao': solicitacaoAbastecimento..dataEfetivacao,
+        'dataEfetivacao': solicitacaoAbastecimento.dataEfetivacao,
         'posto': solicitacaoAbastecimento.posto,
         'tipoCombustivel': solicitacaoAbastecimento.tipoCombustivel,
         'precoLitro': solicitacaoAbastecimento.precoLitro,

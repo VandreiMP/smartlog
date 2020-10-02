@@ -149,7 +149,7 @@ class _BuscaAbastecimentoState extends State<BuscaAbastecimento> {
                                             alignment: Alignment.topRight,
                                             padding: EdgeInsets.all(10),
                                             width: 150,
-                                            decoration: BoxDecoration(  
+                                            decoration: BoxDecoration(
                                               color: Colors.white,
                                               borderRadius: BorderRadius.all(
                                                   Radius.circular(5)),
@@ -164,7 +164,7 @@ class _BuscaAbastecimentoState extends State<BuscaAbastecimento> {
                                           onTap: () {
                                             Navigator.of(context).pushNamed(
                                                 '/FormularioAbastecimento',
-                                                arguments: document.documentID);
+                                                arguments: identificacao);
                                           },
                                           child: Padding(
                                             padding: const EdgeInsets.only(

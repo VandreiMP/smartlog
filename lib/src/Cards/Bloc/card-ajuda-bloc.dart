@@ -26,7 +26,7 @@ class CardAjudaBloc extends BlocBase {
       this.contextoAplicacao, this.origem, this.origemDado, this.chaveConsulta);
 
   Future<void> eventoCliqueBotaoSalvar() async {
-    print(chaveConsulta);
+   
     if (origemDado == 'USUARIO') {
       if (chaveConsulta == null) {
         UsuarioBloc blocUsuario =
@@ -106,10 +106,19 @@ class CardAjudaBloc extends BlocBase {
       await blocRomaneio.insereDados(contextoAplicacao);
     }
     if (origemDado == 'COMBUSTIVEL') {
-      SolicitacaoAbastecimentoBloc blocSolicitacaoAbastecimento =
-          BlocProvider.of<SolicitacaoAbastecimentoBloc>(contextoAplicacao);
+      
+      if (chaveConsulta == null) {
+        SolicitacaoAbastecimentoBloc blocSolicitacaoAbastecimento =
+            BlocProvider.of<SolicitacaoAbastecimentoBloc>(contextoAplicacao);
 
-      await blocSolicitacaoAbastecimento.insereDados(contextoAplicacao);
+        await blocSolicitacaoAbastecimento.insereDados(contextoAplicacao);
+      } else {
+        //  print(chaveConsulta);
+        SolicitacaoAbastecimentoBloc blocSolicitacaoAbastecimento =
+            BlocProvider.of<SolicitacaoAbastecimentoBloc>(contextoAplicacao);
+
+        await blocSolicitacaoAbastecimento.atualizaDados(contextoAplicacao);
+      }
     }
     if (origemDado == 'OLEO') {
       SolicitacaoTrocaOleoBloc blocSolicitacaoAbastecimento =
@@ -154,7 +163,7 @@ class CardAjudaBloc extends BlocBase {
           BlocProvider.of<CaminhaoBloc>(contextoAplicacao);
       await blocCaminhao.apagarDados(contextoAplicacao);
     }
-     if (origemDado == 'DETALHES_CAMINHAO') {
+    if (origemDado == 'DETALHES_CAMINHAO') {
       FichaCaminhaoBloc blocFichaCaminhao =
           BlocProvider.of<FichaCaminhaoBloc>(contextoAplicacao);
       await blocFichaCaminhao.apagarDados(contextoAplicacao);

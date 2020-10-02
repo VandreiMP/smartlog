@@ -143,7 +143,7 @@ class UsuarioBloc extends BlocBase {
               .setData({
         'identificacao': usuario.identificacao,
         'nome': usuario.nome,
-        // 'tipoUsuario': usuario.tpUsuario,
+        'tipoUsuario': usuario.tpUsuario,
         'email': usuario.email,
         'emailLogin': usuario.emailLogin,
         'senha': usuario.senha,
@@ -222,7 +222,7 @@ class UsuarioBloc extends BlocBase {
           .updateData({
         'identificacao': usuario.identificacao,
         'nome': usuario.nome,
-        // 'tipoUsuario': usuario.tpUsuario,
+        'tipoUsuario': usuario.tpUsuario,
         'email': usuario.email,
         'emailLogin': usuario.emailLogin,
         'senha': usuario.senha,

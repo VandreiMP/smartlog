@@ -60,26 +60,41 @@ class Body extends StatelessWidget {
   }
 }
 
-class CriaCardFormulario extends StatelessWidget {
+class CriaCardFormulario extends StatefulWidget {
+  @override
+  _CriaCardFormularioState createState() => _CriaCardFormularioState();
+}
+
+class _CriaCardFormularioState extends State<CriaCardFormulario> {
   List<String> usuarios = [
     'Funcionário',
     'Diretor',
     'Motorista',
   ];
 
-  /*
-    Variáveis usadas para capturar o valor dos campos do formulário
-    e salvar no banco
-  */
   final tNome = TextEditingController();
+
   final tId = TextEditingController();
+
   final tTpUsuario = TextEditingController();
+
   final tEmailLogin = TextEditingController();
+
   final tSenha = TextEditingController();
+
   final tEmail = TextEditingController();
+
   final tTelefone = MaskedTextController(mask: mascaraTelefone);
+
   final tCelular = MaskedTextController(mask: mascaraCelular);
+
   final tRamal = TextEditingController();
+
+  /*
+  Variáveis de Controle para exibição das listas.
+  */
+  String valorSelecionadoTipoUsuario;
+  bool consultaListaTipoUsuario = true;
 
   @override
   Widget build(BuildContext context) {
@@ -88,6 +103,17 @@ class CriaCardFormulario extends StatelessWidget {
     final Firestore firestore = Firestore.instance;
     String idFuncionario = ModalRoute.of(context).settings.arguments;
     bool campoHabilitado = true;
+    bool escondeCampo;
+
+    void atualizaTipoUsuario(String valor) {
+      if (valor.isNotEmpty) {
+        setState(() {
+          valorSelecionadoTipoUsuario = valor;
+          blocFuncionario.setTpUsuario(valorSelecionadoTipoUsuario);
+          consultaListaTipoUsuario = false;
+        });
+      }
+    }
 
     Future consultaValor(DocumentSnapshot coluna) async {
       if (idFuncionario.isNotEmpty) {
@@ -100,6 +126,11 @@ class CriaCardFormulario extends StatelessWidget {
       tTelefone.text = coluna.data['telefone'];
       tCelular.text = coluna.data['celular'];
       tRamal.text = coluna.data['ramal'];
+
+      if (consultaListaTipoUsuario == true) {
+        tTpUsuario.text = coluna.data['tipoUsuario'];
+        atualizaTipoUsuario(tTpUsuario.text);
+      }
 
       blocFuncionario.setId(tId.text);
       blocFuncionario.setNome(tNome.text);
@@ -126,7 +157,7 @@ class CriaCardFormulario extends StatelessWidget {
     }
 
     return StreamBuilder<Object>(
-        stream: null,
+        stream: blocFuncionario.outId,
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           return Scroll(
             height: double.infinity,
@@ -217,9 +248,9 @@ class CriaCardFormulario extends StatelessWidget {
                                                 ),
                                               ),
                                             ),
-                                            Padding(
+                                         Padding(
                                               padding: const EdgeInsets.only(
-                                                  left: 70.0),
+                                                  left: 20.0),
                                               child: Column(
                                                 mainAxisAlignment:
                                                     MainAxisAlignment.start,
@@ -231,8 +262,34 @@ class CriaCardFormulario extends StatelessWidget {
                                                     true,
                                                   ),
                                                   Container(
-                                                    child: DropDown(
-                                                      valores: usuarios,
+                                                    height: 50.0,
+                                                    child: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .center,
+                                                      children: <Widget>[
+                                                        DropdownButton<String>(
+                                                          items:
+                                                              usuarios
+                                                                  .map((
+                                                            String
+                                                                dropDownStringItem,
+                                                          ) {
+                                                            return DropdownMenuItem<
+                                                                String>(
+                                                              value:
+                                                                  dropDownStringItem,
+                                                              child: Text(
+                                                                  dropDownStringItem),
+                                                            );
+                                                          }).toList(),
+                                                          onChanged: (novoValorSelecionado) =>
+                                                              atualizaTipoUsuario(
+                                                                  novoValorSelecionado),
+                                                          value:
+                                                              valorSelecionadoTipoUsuario,
+                                                        ),
+                                                      ],
                                                     ),
                                                   ),
                                                 ],
