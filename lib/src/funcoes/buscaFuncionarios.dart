@@ -162,9 +162,8 @@ class _BuscaFuncionariosState extends State<BuscaFuncionarios> {
                                         GestureDetector(
                                           onTap: () {
                                             if (origem == 'CARGA') {
-                                              Navigator.of(context).pushNamed(
-                                                '/FormularioCarga',
-                                              );
+                                              Navigator.pop(
+                                                  context, identificacao);
                                             } else {
                                               Navigator.of(context).pushNamed(
                                                 '/FormularioUsuario',

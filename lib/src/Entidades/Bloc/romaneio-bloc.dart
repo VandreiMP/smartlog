@@ -150,7 +150,7 @@ class RomaneioBloc extends BlocBase {
           .delete()
           .then((value) => {
                 Navigator.of(contextoAplicacao).pushNamed(
-                  '/FormularioManutencao',
+                  '/FormularioRomaneio',
                 ),
               })
           .catchError((ErrorAndStacktrace erro) {

@@ -4,8 +4,10 @@ import 'package:date_format/date_format.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:smartlogproject/src/Entidades/Bloc/romaneio-bloc.dart';
 import 'package:smartlogproject/src/Entidades/classes/carregamentoMercadoria.dart';
 import 'package:smartlogproject/src/Entidades/classes/embalagem.dart';
+import 'package:smartlogproject/src/constantes/mensagens.dart';
 import 'package:smartlogproject/src/funcoes/alert.dart';
 import 'package:smartlogproject/src/funcoes/alertErro.dart';
 import 'package:smartlogproject/src/funcoes/alertFuncao.dart';
@@ -168,6 +170,12 @@ class CarregamentoMercadoriaBloc extends BlocBase {
         _quantidadeController.value,
         _totalDespController.value);
 
+    print(carregamentoMercadoria.carga);
+
+    if (carregamentoMercadoria.carga.toString() == null) {
+      TextError('Erro');
+    }
+
     try {
       await Firestore.instance
           .collection('carregamentoMercadoria')
@@ -194,11 +202,9 @@ class CarregamentoMercadoriaBloc extends BlocBase {
         'totalDesp': carregamentoMercadoria.totalDesp,
         'totalCarga': carregamentoMercadoria.totalCarga
       }).then((value) async => await alert(
-              contextoAplicacao,
-              'Notificação de Sucesso',
-              'Os dados do formulário foram salvos com sucesso no banco de dados!'));
+              contextoAplicacao, mensagemNotificacao, mensagemSucessoSalvar));
     } catch (on) {
-      TextError('Erro ao salvar os dados do formulário no banco de dados!');
+      TextError(mensagemErroSalvar);
     }
   }
 
@@ -214,9 +220,10 @@ class CarregamentoMercadoriaBloc extends BlocBase {
 
     carregamentoMercadoria.carga = _cargaController.value;
 
+    WriteBatch transacaoBanco = Firestore.instance.batch();
+
     void concluiEventoApagarDados() {
-      alertFuncao(contextoAplicacao, 'Notificação de Sucesso',
-          'Os dados do formulário foram apagados com sucesso no banco de dados!',
+      alertFuncao(contextoAplicacao, mensagemNotificacao, mensagemSucessoApagar,
           () {
         Navigator.of(contextoAplicacao).pushNamed(
           '/FormularioCarga',
@@ -225,6 +232,14 @@ class CarregamentoMercadoriaBloc extends BlocBase {
     }
 
     try {
+      await Firestore.instance
+          .collection('romaneioCarga')
+          .document(carregamentoMercadoria.carga)
+          .delete()
+          .catchError((ErrorAndStacktrace erro) {
+        print(erro.error);
+      });
+
       await Firestore.instance
           .collection('carregamentoMercadoria')
           .document(carregamentoMercadoria.carga)
@@ -236,8 +251,9 @@ class CarregamentoMercadoriaBloc extends BlocBase {
         print(erro.error);
       });
     } catch (on) {
-      TextError('Erro ao apagar os dados do formulário no banco de dados!');
+      TextError(mensagemErroApagar);
     }
+    transacaoBanco.commit();
   }
 
   Future<void> atualizaDados(
@@ -297,11 +313,31 @@ class CarregamentoMercadoriaBloc extends BlocBase {
         'totalDesp': carregamentoMercadoria.totalDesp,
         'totalCarga': carregamentoMercadoria.totalCarga
       }).then((value) async => await alert(
-              contextoAplicacao,
-              'Notificação de Sucesso',
-              'Os dados do formulário foram atualizados com sucesso no banco de dados!'));
+              contextoAplicacao, mensagemNotificacao, mensagemSucessoSalvar));
     } catch (on) {
-      TextError('Erro ao atualizar os dados do formulário no banco de dados!');
+      TextError(mensagemErroApagar);
+    }
+  }
+
+  Future<void> verificaCarga(
+      String numeroCarga, BuildContext contextoAplicacao) async {
+    if (numeroCarga.isNotEmpty) {
+      await Firestore.instance
+          .collection("carregamentoMercadoria")
+          .document(numeroCarga)
+          .get()
+          .then(
+            (coluna) async => coluna.exists == false
+                ? alert(contextoAplicacao, mensagemAlerta,
+                    'Para gerar o romaneio é necessário gravar a carga no sistema!')
+                : Navigator.of(contextoAplicacao).pushNamed(
+                    '/FormularioRomaneio',
+                    arguments: numeroCarga,
+                  ),
+          );
+    } else {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para gerar o romaneio é necessário gravar a carga no sistema!');
     }
   }
 

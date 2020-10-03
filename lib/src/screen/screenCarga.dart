@@ -7,7 +7,9 @@ import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:smartlogproject/src/Entidades/Bloc/carregamentoMercadoria-bloc.dart';
 import 'package:smartlogproject/src/funcoes/calculaTotalCarga.dart';
 import 'package:smartlogproject/src/funcoes/criaLista.dart';
+import 'package:smartlogproject/src/funcoes/criaListaValoresCaminhao.dart';
 import 'package:smartlogproject/src/funcoes/criaListaValoresEmbalagem.dart';
+import 'package:smartlogproject/src/funcoes/criaListaValoresMotorista.dart';
 import 'package:smartlogproject/src/funcoes/requiredLabel.dart';
 import '../Components/scroll/scroll.dart';
 import '../constantes/mascaras.dart';
@@ -83,6 +85,7 @@ class CriaCardFormulario extends StatelessWidget {
     final tSituacaoExpedicao = TextEditingController();
     final tCaminhao = TextEditingController();
     final tMotorista = TextEditingController();
+    final tNomeMotorista = TextEditingController();
     final tComprador = TextEditingController();
     final tTelefone = MaskedTextController(mask: mascaraTelefone);
     final tDataEntrega = MaskedTextController(mask: mascaraData);
@@ -90,6 +93,8 @@ class CriaCardFormulario extends StatelessWidget {
     final tProduto = TextEditingController();
     final tEmbalagem = TextEditingController();
     final tCodEmbalagem = TextEditingController();
+    final tCodCaminhao = TextEditingController();
+    final tDsCaminhao = TextEditingController();
     final tQuantidadeEmbalagem = MaskedTextController(mask: mascaraQuantidade);
     final tPesoBruto = MaskedTextController(mask: mascaraPeso);
     final tPesoLiquido = MaskedTextController(mask: mascaraPreco);
@@ -104,6 +109,30 @@ class CriaCardFormulario extends StatelessWidget {
 
     final Firestore firestore = Firestore.instance;
     String numeroCarga = ModalRoute.of(context).settings.arguments;
+
+    void consultaEmbalagem() async {
+      firestore
+          .collection("embalagem")
+          .document(tCodEmbalagem.text)
+          .get()
+          .then((value) async => tEmbalagem.text = value.data['descricao']);
+    }
+
+    void consultaCaminhao() async {
+      firestore
+          .collection("caminhao")
+          .document(tCodCaminhao.text)
+          .get()
+          .then((value) async => tDsCaminhao.text = value.data['descricao']);
+    }
+
+    void consultaMotorista() async {
+      firestore
+          .collection("usuario")
+          .document(tMotorista.text)
+          .get()
+          .then((value) async => tNomeMotorista.text = value.data['nome']);
+    }
 
     Future consultaDados(DocumentSnapshot campo) async {
       if (numeroCarga.isNotEmpty) {
@@ -120,6 +149,8 @@ class CriaCardFormulario extends StatelessWidget {
       tSituacaoEntrega.text = campo.data['situacaoEntrega'];
       tProduto.text = campo.data['produto'];
       tCodEmbalagem.text = campo.data['embalagem'];
+      tCodCaminhao.text = campo.data['caminhao'];
+
       tQuantidadeEmbalagem.text = campo.data['quantidadeEmbalagem'].toString();
       tPesoBruto.text = campo.data['pesoBruto'].toString();
 
@@ -133,21 +164,26 @@ class CriaCardFormulario extends StatelessWidget {
       blocCarregamentoMercadoria.setCarga(tCarga.text);
       blocCarregamentoMercadoria.setNumeroRomaneio(tNumeroRomaneio.text);
       blocCarregamentoMercadoria.setSituacaoExpedicao(tSituacaoExpedicao.text);
-      blocCarregamentoMercadoria.setCaminhao(tCaminhao.text);
-      blocCarregamentoMercadoria.setMototista(tMotorista.text);
+
       blocCarregamentoMercadoria.setComprador(tComprador.text);
       blocCarregamentoMercadoria.setTelefone(tTelefone.text);
       blocCarregamentoMercadoria.setDataEntrega(tDataEntrega.text);
       blocCarregamentoMercadoria.setSituacaoEntrega(tSituacaoEntrega.text);
       blocCarregamentoMercadoria.setProduto(tProduto.text);
 
-      firestore
-          .collection("embalagem")
-          .document(tCodEmbalagem.text)
-          .get()
-          .then((value) async => tEmbalagem.text = value.data['descricao']);
+      consultaEmbalagem();
+      consultaCaminhao();
+      consultaMotorista();
+
+      //  await firestore
+      //     .collection("embalagem")
+      //     .document(tCodEmbalagem.text)
+      //     .get()
+      //     .then((value) async => tEmbalagem.text = value.data['descricao']);
 
       blocCarregamentoMercadoria.setEmbalagem(tCodEmbalagem.text);
+      blocCarregamentoMercadoria.setCaminhao(tCodCaminhao.text);
+      blocCarregamentoMercadoria.setMototista(tMotorista.text);
 
       blocCarregamentoMercadoria
           .setQuantidadeEmbalagem(double.parse(tQuantidadeEmbalagem.text));
@@ -278,15 +314,10 @@ class CriaCardFormulario extends StatelessWidget {
                                                   children: [
                                                     GestureDetector(
                                                       onTap: () {
-                                                        if (tCarga
-                                                            .text.isNotEmpty) {
-                                                          Navigator.of(context)
-                                                              .pushNamed(
-                                                                  '/FormularioRomaneio',
-                                                                  arguments:
-                                                                      tCarga
-                                                                          .text);
-                                                        }
+                                                        blocCarregamentoMercadoria
+                                                            .verificaCarga(
+                                                                tCarga.text,
+                                                                context);
                                                       },
                                                       child: Container(
                                                         decoration:
@@ -380,6 +411,8 @@ class CriaCardFormulario extends StatelessWidget {
                                               labelCampo: 'Caminhão',
                                               largura: 450,
                                               altura: 30,
+                                              enabled: false,
+                                              controller: tDsCaminhao,
                                               obrigaCampo: true,
                                             ),
                                             Padding(
@@ -395,10 +428,37 @@ class CriaCardFormulario extends StatelessWidget {
                                                       CrossAxisAlignment.start,
                                                   children: [
                                                     GestureDetector(
-                                                      onTap: () {
-                                                        Navigator.of(context)
-                                                            .pushNamed(
-                                                                '/ListaValoresCaminhao');
+                                                      onTap: () async {
+                                                        tCodCaminhao
+                                                            .text = await Navigator
+                                                                .of(context)
+                                                            .push(
+                                                                PageRouteBuilder(
+                                                          opaque: false,
+                                                          pageBuilder: (_, __,
+                                                                  ___) =>
+                                                              ListaValoresCaminhao(),
+                                                        ));
+
+                                                        if (tCodCaminhao
+                                                            .text.isNotEmpty) {
+                                                          firestore
+                                                              .collection(
+                                                                  "caminhao")
+                                                              .document(
+                                                                  tCodCaminhao
+                                                                      .text)
+                                                              .get()
+                                                              .then((value) async =>
+                                                                  tDsCaminhao
+                                                                      .text = value
+                                                                          .data[
+                                                                      'descricao']);
+                                                          blocCarregamentoMercadoria
+                                                              .setCaminhao(
+                                                                  tCodCaminhao
+                                                                      .text);
+                                                        }
                                                       },
                                                       child: Container(
                                                         decoration:
@@ -434,6 +494,8 @@ class CriaCardFormulario extends StatelessWidget {
                                               labelCampo: 'Motorista',
                                               largura: 450,
                                               altura: 30,
+                                              controller: tNomeMotorista,
+                                              enabled: false,
                                               obrigaCampo: true,
                                             ),
                                             Padding(
@@ -449,10 +511,37 @@ class CriaCardFormulario extends StatelessWidget {
                                                       CrossAxisAlignment.start,
                                                   children: [
                                                     GestureDetector(
-                                                      onTap: () {
-                                                        Navigator.of(context)
-                                                            .pushNamed(
-                                                                '/ListaValoresMotorista');
+                                                      onTap: () async {
+                                                        tMotorista
+                                                            .text = await Navigator
+                                                                .of(context)
+                                                            .push(
+                                                                PageRouteBuilder(
+                                                          opaque: false,
+                                                          pageBuilder: (_, __,
+                                                                  ___) =>
+                                                              ListaValoresMotorista(),
+                                                        ));
+
+                                                        if (tMotorista
+                                                            .text.isNotEmpty) {
+                                                          firestore
+                                                              .collection(
+                                                                  "usuario")
+                                                              .document(
+                                                                  tMotorista
+                                                                      .text)
+                                                              .get()
+                                                              .then((value) async =>
+                                                                  tNomeMotorista
+                                                                      .text = value
+                                                                          .data[
+                                                                      'nome']);
+                                                          blocCarregamentoMercadoria
+                                                              .setMototista(
+                                                                  tMotorista
+                                                                      .text);
+                                                        }
                                                       },
                                                       child: Container(
                                                         decoration:
@@ -763,6 +852,9 @@ class CriaCardFormulario extends StatelessWidget {
                                               altura: 30,
                                               controller: tQuantidade,
                                               onChanged: (String valor) {
+                                                blocCarregamentoMercadoria
+                                                    .setQuantidade(double.parse(
+                                                        tQuantidade.text));
                                                 tTotalCarga.text =
                                                     calculaValorTotalCarga(
                                                   double.parse(
@@ -771,9 +863,6 @@ class CriaCardFormulario extends StatelessWidget {
                                                       tQuantidade.text),
                                                   double.parse(tTotalDesp.text),
                                                 ).toString();
-                                                blocCarregamentoMercadoria
-                                                    .setQuantidade(double.parse(
-                                                        tQuantidade.text));
                                               },
                                               obrigaCampo: false,
                                             ),
@@ -794,6 +883,11 @@ class CriaCardFormulario extends StatelessWidget {
                                                 altura: 30,
                                                 controller: tPrecoLiquido,
                                                 onChanged: (String valor) {
+                                                  blocCarregamentoMercadoria
+                                                      .setPrecoLiquido(
+                                                          double.parse(
+                                                              tPrecoLiquido
+                                                                  .text));
                                                   tTotalCarga.text =
                                                       calculaValorTotalCarga(
                                                     double.parse(
@@ -803,11 +897,6 @@ class CriaCardFormulario extends StatelessWidget {
                                                     double.parse(
                                                         tTotalDesp.text),
                                                   ).toString();
-                                                  blocCarregamentoMercadoria
-                                                      .setPrecoLiquido(
-                                                          double.parse(
-                                                              tPrecoLiquido
-                                                                  .text));
                                                 },
                                                 obrigaCampo: false,
                                               ),
@@ -829,6 +918,10 @@ class CriaCardFormulario extends StatelessWidget {
                                                 altura: 30,
                                                 controller: tTotalDesp,
                                                 onChanged: (String valor) {
+                                                  blocCarregamentoMercadoria
+                                                      .setTotalDesp(
+                                                          double.parse(
+                                                              tTotalDesp.text));
                                                   tTotalCarga.text =
                                                       calculaValorTotalCarga(
                                                     double.parse(
@@ -838,10 +931,6 @@ class CriaCardFormulario extends StatelessWidget {
                                                     double.parse(
                                                         tTotalDesp.text),
                                                   ).toString();
-                                                  blocCarregamentoMercadoria
-                                                      .setTotalDesp(
-                                                          double.parse(
-                                                              tTotalDesp.text));
                                                 },
                                                 obrigaCampo: false,
                                               ),

@@ -2,6 +2,7 @@ import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:flutter/material.dart';
 import 'package:smartlogproject/src/Components/scroll/scroll.dart';
 import 'package:smartlogproject/src/Entidades/Bloc/embalagem-bloc.dart';
+import 'package:smartlogproject/src/constantes/cores.dart';
 import 'package:smartlogproject/src/funcoes/appText.dart';
 import 'package:smartlogproject/src/funcoes/buscaEmbalagens.dart';
 
@@ -10,7 +11,7 @@ class ListaValoresEmbalagem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       alignment: Alignment.center,
-      color: Color.fromARGB(120, 0, 0, 0),
+      color: corTransparente,
       child: BlocProvider(
         bloc: EmbalagemBloc(context),
         child: CriaCardFormulario(),

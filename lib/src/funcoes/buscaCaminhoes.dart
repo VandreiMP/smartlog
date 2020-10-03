@@ -147,6 +147,7 @@ class _BuscaCaminhaoState extends State<BuscaCaminhao> {
                                         GestureDetector(
                                           onTap: () {
                                             if (origem == 'CARGA') {
+                                              Navigator.pop(context, identificacao);
                                             } else {
                                               Navigator.of(context).pushNamed(
                                                   '/FormularioCaminhao',
