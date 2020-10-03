@@ -43,8 +43,7 @@ class _BuscaTrocaOleoState extends State<BuscaTrocaOleo> {
                     ],
                   ));
 
-                final int trocaOleoContador =
-                    snapshot.data.documents.length;
+                final int trocaOleoContador = snapshot.data.documents.length;
                 if (trocaOleoContador > 0) {
                   return Container(
                     decoration: BoxDecoration(
@@ -149,7 +148,7 @@ class _BuscaTrocaOleoState extends State<BuscaTrocaOleo> {
                                             alignment: Alignment.topRight,
                                             padding: EdgeInsets.all(10),
                                             width: 150,
-                                            decoration: BoxDecoration(  
+                                            decoration: BoxDecoration(
                                               color: Colors.white,
                                               borderRadius: BorderRadius.all(
                                                   Radius.circular(5)),
@@ -163,8 +162,8 @@ class _BuscaTrocaOleoState extends State<BuscaTrocaOleo> {
                                         GestureDetector(
                                           onTap: () {
                                             Navigator.of(context).pushNamed(
-                                                '/FormularioTrocaOleo',
-                                                arguments: document.documentID);
+                                                '/FormularioTrocaDeOleo',
+                                                arguments: identificacao);
                                           },
                                           child: Padding(
                                             padding: const EdgeInsets.only(

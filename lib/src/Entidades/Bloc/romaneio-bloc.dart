@@ -6,8 +6,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:smartlogproject/src/Entidades/classes/romaneio.dart';
 import 'package:smartlogproject/src/Entidades/classes/embalagem.dart';
+import 'package:smartlogproject/src/constantes/mensagens.dart';
 import 'package:smartlogproject/src/funcoes/alert.dart';
 import 'package:smartlogproject/src/funcoes/alertErro.dart';
+import 'package:smartlogproject/src/funcoes/alertFuncao.dart';
 
 class RomaneioBloc extends BlocBase {
   String _carga;
@@ -123,11 +125,9 @@ class RomaneioBloc extends BlocBase {
         'cidadeDestino': romaneioCarga.cidadeDestino,
         'ufDestino': romaneioCarga.ufDestino
       }).then((value) async => await alert(
-              contextoAplicacao,
-              'Notificação de Sucesso',
-              'Os dados do formulário foram salvos com sucesso no banco de dados!'));
+              contextoAplicacao, mensagemNotificacao, mensagemSucessoSalvar));
     } catch (on) {
-      TextError('Erro ao salvar os dados do formulário no banco de dados!');
+      TextError(mensagemErroApagar);
     }
   }
 
@@ -148,15 +148,16 @@ class RomaneioBloc extends BlocBase {
           .collection('romaneioCarga')
           .document(romaneioCarga.carga)
           .delete()
-          .then(
-            (value) => alert(contextoAplicacao, 'Notificação de Sucesso',
-                'Os dados do formulário foram apagados com sucesso no banco de dados!'),
-          )
+          .then((value) => {
+                Navigator.of(contextoAplicacao).pushNamed(
+                  '/FormularioManutencao',
+                ),
+              })
           .catchError((ErrorAndStacktrace erro) {
         print(erro.error);
       });
     } catch (on) {
-      TextError('Erro ao apagar os dados do formulário no banco de dados!');
+      TextError(mensagemErroApagar);
     }
   }
 
@@ -192,11 +193,9 @@ class RomaneioBloc extends BlocBase {
         'cidadeDestino': romaneioCarga.cidadeDestino,
         'ufDestino': romaneioCarga.ufDestino
       }).then((value) async => await alert(
-              contextoAplicacao,
-              'Notificação de Sucesso',
-              'Os dados do formulário foram atualizados com sucesso no banco de dados!'));
+              contextoAplicacao, mensagemNotificacao, mensagemSucessoSalvar));
     } catch (on) {
-      TextError('Erro ao atualizar os dados do formulário no banco de dados!');
+      TextError(mensagemErroSalvar);
     }
   }
 

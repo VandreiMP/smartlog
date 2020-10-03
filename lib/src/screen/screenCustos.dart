@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:smartlogproject/src/Components/scroll/scroll.dart';
 import 'package:smartlogproject/src/Entidades/Bloc/custo-bloc.dart';
+import 'package:smartlogproject/src/funcoes/alertErro.dart';
 import '../constantes/mascaras.dart';
 import '../funcoes/appText.dart';
 import '../Cards/Widgets/criaCardAuxiliar.dart';
@@ -84,6 +85,7 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
     'Trimestral',
     'Semestral',
     'Anual',
+    'Não se Aplica',
   ];
 
   List<String> consideraAgr = [
@@ -91,17 +93,27 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
     'Desconsidera',
   ];
 
+  /*
+  Variáveis usadas para capturar o valor dos campos do formulário
+  e salvar no banco
+  */
+
   final tDetalhes = TextEditingController();
-
   final tId = TextEditingController();
-
   final tModalidade = TextEditingController();
-
   final tPeriodicidade = TextEditingController();
-
   final tAnaliseGerencial = TextEditingController();
-
   final tValor = TextEditingController();
+
+  /*
+  Variáveis de Controle para exibição das listas.
+  */
+  String valorModalidadeCusto = 'Variável';
+  bool consultaModalidadeCusto = true;
+  String valorPeriodoCusto;
+  bool consultaPeriodoCusto = true;
+  String valorAgr;
+  bool consultaAgr = true;
 
   @override
   Widget build(BuildContext context) {
@@ -111,12 +123,57 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
     String identificacaoCusto = ModalRoute.of(context).settings.arguments;
     bool campoHabilitado = true;
 
+    void atualizaModalidadeCusto(String valor) {
+      if (valor.isNotEmpty) {
+        setState(() {
+          valorModalidadeCusto = valor;
+          blocCusto.setModalidade(valorModalidadeCusto);
+          consultaModalidadeCusto = false;
+        });
+      }
+    }
+
+    void atualizaPeriodoCusto(String valor) {
+      if (valor.isNotEmpty) {
+        setState(() {
+          valorPeriodoCusto = valor;
+          blocCusto.setPeriodicidade(valorPeriodoCusto);
+          consultaPeriodoCusto = false;
+        });
+      }
+    }
+
+    void atualizaAgr(String valor) {
+      if (valor.isNotEmpty) {
+        setState(() {
+          valorAgr = valor;
+          blocCusto.setAnaliseGerencial(valorAgr);
+          consultaAgr = false;
+        });
+      }
+    }
+
     Future consultaValor(DocumentSnapshot coluna) async {
       if (identificacaoCusto.isNotEmpty) {
         tId.text = identificacaoCusto;
       }
       tDetalhes.text = coluna.data['detalhes'];
       tValor.text = coluna.data['valor'].toString();
+
+      // if (consultaModalidadeCusto == true) {
+      //   tModalidade.text = coluna.data['modalidade'];
+      //   atualizaModalidadeCusto(tModalidade.text);
+      // }
+
+      if (consultaPeriodoCusto == true) {
+        tPeriodicidade.text = coluna.data['periodicidade'];
+        atualizaPeriodoCusto(tPeriodicidade.text);
+      }
+
+      if (consultaAgr == true) {
+        tAnaliseGerencial.text = coluna.data['analiseGerencial'];
+        atualizaAgr(tAnaliseGerencial.text);
+      }
 
       blocCusto.setId(tId.text);
       blocCusto.setDetalhes(tDetalhes.text);
@@ -246,36 +303,120 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.start,
                                               children: [
-                                                RequiredLabel(
-                                                  'Modalidade',
-                                                  true,
-                                                ),
-                                                Container(
-                                                  child: DropDown(
-                                                    valores: modalidadeCusto,
-                                                  ),
+                                                Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.start,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    RequiredLabel(
+                                                      'Modalidade',
+                                                      true,
+                                                    ),
+                                                    Container(
+                                                      height: 50.0,
+                                                      child: Column(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .start,
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        children: <Widget>[
+                                                          DropdownButton<
+                                                              String>(
+                                                            items:
+                                                                modalidadeCusto
+                                                                    .map((
+                                                              String
+                                                                  dropDownStringItem,
+                                                            ) {
+                                                              return DropdownMenuItem<
+                                                                  String>(
+                                                                value:
+                                                                    dropDownStringItem,
+                                                                child: Text(
+                                                                    dropDownStringItem),
+                                                              );
+                                                            }).toList(),
+                                                            onTap: () {
+                                                              TextError('Erro');
+                                                            },
+                                                            onChanged: (novoValorSelecionado) =>
+                                                            
+                                                                // atualizaModalidadeCusto(
+                                                                //     novoValorSelecionado),
+                                                                     TextError('Erro'),
+                                                            value:
+                                                                valorModalidadeCusto,
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ],
                                                 ),
                                               ],
                                             ),
-                                            Padding(
-                                              padding: const EdgeInsets.only(
-                                                  left: 68.0),
-                                              child: Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.start,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  RequiredLabel(
-                                                    'Periodicidade',
-                                                    true,
+                                            Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          left: 20.0),
+                                                  child: Column(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment.start,
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      RequiredLabel(
+                                                        'Periodicidade',
+                                                        true,
+                                                      ),
+                                                      Container(
+                                                        height: 50.0,
+                                                        child: Column(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .start,
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
+                                                          children: <Widget>[
+                                                            DropdownButton<
+                                                                    String>(
+                                                                items:
+                                                                    periodoCusto
+                                                                        .map((
+                                                                  String
+                                                                      dropDownStringItem,
+                                                                ) {
+                                                                  return DropdownMenuItem<
+                                                                      String>(
+                                                                    value:
+                                                                        dropDownStringItem,
+                                                                    child: Text(
+                                                                        dropDownStringItem),
+                                                                  );
+                                                                }).toList(),
+                                                                onChanged:
+                                                                    (novoValorSelecionado) =>
+                                                                        atualizaPeriodoCusto(
+                                                                            novoValorSelecionado),
+                                                                value:
+                                                                    valorPeriodoCusto),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ],
                                                   ),
-                                                  Container(
-                                                    child: DropDown(
-                                                        valores: periodoCusto),
-                                                  ),
-                                                ],
-                                              ),
+                                                ),
+                                              ],
                                             ),
                                             Padding(
                                               padding: const EdgeInsets.only(
@@ -286,13 +427,59 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
                                                 crossAxisAlignment:
                                                     CrossAxisAlignment.start,
                                                 children: [
-                                                  RequiredLabel(
-                                                    'Análise Gerencial',
-                                                    true,
-                                                  ),
-                                                  Container(
-                                                    child: DropDown(
-                                                        valores: consideraAgr),
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            left: 20.0),
+                                                    child: Column(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .start,
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        RequiredLabel(
+                                                          'Análise Gerencial',
+                                                          true,
+                                                        ),
+                                                        Container(
+                                                          height: 50.0,
+                                                          child: Column(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .start,
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .start,
+                                                            children: <Widget>[
+                                                              DropdownButton<
+                                                                      String>(
+                                                                  items:
+                                                                      consideraAgr
+                                                                          .map((
+                                                                    String
+                                                                        dropDownStringItem,
+                                                                  ) {
+                                                                    return DropdownMenuItem<
+                                                                        String>(
+                                                                      value:
+                                                                          dropDownStringItem,
+                                                                      child: Text(
+                                                                          dropDownStringItem),
+                                                                    );
+                                                                  }).toList(),
+                                                                  onChanged:
+                                                                      (novoValorSelecionado) =>
+                                                                          atualizaAgr(
+                                                                              novoValorSelecionado),
+                                                                  value:
+                                                                      valorAgr),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
                                                   ),
                                                 ],
                                               ),

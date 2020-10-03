@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:smartlogproject/src/Entidades/classes/custo.dart';
 import 'package:smartlogproject/src/Entidades/classes/embalagem.dart';
+import 'package:smartlogproject/src/constantes/mensagens.dart';
 import 'package:smartlogproject/src/funcoes/alert.dart';
 import 'package:smartlogproject/src/funcoes/alertErro.dart';
 import 'package:smartlogproject/src/funcoes/alertFuncao.dart';
@@ -95,10 +96,10 @@ class CustoBloc extends BlocBase {
         'valor': custo.valor,
       }).then((value) async => await alert(
               contextoAplicacao,
-              'Notificação de Sucesso',
-              'Os dados do formulário foram salvos com sucesso no banco de dados!'));
+              mensagemNotificacao,
+              mensagemSucessoSalvar));
     } catch (on) {
-      TextError('Erro ao salvar os dados do formulário no banco de dados!');
+      TextError(mensagemErroApagar);
     }
   }
 
@@ -113,8 +114,8 @@ class CustoBloc extends BlocBase {
           .document(custo.identificacao)
           .delete()
           .then(
-            (value) => alertFuncao(contextoAplicacao, 'Notificação de Sucesso',
-                'Os dados do formulário foram apagados com sucesso no banco de dados!',
+            (value) => alertFuncao(contextoAplicacao,mensagemNotificacao,
+                mensagemSucessoApagar,
                 () {
               Navigator.of(contextoAplicacao).pushNamed(
                 '/FormularioCustos',
@@ -123,7 +124,7 @@ class CustoBloc extends BlocBase {
           )
           .catchError((ErrorAndStacktrace erro) {});
     } catch (on) {
-      TextError('Erro ao apagar os dados do formulário no banco de dados!');
+      TextError(mensagemErroApagar);
     }
   }
 
@@ -158,10 +159,9 @@ class CustoBloc extends BlocBase {
         'valor': custo.valor,
       }).then((value) async => await alert(
               contextoAplicacao,
-              'Notificação de Sucesso',
-              'Os dados do formulário foram atualizados com sucesso no banco de dados!'));
+              mensagemNotificacao, mensagemSucessoSalvar));
     } catch (on) {
-      TextError('Erro ao atualizar os dados do formulário no banco de dados!');
+      TextError(mensagemErroSalvar);
     }
   }
 

@@ -117,12 +117,6 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
     final Firestore firestore = Firestore.instance;
     bool campoHabilitado = true;
 
-    /*
-    Aqui consulta os dados e seta o retorno da tabela nos controllers
-    para exibir no formulário. Também seta no objeto através dos setters
-    para atualizar os dados no banco, caso sejam alterados.
-    */
-
     void atualizaTipoUnidade(String valor) {
       if (valor.isNotEmpty) {
         setState(() {
@@ -132,6 +126,12 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
         });
       }
     }
+
+    /*
+    Aqui consulta os dados e seta o retorno da tabela nos controllers
+    para exibir no formulário. Também seta no objeto através dos setters
+    para atualizar os dados no banco, caso sejam alterados.
+    */
 
     void atualizaCategoria(String valor) {
       if (valor.isNotEmpty) {
@@ -198,7 +198,7 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
                         color: Colors.white,
                         borderRadius: BorderRadius.all(Radius.circular(5)),
                         border: new Border.all(
-                          color: Colors.grey[600],
+                          color: Colors.black,
                         ),
                       ),
                       child: Column(
@@ -223,7 +223,7 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(5)),
                                   border: new Border.all(
-                                    color: Colors.grey[600],
+                                    color: Colors.black,
                                   ),
                                 ),
                                 child: Row(
@@ -347,7 +347,7 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(5)),
                                   border: new Border.all(
-                                    color: Colors.grey[600],
+                                    color: Colors.black,
                                   ),
                                 ),
                                 child: Row(
@@ -597,13 +597,13 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
             width: largura ?? double.maxFinite,
             child: TextFormField(
               initialValue: valorInicial,
-              cursorColor: Colors.grey[600],
+              cursorColor: Colors.black,
               enabled: enabled,
               controller: controller,
               onChanged: onChanged,
               style: TextStyle(
                 fontSize: 16,
-                color: Colors.grey[600],
+                color: Colors.black,
               ),
               decoration: InputDecoration(),
             ),

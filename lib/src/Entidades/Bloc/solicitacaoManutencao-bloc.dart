@@ -7,8 +7,10 @@ import 'package:rxdart/rxdart.dart';
 import 'package:smartlogproject/src/Entidades/classes/solicitacaoManutencao.dart';
 import 'package:smartlogproject/src/Entidades/classes/embalagem.dart';
 import 'package:smartlogproject/src/Entidades/classes/solicitacaoManutencao.dart';
+import 'package:smartlogproject/src/constantes/mensagens.dart';
 import 'package:smartlogproject/src/funcoes/alert.dart';
 import 'package:smartlogproject/src/funcoes/alertErro.dart';
+import 'package:smartlogproject/src/funcoes/alertFuncao.dart';
 import 'package:smartlogproject/src/funcoes/calculaCustoSolicitacao.dart';
 
 class SolicitacaoManutencaoBloc extends BlocBase {
@@ -122,9 +124,7 @@ class SolicitacaoManutencaoBloc extends BlocBase {
         'custoTotal': solicitacaoManutencao.custoTotal,
         'custoVinculado': solicitacaoManutencao.custoVinculado
       }).then((value) async => await alert(
-              contextoAplicacao,
-              'Notificação de Sucesso',
-              'Os dados do formulário foram salvos com sucesso no banco de dados!'));
+              contextoAplicacao, mensagemNotificacao, mensagemSucessoSalvar));
     } catch (on) {
       TextError('Erro ao salvar os dados do formulário no banco de dados!');
     }
@@ -148,14 +148,19 @@ class SolicitacaoManutencaoBloc extends BlocBase {
           .document(solicitacaoManutencao.identificacao)
           .delete()
           .then(
-            (value) => alert(contextoAplicacao, 'Notificação de Sucesso',
-                'Os dados do formulário foram apagados com sucesso no banco de dados!'),
+            (value) => alertFuncao(
+                contextoAplicacao, mensagemNotificacao, mensagemSucessoApagar,
+                () {
+              Navigator.of(contextoAplicacao).pushNamed(
+                '/FormularioManutencao',
+              );
+            }),
           )
           .catchError((ErrorAndStacktrace erro) {
         print(erro.error);
       });
     } catch (on) {
-      TextError('Erro ao apagar os dados do formulário no banco de dados!');
+      TextError(mensagemErroApagar);
     }
   }
 
@@ -190,9 +195,7 @@ class SolicitacaoManutencaoBloc extends BlocBase {
         'custoTotal': solicitacaoManutencao.custoTotal,
         'custoVinculado': solicitacaoManutencao.custoVinculado
       }).then((value) async => await alert(
-              contextoAplicacao,
-              'Notificação de Sucesso',
-              'Os dados do formulário foram atualizados com sucesso no banco de dados!'));
+              contextoAplicacao, mensagemNotificacao, mensagemSucessoSalvar));
     } catch (on) {
       TextError('Erro ao atualizar os dados do formulário no banco de dados!');
     }

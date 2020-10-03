@@ -63,69 +63,115 @@ class _BodyState extends State<Body> {
   }
 }
 
-class CriaCardFormulario extends StatelessWidget {
+class CriaCardFormulario extends StatefulWidget {
   final String caminhoImagem;
   final String nomeFormulario;
 
   const CriaCardFormulario({this.caminhoImagem, this.nomeFormulario});
 
   @override
+  _CriaCardFormularioState createState() => _CriaCardFormularioState();
+}
+
+class _CriaCardFormularioState extends State<CriaCardFormulario> {
+  List<String> tipoCarroceria = [
+    'Aberta',
+    'Baú',
+    'Granelera',
+    'Porta Container',
+    'Sider',
+    'Tanque',
+    'Outros'
+  ];
+
+  List<String> tipoVeiculo = [
+    'Caminhão Leve (3,5T A 7,99T)',
+    'Caminhão Simples (8T A 29T)',
+    'Caminhão Trator',
+    'Caminhão Trator Especial',
+    'Caminhonete / Furgão (1,5T A 3,49T)',
+    'Reboque',
+    'Semi-Reboque',
+    'Semi-Reboque c/ 5 Roda / Bitrem',
+    'Semi-Reboque Especial',
+    'Utilitário Leve (0,5T A 1,49T)',
+    'Veículo Operacional de Apoio'
+  ];
+
+  List<String> tipoCombustivel = [
+    'Diesel',
+    'Gasolina',
+    'Etanol',
+    'Flex',
+    'GLP',
+    'Outros'
+  ];
+
+  /*
+  Variáveis usadas para capturar o valor dos campos do formulário
+  e salvar no banco
+  */
+
+  final tId = TextEditingController();
+  final tPlaca = TextEditingController();
+  final tAnoFabricacao = TextEditingController();
+  final tUf = TextEditingController();
+  final tDescricao = TextEditingController();
+  final tModeloCaminhao = TextEditingController();
+  final tFabricante = TextEditingController();
+  final tTipoCarroceria = TextEditingController();
+  final tCategoriaCaminhao = TextEditingController();
+  final tChassiCaminhao = TextEditingController();
+  final tNumeroRenavam = TextEditingController();
+  final tNumeroRntrc = TextEditingController();
+  final tTipoCombustivel = TextEditingController();
+
+  /*
+  Variáveis de Controle para exibição das listas.
+  */
+  String valorTipoCarroceria;
+  bool consultaTipoCarroceria = true;
+  String valorTipoCaminhao;
+  bool consultaTipoCaminhao = true;
+  String valorTipoCombustivel;
+  bool consultaTipoCombustivel = true;
+
+  @override
   Widget build(BuildContext context) {
-    List<String> tipoCarroceria = [
-      'Aberta',
-      'Baú',
-      'Granelera',
-      'Porta Container',
-      'Sider',
-      'Tanque',
-      'Outros'
-    ];
-
-    List<String> tipoVeiculo = [
-      'Caminhão Leve (3,5T A 7,99T)',
-      'Caminhão Simples (8T A 29T)',
-      'Caminhão Trator',
-      'Caminhão Trator Especial',
-      'Caminhonete / Furgão (1,5T A 3,49T)',
-      'Reboque',
-      'Semi-Reboque',
-      'Semi-Reboque c/ 5 Roda / Bitrem',
-      'Semi-Reboque Especial',
-      'Utilitário Leve (0,5T A 1,49T)',
-      'Veículo Operacional de Apoio'
-    ];
-
-    List<String> tipoCombustivel = [
-      'Diesel',
-      'Gasolina',
-      'Etanol',
-      'Flex',
-      'GLP',
-      'Outros'
-    ];
-
-    /*
-    Variáveis usadas para capturar o valor dos campos do formulário
-    e salvar no banco
-    */
-
-    final tId = TextEditingController();
-    final tPlaca = TextEditingController();
-    final tAnoFabricacao = TextEditingController();
-    final tUf = TextEditingController();
-    final tDescricao = TextEditingController();
-    final tModeloCaminhao = TextEditingController();
-    final tFabricante = TextEditingController();
-    final tTipoCarroceria = TextEditingController();
-    final tChassiCaminhao = TextEditingController();
-    final tNumeroRenavam = TextEditingController();
-    final tNumeroRntrc = TextEditingController();
-    final tTipoCombustivel = TextEditingController();
-
     String codigoCaminhao = ModalRoute.of(context).settings.arguments;
     CaminhaoBloc blocCaminhao = BlocProvider.of<CaminhaoBloc>(context);
     final Firestore firestore = Firestore.instance;
     bool campoHabilitado = true;
+
+    void atualizaTipoCarroceria(String valor) {
+      if (valor.isNotEmpty) {
+        setState(() {
+          valorTipoCarroceria = valor;
+          blocCaminhao.setTipoCarroceria(valorTipoCarroceria);
+          consultaTipoCarroceria = false;
+        });
+      }
+    }
+
+    void atualizaTipoCaminhao(String valor) {
+      if (valor.isNotEmpty) {
+        setState(() {
+          valorTipoCaminhao = valor;
+          blocCaminhao.setCategoriaCaminhao(valorTipoCaminhao);
+          consultaTipoCaminhao = false;
+        });
+      }
+    }
+
+    void atualizaTipoCombustivel(String valor) {
+      if (valor.isNotEmpty) {
+        setState(() {
+          valorTipoCombustivel = valor;
+          blocCaminhao.setTipoCombustivel(valorTipoCombustivel);
+          consultaTipoCombustivel = false;
+        });
+      }
+    }
 
     /*
     Aqui consulta os dados e seta o retorno da tabela nos controllers
@@ -146,6 +192,21 @@ class CriaCardFormulario extends StatelessWidget {
       tChassiCaminhao.text = coluna.data['chassiCaminhao'];
       tNumeroRenavam.text = coluna.data['numeroRenavam'].toString();
       tNumeroRntrc.text = coluna.data['numeroRntrc'].toString();
+
+      if (consultaTipoCarroceria == true) {
+        tTipoCarroceria.text = coluna.data['tipoCarroceria'];
+        atualizaTipoCarroceria(tTipoCarroceria.text);
+      }
+
+      if (consultaTipoCaminhao == true) {
+        tCategoriaCaminhao.text = coluna.data['categoriaCaminhao'];
+        atualizaTipoCaminhao(tCategoriaCaminhao.text);
+      }
+
+      if (consultaTipoCombustivel == true) {
+        tTipoCombustivel.text = coluna.data['tipoCombustivel'];
+        atualizaTipoCombustivel(tTipoCombustivel.text);
+      }
 
       blocCaminhao.setIdentificacao(tId.text);
       blocCaminhao.setDescricao(tDescricao.text);
@@ -228,6 +289,7 @@ class CriaCardFormulario extends StatelessWidget {
                                         altura: 30,
                                         contextoAplicacao: context,
                                         obrigaCampo: true,
+                                        enabled: campoHabilitado,
                                         controller: tId,
                                         onChanged: (String valor) {
                                           blocCaminhao
@@ -290,13 +352,51 @@ class CriaCardFormulario extends StatelessWidget {
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                           children: [
-                                            RequiredLabel(
-                                              'Categoria do Veículo',
-                                              true,
-                                            ),
-                                            Container(
-                                              child: DropDown(
-                                                  valores: tipoVeiculo),
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                  left: 20.0),
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.start,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  RequiredLabel(
+                                                    'Categoria',
+                                                    true,
+                                                  ),
+                                                  Container(
+                                                    height: 50.0,
+                                                    child: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .center,
+                                                      children: <Widget>[
+                                                        DropdownButton<String>(
+                                                          items:
+                                                              tipoVeiculo.map((
+                                                            String
+                                                                dropDownStringItem,
+                                                          ) {
+                                                            return DropdownMenuItem<
+                                                                String>(
+                                                              value:
+                                                                  dropDownStringItem,
+                                                              child: Text(
+                                                                  dropDownStringItem),
+                                                            );
+                                                          }).toList(),
+                                                          onChanged: (novoValorSelecionado) =>
+                                                              atualizaTipoCaminhao(
+                                                                  novoValorSelecionado),
+                                                          value:
+                                                              valorTipoCaminhao,
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
                                             ),
                                           ],
                                         ),
@@ -442,13 +542,59 @@ class CriaCardFormulario extends StatelessWidget {
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                           children: [
-                                            RequiredLabel(
-                                              'Carroceria',
-                                              true,
-                                            ),
-                                            Container(
-                                              child: DropDown(
-                                                  valores: tipoCarroceria),
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                  left: 20.0),
+                                              child: Column(
+                                                children: [
+                                                  RequiredLabel(
+                                                    'Carroceria',
+                                                    true,
+                                                  ),
+                                                  Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      Container(
+                                                        height: 50.0,
+                                                        child: Column(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .start,
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
+                                                          children: <Widget>[
+                                                            DropdownButton<
+                                                                String>(
+                                                              items:
+                                                                  tipoCarroceria
+                                                                      .map((
+                                                                String
+                                                                    dropDownStringItem,
+                                                              ) {
+                                                                return DropdownMenuItem<
+                                                                    String>(
+                                                                  value:
+                                                                      dropDownStringItem,
+                                                                  child: Text(
+                                                                      dropDownStringItem),
+                                                                );
+                                                              }).toList(),
+                                                              onChanged: (novoValorSelecionado) =>
+                                                                  atualizaTipoCarroceria(
+                                                                      novoValorSelecionado),
+                                                              value:
+                                                                  valorTipoCarroceria,
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
                                             ),
                                           ],
                                         ),
@@ -550,13 +696,54 @@ class CriaCardFormulario extends StatelessWidget {
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                           children: [
-                                            RequiredLabel(
-                                              'Combust.',
-                                              true,
-                                            ),
-                                            Container(
-                                              child: DropDown(
-                                                  valores: tipoCombustivel),
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                  left: 20.0),
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.start,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  RequiredLabel(
+                                                    'Combustível',
+                                                    true,
+                                                  ),
+                                                  Container(
+                                                    height: 50.0,
+                                                    child: Column(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .start,
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: <Widget>[
+                                                        DropdownButton<String>(
+                                                          items: tipoCombustivel
+                                                              .map((
+                                                            String
+                                                                dropDownStringItem,
+                                                          ) {
+                                                            return DropdownMenuItem<
+                                                                String>(
+                                                              value:
+                                                                  dropDownStringItem,
+                                                              child: Text(
+                                                                  dropDownStringItem),
+                                                            );
+                                                          }).toList(),
+                                                          onChanged: (novoValorSelecionado) =>
+                                                              atualizaTipoCombustivel(
+                                                                  novoValorSelecionado),
+                                                          value:
+                                                              valorTipoCombustivel,
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
                                             ),
                                           ],
                                         ),
@@ -598,6 +785,7 @@ class CriaCardFormulario extends StatelessWidget {
     bool obrigaCampo,
     BuildContext contextoAplicacao,
     TextEditingController mascara,
+    bool enabled,
     TextEditingController controller,
     String valorInicial,
   }) {
@@ -614,6 +802,7 @@ class CriaCardFormulario extends StatelessWidget {
               cursorColor: Colors.black,
               controller: controller,
               onChanged: onChanged,
+              enabled: enabled,
               style: TextStyle(
                 fontSize: 16,
                 color: Colors.black,

@@ -7,8 +7,10 @@ import 'package:rxdart/rxdart.dart';
 import 'package:smartlogproject/src/Entidades/classes/solicitacaoTrocaOleo.dart';
 import 'package:smartlogproject/src/Entidades/classes/embalagem.dart';
 import 'package:smartlogproject/src/Entidades/classes/solicitacaoTrocaOleo.dart';
+import 'package:smartlogproject/src/constantes/mensagens.dart';
 import 'package:smartlogproject/src/funcoes/alert.dart';
 import 'package:smartlogproject/src/funcoes/alertErro.dart';
+import 'package:smartlogproject/src/funcoes/alertFuncao.dart';
 import 'package:smartlogproject/src/funcoes/calculaCustoSolicitacao.dart';
 
 class SolicitacaoTrocaOleoBloc extends BlocBase {
@@ -42,10 +44,10 @@ class SolicitacaoTrocaOleoBloc extends BlocBase {
   void setDataEfetivacao(String value) =>
       _dataEfetivacaoController.sink.add(value);
   void setOficina(String value) => _oficinaController.sink.add(value);
-  void setFornecedor(String value) =>
-      _fornecedorController.sink.add(value);
+  void setFornecedor(String value) => _fornecedorController.sink.add(value);
   void setPrecoLitro(double value) => _precoLitroController.sink.add(value);
   void setQuantidade(double value) => _quantidadeController.sink.add(value);
+  void setCustoTotal(double value) => _custoTotalController.sink.add(value);
   void setCustoVinculado(String value) =>
       _custoVinculadoController.sink.add(value);
 
@@ -84,8 +86,8 @@ class SolicitacaoTrocaOleoBloc extends BlocBase {
   var _quantidadeController = BehaviorSubject<double>();
   Stream<double> get outQuantidade => _quantidadeController.stream;
 
-  // var _custoTotalController = BehaviorSubject<double>();
-  // Stream<double> get outCustoTotal => _custoTotalController.stream;
+  var _custoTotalController = BehaviorSubject<double>();
+  Stream<double> get outCustoTotal => _custoTotalController.stream;
 
   var _custoVinculadoController = BehaviorSubject<String>();
   Stream<String> get outCustoVinculado => _custoVinculadoController.stream;
@@ -111,10 +113,7 @@ class SolicitacaoTrocaOleoBloc extends BlocBase {
     solicitacaoTrocaOleo.fornecedor = _fornecedorController.value;
     solicitacaoTrocaOleo.precoLitro = _precoLitroController.value;
     solicitacaoTrocaOleo.quantidade = _quantidadeController.value;
-    solicitacaoTrocaOleo.custoTotal = calculaValorTotalSolicitacao(
-      _precoLitroController.value,
-      _quantidadeController.value,
-    );
+    solicitacaoTrocaOleo.custoTotal = _custoTotalController.value;
     solicitacaoTrocaOleo.custoVinculado = _custoVinculadoController.value;
 
     try {
@@ -135,11 +134,9 @@ class SolicitacaoTrocaOleoBloc extends BlocBase {
         'custoTotal': solicitacaoTrocaOleo.custoTotal,
         'custoVinculado': solicitacaoTrocaOleo.custoVinculado
       }).then((value) async => await alert(
-              contextoAplicacao,
-              'Notificação de Sucesso',
-              'Os dados do formulário foram salvos com sucesso no banco de dados!'));
+              contextoAplicacao, mensagemNotificacao, mensagemSucessoSalvar));
     } catch (on) {
-      TextError('Erro ao salvar os dados do formulário no banco de dados!');
+      TextError(mensagemErroSalvar);
     }
   }
 
@@ -161,14 +158,19 @@ class SolicitacaoTrocaOleoBloc extends BlocBase {
           .document(solicitacaoTrocaOleo.identificacao)
           .delete()
           .then(
-            (value) => alert(contextoAplicacao, 'Notificação de Sucesso',
-                'Os dados do formulário foram apagados com sucesso no banco de dados!'),
+            (value) => alertFuncao(
+                contextoAplicacao, mensagemNotificacao, mensagemSucessoApagar,
+                () {
+              Navigator.of(contextoAplicacao).pushNamed(
+                '/FormularioTrocaDeOleo',
+              );
+            }),
           )
           .catchError((ErrorAndStacktrace erro) {
         print(erro.error);
       });
     } catch (on) {
-      TextError('Erro ao apagar os dados do formulário no banco de dados!');
+      TextError(mensagemErroApagar);
     }
   }
 
@@ -186,12 +188,9 @@ class SolicitacaoTrocaOleoBloc extends BlocBase {
     solicitacaoTrocaOleo.fornecedor = _fornecedorController.value;
     solicitacaoTrocaOleo.precoLitro = _precoLitroController.value;
     solicitacaoTrocaOleo.quantidade = _quantidadeController.value;
-    solicitacaoTrocaOleo.custoTotal = calculaValorTotalSolicitacao(
-      _precoLitroController.value,
-      _quantidadeController.value,
-    );
+    solicitacaoTrocaOleo.custoTotal = _custoTotalController.value;
     solicitacaoTrocaOleo.custoVinculado = _custoVinculadoController.value;
-
+    print(solicitacaoTrocaOleo.identificacao);
     try {
       await Firestore.instance
           .collection('solicitacaoTrocaOleo')
@@ -202,7 +201,7 @@ class SolicitacaoTrocaOleoBloc extends BlocBase {
         'situacaoSolicitacao': solicitacaoTrocaOleo.situacaoSolicitacao,
         'solicitante': solicitacaoTrocaOleo.solicitante,
         'dataAbertura': solicitacaoTrocaOleo.dataAbertura,
-        'dataEfetivacao': solicitacaoTrocaOleo..dataEfetivacao,
+        'dataEfetivacao': solicitacaoTrocaOleo.dataEfetivacao,
         'oficina': solicitacaoTrocaOleo.oficina,
         'fornecedor': solicitacaoTrocaOleo.fornecedor,
         'precoLitro': solicitacaoTrocaOleo.precoLitro,
@@ -210,11 +209,9 @@ class SolicitacaoTrocaOleoBloc extends BlocBase {
         'custoTotal': solicitacaoTrocaOleo.custoTotal,
         'custoVinculado': solicitacaoTrocaOleo.custoVinculado
       }).then((value) async => await alert(
-              contextoAplicacao,
-              'Notificação de Sucesso',
-              'Os dados do formulário foram atualizados com sucesso no banco de dados!'));
+              contextoAplicacao, mensagemNotificacao, mensagemSucessoSalvar));
     } catch (on) {
-      TextError('Erro ao atualizar os dados do formulário no banco de dados!');
+      TextError(mensagemSucessoSalvar);
     }
   }
 

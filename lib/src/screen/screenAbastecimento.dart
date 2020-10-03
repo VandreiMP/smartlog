@@ -45,7 +45,7 @@ class _BodyState extends State<Body> {
               children: <Widget>[
                 CriaCardAuxiliar(
                   caminhoImagem: "Images/combustivel.png",
-                  nomeFormulario: "Solicitação de Abastecimento",
+                  nomeFormulario: "Programação de Abastecimento",
                   origem: 'COMBUSTIVEL',
                   origemDado: 'COMBUSTIVEL',
                   chaveConsulta: ModalRoute.of(context).settings.arguments,
@@ -83,7 +83,6 @@ class CriaCardFormulario extends StatelessWidget {
 
     List<String> situacaoSolicitacao = [
       'Aberta',
-      'Pendente',
       'Negada',
       'Efetivada',
     ];
@@ -204,6 +203,7 @@ class CriaCardFormulario extends StatelessWidget {
                                                 labelCampo: 'Identificação',
                                                 largura: 150,
                                                 altura: 30,
+                                                enabled: campoHabilitado,
                                                 obrigaCampo: true,
                                                 controller: tId,
                                                 onChanged: (String valor) {
@@ -252,6 +252,99 @@ class CriaCardFormulario extends StatelessWidget {
                                                     child: DropDown(
                                                       valores:
                                                           situacaoSolicitacao,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                  left: 14.0),
+                                              child: Column(
+                                                children: [
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            1.0),
+                                                    child: Container(
+                                                      alignment: Alignment
+                                                          .bottomCenter,
+                                                      child: Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .center,
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          GestureDetector(
+                                                            onTap: () {},
+                                                            child: Container(
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                color: Colors
+                                                                    .white,
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .all(
+                                                                  Radius
+                                                                      .circular(
+                                                                          2.0),
+                                                                ),
+                                                              ),
+                                                              child: Icon(
+                                                                Icons
+                                                                    .check_circle,
+                                                                size: 25.0,
+                                                                color: Colors
+                                                                    .green,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            1.0),
+                                                    child: Container(
+                                                      alignment: Alignment
+                                                          .bottomCenter,
+                                                      child: Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .center,
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          GestureDetector(
+                                                            onTap: () {},
+                                                            child: Container(
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                color: Colors
+                                                                    .white,
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .all(
+                                                                  Radius
+                                                                      .circular(
+                                                                          2.0),
+                                                                ),
+                                                              ),
+                                                              child: Icon(
+                                                                Icons.cancel,
+                                                                size: 25.0,
+                                                                color:
+                                                                    Colors.red,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
                                                     ),
                                                   ),
                                                 ],
@@ -580,6 +673,7 @@ class CriaCardFormulario extends StatelessWidget {
     double altura,
     bool obrigaCampo,
     Function onChanged,
+    bool enabled,
     TextEditingController controller,
   }) {
     return Form(
@@ -587,6 +681,7 @@ class CriaCardFormulario extends StatelessWidget {
         label: labelCampo,
         onChanged: onChanged,
         width: largura,
+        enabled: enabled,
         heigth: altura,
         required: obrigaCampo,
         controller: controller,

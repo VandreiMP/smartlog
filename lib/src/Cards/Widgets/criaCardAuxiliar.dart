@@ -137,6 +137,16 @@ class CardAjuda extends StatelessWidget {
                                         Navigator.of(context).pushNamed(
                                             '/ListaAbastecimentos',
                                             arguments: chaveConsulta);
+                                      } else if (origem == 'MANUTENCAO') {
+                                        Navigator.of(context).pushNamed(
+                                            '/ListaManutencao',
+                                            arguments: chaveConsulta);
+                                      } else if (origem == 'OLEO') {
+                                        Navigator.of(context).pushNamed(
+                                            '/ListaTrocaOleo',
+                                            arguments: chaveConsulta);
+                                      } else if (origem == 'ROMANEIO') {
+                                        Navigator.pop(context);
                                       }
                                     },
                                     child: Container(

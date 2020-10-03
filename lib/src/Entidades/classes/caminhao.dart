@@ -10,6 +10,7 @@ class Caminhao extends BaseModel {
   String modeloCaminhao;
   String fabricante;
   String tipoCarroceria;
+  String categoriaCaminhao;
   String chassiCaminhao;
   int numeroRenavam;
   int numeroRntrc;
@@ -26,6 +27,7 @@ class Caminhao extends BaseModel {
     this.modeloCaminhao = document.data['modeloCaminhao'];
     this.fabricante = document.data['fabricante'];
     this.tipoCarroceria = document.data['tipoCarroceria'];
+    this.categoriaCaminhao = document.data['categoriaCaminhao'];
     this.chassiCaminhao = document.data['chassiCaminhao'];
     this.numeroRenavam = document.data['numeroRenavam'];
     this.numeroRntrc = document.data['numeroRntrc'];
@@ -42,6 +44,7 @@ class Caminhao extends BaseModel {
       map['modeloCaminhao'] = this.modeloCaminhao;
       map['fabricante'] = this.fabricante;
       map['tipoCarroceria'] = this.tipoCarroceria;
+      map['categoriaCaminhao'] = this.categoriaCaminhao;
       map['chassiCaminhao'] = this.chassiCaminhao;
       map['numeroRenavam'] = this.numeroRenavam;
       map['numeroRntrc'] = this.numeroRntrc;

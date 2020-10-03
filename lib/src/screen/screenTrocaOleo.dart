@@ -1,13 +1,10 @@
 import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:smartlogproject/src/Components/scroll/scroll.dart';
-import 'package:smartlogproject/src/Entidades/Bloc/solicitacaoAbastecimento-bloc.dart';
 import 'package:smartlogproject/src/Entidades/Bloc/solicitacaoTrocaOleo-bloc.dart';
-import 'package:smartlogproject/src/Entidades/Bloc/usuario-bloc.dart';
 import 'package:smartlogproject/src/funcoes/appTextField.dart';
-import '../constantes/mascaras.dart';
+import 'package:smartlogproject/src/funcoes/calculaCustoSolicitacao.dart';
 import '../funcoes/appText.dart';
 import '../Cards/Widgets/criaCardAuxiliar.dart';
 import '../funcoes/criaLista.dart';
@@ -46,9 +43,10 @@ class _BodyState extends State<Body> {
               children: <Widget>[
                 CriaCardAuxiliar(
                   caminhoImagem: "Images/oleo.png",
-                  nomeFormulario: "Solicitação de Troca de Óleo",
-                  origem: 'GERAL',
+                  nomeFormulario: "Programação de Troca de Óleo",
+                  origem: 'OLEO',
                   origemDado: 'OLEO',
+                  chaveConsulta: ModalRoute.of(context).settings.arguments,
                 ),
                 // CriaCardAjuda(),
               ],
@@ -64,10 +62,17 @@ class _BodyState extends State<Body> {
 class CriaCardFormulario extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    List<String> situacaoSolicitacao = [
+      'Aberta',
+      'Pendente',
+      'Negada',
+      'Efetivada',
+    ];
+
     /*
     Variáveis usadas para capturar o valor dos campos do formulário
     e salvar no banco
-  */
+    */
     final tDetalhes = TextEditingController();
     final tId = TextEditingController();
     final tSituacao = TextEditingController();
@@ -81,15 +86,56 @@ class CriaCardFormulario extends StatelessWidget {
     final tCustoTotal = TextEditingController();
     final tCustoVinculado = TextEditingController();
 
-    List<String> situacaoSolicitacao = [
-      'Aberta',
-      'Pendente',
-      'Negada',
-      'Efetivada',
-    ];
-
     SolicitacaoTrocaOleoBloc blocSolicitacaoTrocaOleo =
         BlocProvider.of<SolicitacaoTrocaOleoBloc>(context);
+
+    String codigoSolicitacao = ModalRoute.of(context).settings.arguments;
+    final Firestore firestore = Firestore.instance;
+    bool campoHabilitado = true;
+
+    /*
+    Aqui consulta os dados e seta o retorno da tabela nos controllers
+    para exibir no formulário. Também seta no objeto através dos setters
+    para atualizar os dados no banco, caso sejam alterados.
+    */
+
+    Future consultaDados(DocumentSnapshot coluna) async {
+      if (codigoSolicitacao.isNotEmpty) {
+        tId.text = codigoSolicitacao;
+      }
+      tDetalhes.text = coluna.data['detalhes'];
+      tSolicitante.text = coluna.data['solicitante'];
+      tDataAbertura.text = coluna.data['dataAbertura'];
+      tDataEfetivacao.text = coluna.data['dataEfetivacao'];
+      tOficina.text = coluna.data['oficina'];
+      tFornecedor.text = coluna.data['fornecedor'];
+      tPrecoLitro.text = coluna.data['precoLitro'].toString();
+      tQuantidade.text = coluna.data['quantidade'].toString();
+      tCustoTotal.text = coluna.data['custoTotal'].toString();
+      tCustoTotal.text = coluna.data['custoVinculado'];
+
+      blocSolicitacaoTrocaOleo.setId(tId.text);
+      blocSolicitacaoTrocaOleo.setDetalhes(tDetalhes.text);
+      blocSolicitacaoTrocaOleo.setSolicitante(tSolicitante.text);
+      blocSolicitacaoTrocaOleo.setDataAbertura(tDataAbertura.text);
+      blocSolicitacaoTrocaOleo.setDataEfetivacao(tDataEfetivacao.text);
+      blocSolicitacaoTrocaOleo.setOficina(tOficina.text);
+      blocSolicitacaoTrocaOleo.setFornecedor(tFornecedor.text);
+      blocSolicitacaoTrocaOleo.setPrecoLitro(double.parse(tPrecoLitro.text));
+      blocSolicitacaoTrocaOleo.setQuantidade(double.parse(tQuantidade.text));
+      blocSolicitacaoTrocaOleo.setCustoTotal(double.parse(tCustoTotal.text));
+      blocSolicitacaoTrocaOleo.setCustoVinculado(tCustoTotal.text);
+    }
+
+    if (codigoSolicitacao != null) {
+      campoHabilitado = false;
+      firestore
+          .collection("solicitacaoTrocaOleo")
+          .document(codigoSolicitacao)
+          .get()
+          .then((coluna) async => consultaDados(coluna));
+    }
+
     return StreamBuilder<QuerySnapshot>(
         stream: null,
         builder: (context, snapshot) {
@@ -150,6 +196,7 @@ class CriaCardFormulario extends StatelessWidget {
                                                 labelCampo: 'Identificação',
                                                 largura: 150,
                                                 altura: 30,
+                                                enabled: campoHabilitado,
                                                 obrigaCampo: true,
                                                 controller: tId,
                                                 onChanged: (String valor) {
@@ -198,6 +245,99 @@ class CriaCardFormulario extends StatelessWidget {
                                                     child: DropDown(
                                                       valores:
                                                           situacaoSolicitacao,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                  left: 14.0),
+                                              child: Column(
+                                                children: [
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            1.0),
+                                                    child: Container(
+                                                      alignment: Alignment
+                                                          .bottomCenter,
+                                                      child: Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .center,
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          GestureDetector(
+                                                            onTap: () {},
+                                                            child: Container(
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                color: Colors
+                                                                    .white,
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .all(
+                                                                  Radius
+                                                                      .circular(
+                                                                          2.0),
+                                                                ),
+                                                              ),
+                                                              child: Icon(
+                                                                Icons
+                                                                    .check_circle,
+                                                                size: 25.0,
+                                                                color: Colors
+                                                                    .green,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            1.0),
+                                                    child: Container(
+                                                      alignment: Alignment
+                                                          .bottomCenter,
+                                                      child: Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .center,
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          GestureDetector(
+                                                            onTap: () {},
+                                                            child: Container(
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                color: Colors
+                                                                    .white,
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .all(
+                                                                  Radius
+                                                                      .circular(
+                                                                          2.0),
+                                                                ),
+                                                              ),
+                                                              child: Icon(
+                                                                Icons.cancel,
+                                                                size: 25.0,
+                                                                color:
+                                                                    Colors.red,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
                                                     ),
                                                   ),
                                                 ],
@@ -363,6 +503,13 @@ class CriaCardFormulario extends StatelessWidget {
                                                           double.parse(
                                                               tPrecoLitro
                                                                   .text));
+                                                  tCustoTotal.text =
+                                                      calculaValorTotalSolicitacao(
+                                                    double.parse(
+                                                        tPrecoLitro.text),
+                                                    double.parse(
+                                                        tQuantidade.text),
+                                                  ).toString();
                                                 },
                                                 obrigaCampo: false,
                                               ),
@@ -389,6 +536,13 @@ class CriaCardFormulario extends StatelessWidget {
                                                           double.parse(
                                                               tQuantidade
                                                                   .text));
+                                                  tCustoTotal.text =
+                                                      calculaValorTotalSolicitacao(
+                                                    double.parse(
+                                                        tPrecoLitro.text),
+                                                    double.parse(
+                                                        tQuantidade.text),
+                                                  ).toString();
                                                 },
                                                 obrigaCampo: false,
                                               ),
@@ -408,6 +562,7 @@ class CriaCardFormulario extends StatelessWidget {
                                                 labelCampo: 'Custo Total',
                                                 largura: 85,
                                                 altura: 30,
+                                                controller: tCustoTotal,
                                                 obrigaCampo: false,
                                               ),
                                             ),
@@ -511,6 +666,7 @@ class CriaCardFormulario extends StatelessWidget {
     String labelCampo,
     double largura,
     double altura,
+    bool enabled,
     bool obrigaCampo,
     Function onChanged,
     TextEditingController controller,
@@ -521,6 +677,7 @@ class CriaCardFormulario extends StatelessWidget {
         onChanged: onChanged,
         width: largura,
         heigth: altura,
+        enabled: enabled,
         required: obrigaCampo,
         controller: controller,
       ),

@@ -1,7 +1,9 @@
 import 'package:bloc_pattern/bloc_pattern.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:smartlogproject/src/Entidades/Bloc/romaneio-bloc.dart';
+import 'package:smartlogproject/src/constantes/mascaras.dart';
 import 'package:smartlogproject/src/funcoes/criaLista.dart';
 import 'package:smartlogproject/src/funcoes/requiredLabel.dart';
 import '../Components/scroll/scroll.dart';
@@ -49,6 +51,7 @@ class _BodyState extends State<Body> {
                     nomeFormulario: "Geração do Romaneio da Carga",
                     origem: 'ROMANEIO',
                     origemDado: 'ROMANEIO',
+                    chaveConsulta: null,
                   ),
                   // CriaCardAjudaCaminhao(),
                 ],
@@ -62,39 +65,110 @@ class _BodyState extends State<Body> {
   }
 }
 
-class CriaCardFormulario extends StatelessWidget {
+class CriaCardFormulario extends StatefulWidget {
   final String caminhoImagem;
   final String nomeFormulario;
 
   const CriaCardFormulario({this.caminhoImagem, this.nomeFormulario});
 
   @override
+  _CriaCardFormularioState createState() => _CriaCardFormularioState();
+}
+
+class _CriaCardFormularioState extends State<CriaCardFormulario> {
+  List<String> modalidadeFrete = [
+    'Contratação do Frete por Conta do Remetente (CIF)',
+    'Contratação do Frete por Conta do Destinatário (FOB)',
+    'Contratação do Frete por Conta de Terceiros',
+    'Transporte Próprio por Conta do Remetente',
+    'Transporte Próprio por Conta do Destinatário',
+    'Sem Ocorrência de Transporte',
+  ];
+
+  /*
+    Variáveis usadas para capturar o valor dos campos do formulário
+    e salvar no banco
+    */
+  final tCarga = TextEditingController();
+  final tObservacao = TextEditingController();
+  final tModalidadeFrete = TextEditingController();
+  final tDataSaida = MaskedTextController(mask: mascaraData);
+  final tDataRetorno = MaskedTextController(mask: mascaraData);
+  final tDiasRodados = TextEditingController();
+  final tQuilometrosRodados = TextEditingController();
+  final tCidadeSaida = TextEditingController();
+  final tUfSaida = TextEditingController();
+  final tCidadeDestino = TextEditingController();
+  final tUfDestino = TextEditingController();
+
+  /*
+  Variáveis de Controle para exibição das listas.
+  */
+  String valorModFrete;
+  bool consultaModFrete = true;
+  @override
   Widget build(BuildContext context) {
-    final Object numeroCarga = ModalRoute.of(context).settings.arguments;
-
-    List<String> modalidadeFrete = [
-      'Contratação do Frete por Conta do Remetente (CIF)',
-      'Contratação do Frete por Conta do Destinatário (FOB)',
-      'Contratação do Frete por Conta de Terceiros',
-      'Transporte Próprio por Conta do Remetente',
-      'Transporte Próprio por Conta do Destinatário',
-      'Sem Ocorrência de Transporte',
-    ];
-
-    final tCarga = TextEditingController();
-    final tObservacao = TextEditingController();
-    final tModalidadeFrete = TextEditingController();
-    final tDataSaida = TextEditingController();
-    final tDataRetorno = TextEditingController();
-    final tDiasRodados = TextEditingController();
-    final tQuilometrosRodados = TextEditingController();
-    final tCidadeSaida = TextEditingController();
-    final tUfSaida = TextEditingController();
-    final tCidadeDestino = TextEditingController();
-    final tUfDestino = TextEditingController();
-
     RomaneioBloc blocRomaneio = BlocProvider.of<RomaneioBloc>(context);
-    final Object arguments = ModalRoute.of(context).settings.arguments;
+    String numeroCarga = ModalRoute.of(context).settings.arguments;
+    final Firestore firestore = Firestore.instance;
+
+    void atualizaModFrete(String valor) {
+      if (valor.isNotEmpty) {
+        setState(() {
+          valorModFrete = valor;
+          blocRomaneio.setModalidadeFrete(valorModFrete);
+          consultaModFrete = false;
+        });
+      }
+    }
+
+    /*
+    Aqui consulta os dados e seta o retorno da tabela nos controllers
+    para exibir no formulário. Também seta no objeto através dos setters
+    para atualizar os dados no banco, caso sejam alterados.
+    */
+
+    Future consultaDados(DocumentSnapshot coluna) async {
+      if (coluna.exists) {
+        if (numeroCarga.isNotEmpty) {
+          tCarga.text = numeroCarga;
+        }
+        tObservacao.text = coluna.data['observacao'];
+        tDataSaida.text = coluna.data['dataSaidaViagem'];
+        tDataRetorno.text = coluna.data['dataRetornoViagem'];
+        tDiasRodados.text = coluna.data['diasRodados'];
+        tQuilometrosRodados.text = coluna.data['quilometragemRodada'];
+        tCidadeSaida.text = coluna.data['cidadeSaida'];
+        tUfSaida.text = coluna.data['ufSaida'];
+        tCidadeDestino.text = coluna.data['cidadeDestino'];
+        tUfDestino.text = coluna.data['ufDestino'];
+
+        if (consultaModFrete == true) {
+          tModalidadeFrete.text = coluna.data['modalidadeFrete'];
+          atualizaModFrete(tModalidadeFrete.text);
+        }
+
+        blocRomaneio.setCarga(tCarga.text);
+        blocRomaneio.setObservacao(tObservacao.text);
+        blocRomaneio.setDataSaidaViagem(tDataSaida.text);
+        blocRomaneio.setDataRetornoViagem(tDataRetorno.text);
+        blocRomaneio.setDiasRodados(tDiasRodados.text);
+        blocRomaneio.setQuilometragemRodada(tQuilometrosRodados.text);
+        blocRomaneio.setCidadeSaida(tCidadeSaida.text);
+        blocRomaneio.setUfSaida(tUfSaida.text);
+        blocRomaneio.setCidadeDestino(tCidadeDestino.text);
+        blocRomaneio.setUfDestino(tUfDestino.text);
+      }
+    }
+
+    blocRomaneio.setCarga(numeroCarga);
+    if (numeroCarga != null) {
+      firestore
+          .collection("romaneioCarga")
+          .document(numeroCarga)
+          .get()
+          .then((coluna) async => consultaDados(coluna));
+    }
 
     return StreamBuilder<RomaneioBloc>(
         stream: null,
@@ -156,31 +230,16 @@ class CriaCardFormulario extends StatelessWidget {
                                               MainAxisAlignment.spaceBetween,
                                           children: <Widget>[
                                             constroiCampo(
-                                              labelCampo: 'Número Carga',
-                                              largura: 85,
+                                              labelCampo:
+                                                  'Observação do Romaneio',
+                                              largura: 500,
                                               altura: 30,
-                                              controller: tCarga,
+                                              controller: tObservacao,
                                               onChanged: (String valor) {
-                                                blocRomaneio
-                                                    .setCarga(tCarga.text);
+                                                blocRomaneio.setObservacao(
+                                                    tObservacao.text);
                                               },
-                                              obrigaCampo: true,
-                                            ),
-                                            Padding(
-                                              padding: const EdgeInsets.only(
-                                                  left: 25.0),
-                                              child: constroiCampo(
-                                                labelCampo:
-                                                    'Observação do Romaneio',
-                                                largura: 500,
-                                                altura: 30,
-                                                controller: tObservacao,
-                                                onChanged: (String valor) {
-                                                  blocRomaneio.setObservacao(
-                                                      tObservacao.text);
-                                                },
-                                                obrigaCampo: false,
-                                              ),
+                                              obrigaCampo: false,
                                             ),
                                           ],
                                         ),
@@ -196,13 +255,58 @@ class CriaCardFormulario extends StatelessWidget {
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.start,
                                               children: [
-                                                RequiredLabel(
-                                                  'Modalidade Frete/Entrega',
-                                                  true,
-                                                ),
-                                                Container(
-                                                  child: DropDown(
-                                                      valores: modalidadeFrete),
+                                                Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment
+                                                          .start,
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.start,
+                                                  children: [
+                                                    RequiredLabel(
+                                                      'Modalidade Frete',
+                                                      true,
+                                                    ),
+                                                    Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        Container(
+                                                          height: 50.0,
+                                                          child: Column(
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .center,
+                                                            children: <
+                                                                Widget>[
+                                                              DropdownButton<
+                                                                  String>(
+                                                                items:
+                                                                    modalidadeFrete
+                                                                        .map((
+                                                                  String
+                                                                      dropDownStringItem,
+                                                                ) {
+                                                                  return DropdownMenuItem<
+                                                                      String>(
+                                                                    value:
+                                                                        dropDownStringItem,
+                                                                    child: Text(
+                                                                        dropDownStringItem),
+                                                                  );
+                                                                }).toList(),
+                                                                onChanged: (novoValorSelecionado) =>
+                                                                    atualizaModFrete(
+                                                                        novoValorSelecionado),
+                                                                value:
+                                                                    valorModFrete,
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ],
                                                 ),
                                               ],
                                             ),
@@ -338,7 +442,7 @@ class CriaCardFormulario extends StatelessWidget {
                                               MainAxisAlignment.spaceBetween,
                                           children: <Widget>[
                                             constroiCampo(
-                                              labelCampo: 'Cidade Saída',
+                                              labelCampo: 'Cidade/UF Saída',
                                               largura: 250,
                                               altura: 30,
                                               controller: tCidadeSaida,
@@ -352,7 +456,6 @@ class CriaCardFormulario extends StatelessWidget {
                                               padding: const EdgeInsets.only(
                                                   left: 25.0),
                                               child: constroiCampo(
-                                                labelCampo: 'UF Saída',
                                                 largura: 30,
                                                 altura: 30,
                                                 controller: tUfSaida,
@@ -382,7 +485,6 @@ class CriaCardFormulario extends StatelessWidget {
                                               padding: const EdgeInsets.only(
                                                   left: 25.0),
                                               child: constroiCampo(
-                                                labelCampo: 'UF Dest.',
                                                 largura: 30,
                                                 altura: 30,
                                                 controller: tUfDestino,

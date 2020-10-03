@@ -92,7 +92,7 @@ class CriaCardFormulario extends StatelessWidget {
     */
     Future consultaDados(DocumentSnapshot coluna) async {
       if (coluna.exists == true) {
-        print(codigoEmpresa);
+       
         if (codigoEmpresa.isNotEmpty) {
           tIdEmpresa.text = codigoEmpresa;
         }

@@ -4,14 +4,10 @@ import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
-import 'package:masked_text/masked_text.dart';
 import 'package:smartlogproject/src/Entidades/Bloc/carregamentoMercadoria-bloc.dart';
-import 'package:smartlogproject/src/Entidades/classes/listaValores.dart';
-import 'package:smartlogproject/src/funcoes/alert.dart';
 import 'package:smartlogproject/src/funcoes/calculaTotalCarga.dart';
 import 'package:smartlogproject/src/funcoes/criaLista.dart';
 import 'package:smartlogproject/src/funcoes/criaListaValoresEmbalagem.dart';
-import 'package:smartlogproject/src/funcoes/decompoeChave.dart';
 import 'package:smartlogproject/src/funcoes/requiredLabel.dart';
 import '../Components/scroll/scroll.dart';
 import '../constantes/mascaras.dart';
@@ -19,7 +15,6 @@ import '../funcoes/appText.dart';
 import '../funcoes/appTextField.dart';
 import '../Cards/Widgets/criaCardAuxiliar.dart';
 import 'screenPattern.dart';
-import 'package:smartlogproject/src/funcoes/alertErro.dart';
 
 class ScreenCarga extends StatefulWidget {
   @override
@@ -109,11 +104,6 @@ class CriaCardFormulario extends StatelessWidget {
 
     final Firestore firestore = Firestore.instance;
     String numeroCarga = ModalRoute.of(context).settings.arguments;
-    // String numeroCarga = decompoeChave('CHAVE_CONSULTA', chaveConsulta);
-    // String identificacaoEmbalagemLista =
-    //     decompoeChave('IDENTIFICACAO', chaveConsulta);
-
-    String filtroTabela;
 
     Future consultaDados(DocumentSnapshot campo) async {
       if (numeroCarga.isNotEmpty) {
@@ -186,12 +176,6 @@ class CriaCardFormulario extends StatelessWidget {
       'Bloqueada para Faturamento',
       'Liberada para Saída',
       'Entrega Efetuada',
-    ];
-
-    List<String> situacaoEntrega = [
-      'Ativa',
-      'Encerrada',
-      'Cancelada',
     ];
 
     return StreamBuilder<QuerySnapshot>(
@@ -268,7 +252,7 @@ class CriaCardFormulario extends StatelessWidget {
                                               padding: const EdgeInsets.only(
                                                   left: 25.0),
                                               child: constroiCampo(
-                                                labelCampo: 'Saída Caminhão',
+                                                labelCampo: 'Data Saída',
                                                 largura: 85,
                                                 altura: 30,
                                                 obrigaCampo: true,
@@ -281,19 +265,8 @@ class CriaCardFormulario extends StatelessWidget {
                                               ),
                                             ),
                                             Padding(
-                                              padding: const EdgeInsets.only(
-                                                  left: 25.0),
-                                              child: constroiCampo(
-                                                labelCampo: 'Romaneio',
-                                                largura: 85,
-                                                altura: 30,
-                                                controller: tNumeroRomaneio,
-                                                obrigaCampo: false,
-                                              ),
-                                            ),
-                                            Padding(
                                               padding:
-                                                  const EdgeInsets.all(20.0),
+                                                  const EdgeInsets.all(1.0),
                                               child: Container(
                                                 alignment:
                                                     Alignment.bottomCenter,
@@ -595,27 +568,6 @@ class CriaCardFormulario extends StatelessWidget {
                                                           tDataEntrega.text);
                                                 },
                                                 obrigaCampo: true,
-                                              ),
-                                            ),
-                                            Padding(
-                                              padding: const EdgeInsets.only(
-                                                  left: 25.0),
-                                              child: Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.start,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  RequiredLabel(
-                                                    'Sit. Entrega',
-                                                    true,
-                                                  ),
-                                                  Container(
-                                                    child: DropDown(
-                                                        valores:
-                                                            situacaoEntrega),
-                                                  ),
-                                                ],
                                               ),
                                             ),
                                           ],

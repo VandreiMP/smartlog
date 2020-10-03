@@ -2,7 +2,6 @@ import 'dart:js';
 
 import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:flutter/material.dart';
-import 'package:mobx/mobx.dart';
 import 'package:smartlogproject/src/Entidades/Bloc/caminhao-bloc.dart';
 import 'package:smartlogproject/src/Entidades/Bloc/carregamentoMercadoria-bloc.dart';
 import 'package:smartlogproject/src/Entidades/Bloc/custo-bloc.dart';
@@ -26,7 +25,6 @@ class CardAjudaBloc extends BlocBase {
       this.contextoAplicacao, this.origem, this.origemDado, this.chaveConsulta);
 
   Future<void> eventoCliqueBotaoSalvar() async {
-   
     if (origemDado == 'USUARIO') {
       if (chaveConsulta == null) {
         UsuarioBloc blocUsuario =
@@ -101,19 +99,23 @@ class CardAjudaBloc extends BlocBase {
             contextoAplicacao, chaveConsulta);
     }
     if (origemDado == 'ROMANEIO') {
-      RomaneioBloc blocRomaneio =
-          BlocProvider.of<RomaneioBloc>(contextoAplicacao);
-      await blocRomaneio.insereDados(contextoAplicacao);
+      if (chaveConsulta == null) {
+        RomaneioBloc blocRomaneio =
+            BlocProvider.of<RomaneioBloc>(contextoAplicacao);
+        await blocRomaneio.insereDados(contextoAplicacao);
+      }else {
+        RomaneioBloc blocRomaneio =
+            BlocProvider.of<RomaneioBloc>(contextoAplicacao);
+        await blocRomaneio.atualizaDados(contextoAplicacao);
+      }
     }
     if (origemDado == 'COMBUSTIVEL') {
-      
       if (chaveConsulta == null) {
         SolicitacaoAbastecimentoBloc blocSolicitacaoAbastecimento =
             BlocProvider.of<SolicitacaoAbastecimentoBloc>(contextoAplicacao);
 
         await blocSolicitacaoAbastecimento.insereDados(contextoAplicacao);
       } else {
-        //  print(chaveConsulta);
         SolicitacaoAbastecimentoBloc blocSolicitacaoAbastecimento =
             BlocProvider.of<SolicitacaoAbastecimentoBloc>(contextoAplicacao);
 
@@ -121,16 +123,28 @@ class CardAjudaBloc extends BlocBase {
       }
     }
     if (origemDado == 'OLEO') {
-      SolicitacaoTrocaOleoBloc blocSolicitacaoAbastecimento =
-          BlocProvider.of<SolicitacaoTrocaOleoBloc>(contextoAplicacao);
-
-      await blocSolicitacaoAbastecimento.insereDados(contextoAplicacao);
+      if (chaveConsulta == null) {
+        SolicitacaoTrocaOleoBloc blocSolicitacaoAbastecimento =
+            BlocProvider.of<SolicitacaoTrocaOleoBloc>(contextoAplicacao);
+        await blocSolicitacaoAbastecimento.insereDados(contextoAplicacao);
+      } else {
+        SolicitacaoTrocaOleoBloc blocSolicitacaoAbastecimento =
+            BlocProvider.of<SolicitacaoTrocaOleoBloc>(contextoAplicacao);
+        await blocSolicitacaoAbastecimento.atualizaDados(contextoAplicacao);
+      }
     }
     if (origemDado == 'MANUTENCAO') {
-      SolicitacaoManutencaoBloc blocSolicitacaoManutencao =
-          BlocProvider.of<SolicitacaoManutencaoBloc>(contextoAplicacao);
+      if (chaveConsulta == null) {
+        SolicitacaoManutencaoBloc blocSolicitacaoManutencao =
+            BlocProvider.of<SolicitacaoManutencaoBloc>(contextoAplicacao);
 
-      await blocSolicitacaoManutencao.insereDados(contextoAplicacao);
+        await blocSolicitacaoManutencao.insereDados(contextoAplicacao);
+      } else {
+        SolicitacaoManutencaoBloc blocSolicitacaoManutencao =
+            BlocProvider.of<SolicitacaoManutencaoBloc>(contextoAplicacao);
+
+        await blocSolicitacaoManutencao.atualizaDados(contextoAplicacao);
+      }
     }
   }
 
