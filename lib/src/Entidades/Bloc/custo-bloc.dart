@@ -11,13 +11,6 @@ import 'package:smartlogproject/src/funcoes/alertErro.dart';
 import 'package:smartlogproject/src/funcoes/alertFuncao.dart';
 
 class CustoBloc extends BlocBase {
-  String _documentId;
-  String _detalhes;
-  String _modalidade;
-  String _periodicidade;
-  String _analiseGerencial;
-  double _valor;
-
   BuildContext contextoAplicacao;
 
   CustoBloc(BuildContext contextoAplicacao);
@@ -74,32 +67,42 @@ class CustoBloc extends BlocBase {
     custo.analiseGerencial = _analiseGerencialController.value;
     custo.valor = _valorController.value;
 
-    if (_idController.value == null) {
-      TextError(
-          'Para salvar o registro é necessário preencher o número de identificação do custo!');
-    } else if (_detalhesController.value == null) {
-      print('else if');
-      alert(contextoAplicacao, 'Atenção',
-          'Para salvar o registro é necessário preencher os detalhes do custo!');
-    }
-
-    try {
-      await Firestore.instance
-          .collection('custos')
-          .document(custo.identificacao)
-          .setData({
-        'identificacao': custo.identificacao,
-        'detalhes': custo.detalhes,
-        'modalidade': custo.modalidade,
-        'periodicidade': custo.periodicidade,
-        'analiseGerencial': custo.analiseGerencial,
-        'valor': custo.valor,
-      }).then((value) async => await alert(
-              contextoAplicacao,
-              mensagemNotificacao,
-              mensagemSucessoSalvar));
-    } catch (on) {
-      TextError(mensagemErroApagar);
+    if (custo.identificacao == '' || custo.identificacao == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para salvar o custo é necessário informar a identificação!');
+    } else if (custo.detalhes == '' || custo.detalhes == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para salvar o custo é necessário informar os detalhes!');
+    } else if (custo.modalidade == '' || custo.modalidade == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para salvar o custo é necessário informar a modalidade!');
+    } else if (custo.periodicidade == '' || custo.periodicidade == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para salvar o custo é necessário informar a periodicidade!');
+    } else if (custo.analiseGerencial == '' || custo.analiseGerencial == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para salvar o custo é necessário informar se o mesmo é considerado na análise gerencial!');
+    } else if (custo.modalidade == 'Fixo' &&
+        (custo.valor == null || custo.valor == 0)) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para salvar o custo é necessário informar se o mesmo é considerado na análise gerencial!');
+    } else {
+      try {
+        await Firestore.instance
+            .collection('custos')
+            .document(custo.identificacao)
+            .setData({
+          'identificacao': custo.identificacao,
+          'detalhes': custo.detalhes,
+          'modalidade': custo.modalidade,
+          'periodicidade': custo.periodicidade,
+          'analiseGerencial': custo.analiseGerencial,
+          'valor': custo.valor,
+        }).then((value) async => await alert(
+                contextoAplicacao, mensagemNotificacao, mensagemSucessoSalvar));
+      } catch (on) {
+        TextError(mensagemErroApagar);
+      }
     }
   }
 
@@ -114,8 +117,8 @@ class CustoBloc extends BlocBase {
           .document(custo.identificacao)
           .delete()
           .then(
-            (value) => alertFuncao(contextoAplicacao,mensagemNotificacao,
-                mensagemSucessoApagar,
+            (value) => alertFuncao(
+                contextoAplicacao, mensagemNotificacao, mensagemSucessoApagar,
                 () {
               Navigator.of(contextoAplicacao).pushNamed(
                 '/FormularioCustos',
@@ -138,30 +141,42 @@ class CustoBloc extends BlocBase {
     custo.analiseGerencial = _analiseGerencialController.value;
     custo.valor = _valorController.value;
 
-    if (_idController.value == null) {
-      TextError(
-          'Para salvar o registro é necessário preencher o número de identificação do custo!');
-    } else if (_detalhesController.value == null) {
-      TextError(
-          'Para salvar o registro é necessário preencher os detalhes do custo!');
-    }
-
-    try {
-      await Firestore.instance
-          .collection('custos')
-          .document(custo.identificacao)
-          .updateData({
-        'identificacao': custo.identificacao,
-        'detalhes': custo.detalhes,
-        'modalidade': custo.modalidade,
-        'periodicidade': custo.periodicidade,
-        'analiseGerencial': custo.analiseGerencial,
-        'valor': custo.valor,
-      }).then((value) async => await alert(
-              contextoAplicacao,
-              mensagemNotificacao, mensagemSucessoSalvar));
-    } catch (on) {
-      TextError(mensagemErroSalvar);
+    if (custo.identificacao == '' || custo.identificacao == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para salvar o custo é necessário informar a identificação!');
+    } else if (custo.detalhes == '' || custo.detalhes == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para salvar o custo é necessário informar os detalhes!');
+    } else if (custo.modalidade == '' || custo.modalidade == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para salvar o custo é necessário informar a modalidade!');
+    } else if (custo.periodicidade == '' || custo.periodicidade == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para salvar o custo é necessário informar a periodicidade!');
+    } else if (custo.analiseGerencial == '' || custo.analiseGerencial == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para salvar o custo é necessário informar se o mesmo é considerado na análise gerencial!');
+    } else if (custo.modalidade == 'Fixo' &&
+        (custo.valor == null || custo.valor == 0)) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para salvar o custo é necessário informar se o mesmo é considerado na análise gerencial!');
+    } else {
+      try {
+        await Firestore.instance
+            .collection('custos')
+            .document(custo.identificacao)
+            .updateData({
+          'identificacao': custo.identificacao,
+          'detalhes': custo.detalhes,
+          'modalidade': custo.modalidade,
+          'periodicidade': custo.periodicidade,
+          'analiseGerencial': custo.analiseGerencial,
+          'valor': custo.valor,
+        }).then((value) async => await alert(
+                contextoAplicacao, mensagemNotificacao, mensagemSucessoSalvar));
+      } catch (on) {
+        TextError(mensagemErroSalvar);
+      }
     }
   }
 

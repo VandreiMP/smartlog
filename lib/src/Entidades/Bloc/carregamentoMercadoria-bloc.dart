@@ -1,3 +1,5 @@
+import 'dart:html';
+
 import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:date_format/date_format.dart';
@@ -146,7 +148,6 @@ class CarregamentoMercadoriaBloc extends BlocBase {
     carregamentoMercadoria.carga = _cargaController.value;
 
     carregamentoMercadoria.saidaCaminhao = _saidaCaminhaoController.value;
-    carregamentoMercadoria.numeroRomaneio = _numeroRomaneioController.value;
     carregamentoMercadoria.situacaoExpedicao =
         _situacaoExpedicaoController.value;
     carregamentoMercadoria.caminhao = _caminhaoController.value;
@@ -170,41 +171,52 @@ class CarregamentoMercadoriaBloc extends BlocBase {
         _quantidadeController.value,
         _totalDespController.value);
 
-    print(carregamentoMercadoria.carga);
-
-    if (carregamentoMercadoria.carga.toString() == null) {
-      TextError('Erro');
-    }
-
-    try {
-      await Firestore.instance
-          .collection('carregamentoMercadoria')
-          .document(carregamentoMercadoria.carga)
-          .setData({
-        'carga': carregamentoMercadoria.carga,
-        'saidaCaminhao': carregamentoMercadoria.saidaCaminhao,
-        'numeroRomaneio': carregamentoMercadoria.numeroRomaneio,
-        'situacaoExpedicao': carregamentoMercadoria.situacaoExpedicao,
-        'caminhao': carregamentoMercadoria.caminhao,
-        'motorista': carregamentoMercadoria.motorista,
-        'comprador': carregamentoMercadoria.comprador,
-        'telefone': carregamentoMercadoria.telefone,
-        'dataEntrega': carregamentoMercadoria.dataEntrega,
-        'situacaoEntrega': carregamentoMercadoria.situacaoEntrega,
-        'produto': carregamentoMercadoria.produto,
-        'embalagem': carregamentoMercadoria.embalagem,
-        'quantidadeEmbalagem': carregamentoMercadoria.quantidadeEmbalagem,
-        'pesoBruto': carregamentoMercadoria.pesoBruto,
-        'pesoLiquido': carregamentoMercadoria.pesoLiquido,
-        'cubagemCarga': carregamentoMercadoria.cubagemCarga,
-        'quantidade': carregamentoMercadoria.quantidade,
-        'precoLiquido': carregamentoMercadoria.precoLiquido,
-        'totalDesp': carregamentoMercadoria.totalDesp,
-        'totalCarga': carregamentoMercadoria.totalCarga
-      }).then((value) async => await alert(
-              contextoAplicacao, mensagemNotificacao, mensagemSucessoSalvar));
-    } catch (on) {
-      TextError(mensagemErroSalvar);
+    if (carregamentoMercadoria.carga == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para salvar a carga é necessário informar a identificação!');
+    } else if (carregamentoMercadoria.caminhao == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para salvar a carga é necessário informar o caminhão!');
+    } else if (carregamentoMercadoria.motorista == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para salvar a carga é necessário informar o motorista!');
+    } else if (carregamentoMercadoria.dataEntrega == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para salvar a carga é necessário informar a previsão de entrega!');
+    } else if (carregamentoMercadoria.comprador == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para salvar a carga é necessário informar o comprador!');
+    } else {
+      try {
+        await Firestore.instance
+            .collection('carregamentoMercadoria')
+            .document(carregamentoMercadoria.carga)
+            .setData({
+          'carga': carregamentoMercadoria.carga,
+          'saidaCaminhao': carregamentoMercadoria.saidaCaminhao,
+          'numeroRomaneio': carregamentoMercadoria.numeroRomaneio,
+          'situacaoExpedicao': carregamentoMercadoria.situacaoExpedicao,
+          'caminhao': carregamentoMercadoria.caminhao,
+          'motorista': carregamentoMercadoria.motorista,
+          'comprador': carregamentoMercadoria.comprador,
+          'telefone': carregamentoMercadoria.telefone,
+          'dataEntrega': carregamentoMercadoria.dataEntrega,
+          'situacaoEntrega': carregamentoMercadoria.situacaoEntrega,
+          'produto': carregamentoMercadoria.produto,
+          'embalagem': carregamentoMercadoria.embalagem,
+          'quantidadeEmbalagem': carregamentoMercadoria.quantidadeEmbalagem,
+          'pesoBruto': carregamentoMercadoria.pesoBruto,
+          'pesoLiquido': carregamentoMercadoria.pesoLiquido,
+          'cubagemCarga': carregamentoMercadoria.cubagemCarga,
+          'quantidade': carregamentoMercadoria.quantidade,
+          'precoLiquido': carregamentoMercadoria.precoLiquido,
+          'totalDesp': carregamentoMercadoria.totalDesp,
+          'totalCarga': carregamentoMercadoria.totalCarga
+        }).then((value) async => await alert(
+                contextoAplicacao, mensagemNotificacao, mensagemSucessoSalvar));
+      } catch (on) {
+        TextError(mensagemErroSalvar);
+      }
     }
   }
 
@@ -256,8 +268,7 @@ class CarregamentoMercadoriaBloc extends BlocBase {
     transacaoBanco.commit();
   }
 
-  Future<void> atualizaDados(
-      BuildContext contextoAplicacao, String chaveConsulta) async {
+  Future<void> atualizaDados(BuildContext contextoAplicacao) async {
     var carregamentoMercadoria = CarregamentoMercadoria();
 
     carregamentoMercadoria.carga = _cargaController.value;
@@ -281,46 +292,64 @@ class CarregamentoMercadoriaBloc extends BlocBase {
     carregamentoMercadoria.quantidade = _quantidadeController.value;
     carregamentoMercadoria.precoLiquido = _precoLiquidoController.value;
     carregamentoMercadoria.totalDesp = _totalDespController.value;
-    carregamentoMercadoria.totalCarga = calculaValorTotalCarga(
-      _precoLiquidoController.value,
-      _quantidadeController.value,
-      _totalDespController.value,
-    );
+    carregamentoMercadoria.totalCarga = _totalCargaController.value;
 
-    try {
-      await Firestore.instance
-          .collection('carregamentoMercadoria')
-          .document(chaveConsulta)
-          .updateData({
-        'carga': carregamentoMercadoria.carga,
-        'saidaCaminhao': carregamentoMercadoria.saidaCaminhao,
-        'numeroRomaneio': carregamentoMercadoria.numeroRomaneio,
-        'situacaoExpedicao': carregamentoMercadoria.situacaoExpedicao,
-        'caminhao': carregamentoMercadoria.caminhao,
-        'motorista': carregamentoMercadoria.motorista,
-        'comprador': carregamentoMercadoria.comprador,
-        'telefone': carregamentoMercadoria.telefone,
-        'dataEntrega': carregamentoMercadoria.dataEntrega,
-        'situacaoEntrega': carregamentoMercadoria.situacaoEntrega,
-        'produto': carregamentoMercadoria.produto,
-        'embalagem': carregamentoMercadoria.embalagem,
-        'quantidadeEmbalagem': carregamentoMercadoria.quantidadeEmbalagem,
-        'pesoBruto': carregamentoMercadoria.pesoBruto,
-        'pesoLiquido': carregamentoMercadoria.pesoLiquido,
-        'cubagemCarga': carregamentoMercadoria.cubagemCarga,
-        'quantidade': carregamentoMercadoria.quantidade,
-        'precoLiquido': carregamentoMercadoria.precoLiquido,
-        'totalDesp': carregamentoMercadoria.totalDesp,
-        'totalCarga': carregamentoMercadoria.totalCarga
-      }).then((value) async => await alert(
-              contextoAplicacao, mensagemNotificacao, mensagemSucessoSalvar));
-    } catch (on) {
-      TextError(mensagemErroApagar);
+    if (carregamentoMercadoria.carga == '' ||
+        carregamentoMercadoria.carga == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para salvar a carga é necessário informar a identificação!');
+    } else if (carregamentoMercadoria.caminhao == '' ||
+        carregamentoMercadoria.caminhao == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para salvar a carga é necessário informar o caminhão!');
+    } else if (carregamentoMercadoria.motorista == '' ||
+        carregamentoMercadoria.motorista == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para salvar a carga é necessário informar o motorista!');
+    } else if (carregamentoMercadoria.dataEntrega == '' ||
+        carregamentoMercadoria.dataEntrega == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para salvar a carga é necessário informar a previsão de entrega!');
+    } else if (carregamentoMercadoria.comprador == '' ||
+        carregamentoMercadoria.comprador == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para salvar a carga é necessário informar o comprador!');
+    } else {
+      try {
+        await Firestore.instance
+            .collection('carregamentoMercadoria')
+            .document(carregamentoMercadoria.carga)
+            .updateData({
+          'carga': carregamentoMercadoria.carga,
+          'saidaCaminhao': carregamentoMercadoria.saidaCaminhao,
+          'numeroRomaneio': carregamentoMercadoria.numeroRomaneio,
+          'situacaoExpedicao': carregamentoMercadoria.situacaoExpedicao,
+          'caminhao': carregamentoMercadoria.caminhao,
+          'motorista': carregamentoMercadoria.motorista,
+          'comprador': carregamentoMercadoria.comprador,
+          'telefone': carregamentoMercadoria.telefone,
+          'dataEntrega': carregamentoMercadoria.dataEntrega,
+          'situacaoEntrega': carregamentoMercadoria.situacaoEntrega,
+          'produto': carregamentoMercadoria.produto,
+          'embalagem': carregamentoMercadoria.embalagem,
+          'quantidadeEmbalagem': carregamentoMercadoria.quantidadeEmbalagem,
+          'pesoBruto': carregamentoMercadoria.pesoBruto,
+          'pesoLiquido': carregamentoMercadoria.pesoLiquido,
+          'cubagemCarga': carregamentoMercadoria.cubagemCarga,
+          'quantidade': carregamentoMercadoria.quantidade,
+          'precoLiquido': carregamentoMercadoria.precoLiquido,
+          'totalDesp': carregamentoMercadoria.totalDesp,
+          'totalCarga': carregamentoMercadoria.totalCarga
+        }).then((value) async => await alert(
+                contextoAplicacao, mensagemNotificacao, mensagemSucessoSalvar));
+      } catch (on) {
+        TextError(mensagemErroApagar);
+      }
     }
   }
 
-  Future<void> verificaCarga(
-      String numeroCarga, BuildContext contextoAplicacao) async {
+  Future<void> verificaCarga(String numeroCarga, BuildContext contextoAplicacao,
+      Function executaAcao) async {
     if (numeroCarga.isNotEmpty) {
       await Firestore.instance
           .collection("carregamentoMercadoria")
@@ -329,18 +358,95 @@ class CarregamentoMercadoriaBloc extends BlocBase {
           .then(
             (coluna) async => coluna.exists == false
                 ? alert(contextoAplicacao, mensagemAlerta,
-                    'Para gerar o romaneio é necessário gravar a carga no sistema!')
-                : Navigator.of(contextoAplicacao).pushNamed(
-                    '/FormularioRomaneio',
-                    arguments: numeroCarga,
-                  ),
+                    'Para realizar esta operação é necessário gravar a carga no sistema!')
+                : executaAcao(),
           );
     } else {
       alert(contextoAplicacao, mensagemAlerta,
-          'Para gerar o romaneio é necessário gravar a carga no sistema!');
+          'Para realizar esta operação é necessário gravar a carga no sistema!');
     }
   }
 
+  Future<String> verificaAlteracaoExpedicao(
+      String numeroCarga, BuildContext contextoAplicacao, String origem) async {
+    String mensagemRetorno = 'OK';
+
+    void validaExpedicao(DocumentSnapshot coluna, String origem) {
+      if (coluna.data['situacaoExpedicao'] == 'Mercadoria Entregue' &&
+          origem == 'TRANSITO') {
+        alert(contextoAplicacao, mensagemAlerta,
+            'Não é possível realizar esta operação, pois a mercadoria já foi entregue!');
+        mensagemRetorno = 'MERCADORIA_ENTREGUE';
+      }
+    }
+
+    if (numeroCarga.isNotEmpty) {
+      await Firestore.instance
+          .collection("carregamentoMercadoria")
+          .document(numeroCarga)
+          .get()
+          .then(
+            (coluna) async => coluna.exists == false
+                ? mensagemRetorno = 'SEM_DADOS'
+                : validaExpedicao(coluna, origem),
+          );
+    } else {
+      mensagemRetorno = 'SEM_DADOS';
+    }
+
+    if (mensagemRetorno == 'SEM_DADOS') {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para realizar esta operação é necessário gravar a carga no sistema!');
+    }
+
+    return mensagemRetorno;
+  }
+
+  Future<void> verificaCubagem(String codigoEmbalagem,
+      double quantidadeEmbalagem, BuildContext contextoAplicacao) async {
+    if (codigoEmbalagem.isEmpty) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para calcular o volume real da carga é necessário informar a embalagem!');
+    } else if ((quantidadeEmbalagem == null)) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para calcular o volume real da carga é necessário informar a quantidade da embalagem!');
+    } else {
+      await Firestore.instance
+          .collection("embalagem")
+          .document(codigoEmbalagem)
+          .get()
+          .then((coluna) async => coluna.data['cubagem'] == null
+              ? alert(contextoAplicacao, mensagemAlerta,
+                  'Para calcular o volume real da carga é necessário informar a cubagem no cadastro da embalagem!')
+              : null);
+    }
+  }
+
+  Future<String> verificaCapacidadeCaminhao(String codigoCaminhao,
+      double pesoCarga, BuildContext contextoAplicacao) async {
+    String mensagemRetorno = 'OK';
+    print(pesoCarga);
+    if (pesoCarga != null) {
+     
+      await Firestore.instance
+          .collection("fichaCaminhao")
+          .document(codigoCaminhao)
+          .get()
+          .then((coluna) async => coluna.data['capacidadeCarga'] != null &&
+                  coluna.data['capacidadeCarga'] < pesoCarga
+              ? mensagemRetorno = 'CAPACIDADE_EXCEDIDA'
+              : null);
+      if (mensagemRetorno == 'CAPACIDADE_EXCEDIDA') {
+        alert(contextoAplicacao, mensagemAlerta,
+            'O peso informado excede a capacidade máxima do caminhão!');
+      }
+    }
+      print(mensagemRetorno);
+    return mensagemRetorno;
+  }
+
   @override
-  void dispose() {}
+  void dispose() {
+    // TODO: implement dispose
+  }
 }

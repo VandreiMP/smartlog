@@ -1,20 +1,13 @@
 import 'package:bloc_pattern/bloc_pattern.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:smartlogproject/src/Components/scroll/scroll.dart';
 import 'package:smartlogproject/src/Entidades/Bloc/custo-bloc.dart';
-import 'package:smartlogproject/src/Entidades/Bloc/embalagem-bloc.dart';
-import 'package:smartlogproject/src/Entidades/Bloc/usuario-bloc.dart';
 import 'package:smartlogproject/src/constantes/mascaras.dart';
 import 'package:smartlogproject/src/funcoes/appText.dart';
 import 'package:smartlogproject/src/funcoes/buscaCustos.dart';
-import 'package:smartlogproject/src/funcoes/buscaEmbalagens.dart';
-import 'package:smartlogproject/src/funcoes/buscaFuncionarios.dart';
-import 'package:smartlogproject/src/funcoes/criaLista.dart';
 import 'package:smartlogproject/src/funcoes/requiredLabel.dart';
 import 'package:smartlogproject/src/screen/screenPattern.dart';
-import 'package:smartlogproject/src/tabelas/Bloc/tabela-bloc.dart';
 
 class ListaCustos extends StatelessWidget {
   @override
@@ -60,93 +53,63 @@ class CriaCardFormulario extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Container(
-                      child: AppText(
-                        'Filtros para Consulta',
-                        bold: true,
-                      ),
-                    ),
-                    SizedBox(
-                      height: 10.0,
-                    ),
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Container(
                           //height: 150.0,
-                          padding: EdgeInsets.all(10.0),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.all(Radius.circular(5)),
-                            border: new Border.all(
-                              color: Colors.black,
-                            ),
-                          ),
                           child: Row(
-                            children: <Widget>[
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  Container(
-                                    child: constroiCampo(
-                                      labelCampo: 'Detalhes',
-                                      largura: 500,
-                                      altura: 30,
-                                      contextoAplicacao: context,
-                                      obrigaCampo: false,
-                                      controller: tDescricao,
-                                    ),
-                                  ),
-                                  Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: <Widget>[
-                                      Container(
-                                        alignment: Alignment.topLeft,
-                                        child: constroiCampo(
-                                          labelCampo: 'Identificação',
-                                          largura: 150,
-                                          altura: 30,
-                                          obrigaCampo: false,
-                                          contextoAplicacao: context,
-                                          controller: tId,
-                                          mascara: new MaskedTextController(
-                                            mask: mascaraIdentificao,
-                                          ),
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              GestureDetector(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(1.0),
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      Navigator.of(context)
+                                          .pushNamed('/VisaoGeral');
+                                    },
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: Colors.blue[900],
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(2.0),
                                         ),
                                       ),
-                                    ],
+                                      child: Icon(
+                                        Icons.home,
+                                        size: 30.0,
+                                        color: Colors.white,
+                                      ),
+                                    ),
                                   ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.of(context).pushNamed(
-                              '/FormularioCustos',
-                            );
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 7.0),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: Colors.blue[900],
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(2.0),
                                 ),
                               ),
-                              child: Icon(
-                                Icons.add,
-                                size: 50.0,
-                                color: Colors.white,
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.of(context).pushNamed(
+                                    '/FormularioCustos',
+                                  );
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.only(left: 7.0),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: Colors.blue[900],
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(2.0),
+                                      ),
+                                    ),
+                                    child: Icon(
+                                      Icons.add,
+                                      size: 30.0,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
                               ),
-                            ),
+                            ],
                           ),
                         ),
                       ],
@@ -156,7 +119,7 @@ class CriaCardFormulario extends StatelessWidget {
                     ),
                     Container(
                       child: AppText(
-                        'Lista de Custos sobre Veículos e Outros Bens',
+                        'Lista de Custos',
                         bold: true,
                       ),
                     ),
@@ -164,12 +127,7 @@ class CriaCardFormulario extends StatelessWidget {
                       height: 10.0,
                     ),
                     Row(
-                      children: [
-                        BuscaCustos(
-                          Icons.search,
-                          'LISTA_REGISTROS'
-                        )
-                      ],
+                      children: [BuscaCustos(Icons.search, 'LISTA_REGISTROS')],
                     )
                   ],
                 ),

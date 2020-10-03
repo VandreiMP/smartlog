@@ -1,29 +1,13 @@
 import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:date_format/date_format.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:smartlogproject/src/Entidades/classes/romaneio.dart';
-import 'package:smartlogproject/src/Entidades/classes/embalagem.dart';
 import 'package:smartlogproject/src/constantes/mensagens.dart';
 import 'package:smartlogproject/src/funcoes/alert.dart';
 import 'package:smartlogproject/src/funcoes/alertErro.dart';
-import 'package:smartlogproject/src/funcoes/alertFuncao.dart';
 
 class RomaneioBloc extends BlocBase {
-  String _carga;
-  String _observacao;
-  String _modalidadeFrete;
-  String _dataSaidaViagem;
-  String _dataRetornoViagem;
-  String _diasRodados;
-  String _quilometragemRodada;
-  String _cidadeSaida;
-  String _ufSaida;
-  String _cidadeDestino;
-  String _ufDestino;
-
   BuildContext contextoAplicacao;
 
   RomaneioBloc(BuildContext contextoAplicacao);

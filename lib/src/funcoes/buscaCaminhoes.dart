@@ -3,25 +3,31 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:smartlogproject/src/Entidades/Bloc/embalagem-bloc.dart';
 import 'package:smartlogproject/src/Entidades/Bloc/usuario-bloc.dart';
+import 'package:smartlogproject/src/constantes/mensagens.dart';
+import 'package:smartlogproject/src/funcoes/alert.dart';
 import 'package:smartlogproject/src/funcoes/appText.dart';
 
 class BuscaCaminhao extends StatefulWidget {
   final IconData iconeLista;
   final Function funcaoLista;
   final String origem;
+  final double pesoCarregado;
 
-  const BuscaCaminhao(this.iconeLista, this.funcaoLista, this.origem);
+  const BuscaCaminhao(
+      this.iconeLista, this.funcaoLista, this.origem, this.pesoCarregado);
   @override
   _BuscaCaminhaoState createState() =>
-      _BuscaCaminhaoState(iconeLista, funcaoLista, origem);
+      _BuscaCaminhaoState(iconeLista, funcaoLista, origem, pesoCarregado);
 }
 
 class _BuscaCaminhaoState extends State<BuscaCaminhao> {
   final IconData iconeLista;
   final Function funcaoLista;
   final String origem;
+  final double pesoCarregado;
 
-  _BuscaCaminhaoState(this.iconeLista, this.funcaoLista, this.origem);
+  _BuscaCaminhaoState(
+      this.iconeLista, this.funcaoLista, this.origem, this.pesoCarregado);
   @override
   Widget build(BuildContext context) {
     final Firestore firestore = Firestore.instance;
@@ -107,6 +113,7 @@ class _BuscaCaminhaoState extends State<BuscaCaminhao> {
                                   final dynamic placa = document['placa'];
                                   final dynamic identificacao =
                                       document['identificacao'];
+
                                   return Container(
                                     child: Row(
                                       children: [
@@ -147,7 +154,25 @@ class _BuscaCaminhaoState extends State<BuscaCaminhao> {
                                         GestureDetector(
                                           onTap: () {
                                             if (origem == 'CARGA') {
-                                              Navigator.pop(context, identificacao);
+                                              if (pesoCarregado != null) {
+                                                Firestore.instance
+                                                    .collection("fichaCaminhao")
+                                                    .document(identificacao)
+                                                    .get()
+                                                    .then((coluna) async => coluna
+                                                                        .data[
+                                                                    'capacidadeCarga'] !=
+                                                                null &&
+                                                            coluna.data[
+                                                                    'capacidadeCarga'] <
+                                                                pesoCarregado
+                                                        ? alert(
+                                                            context,
+                                                            mensagemAlerta,
+                                                            'O peso carregado excede a capacidade máxima do caminhão!')
+                                                        : Navigator.pop(context,
+                                                            identificacao));
+                                              }
                                             } else {
                                               Navigator.of(context).pushNamed(
                                                   '/FormularioCaminhao',

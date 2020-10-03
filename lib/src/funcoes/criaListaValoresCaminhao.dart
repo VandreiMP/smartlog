@@ -5,9 +5,11 @@ import 'package:smartlogproject/src/Entidades/Bloc/caminhao-bloc.dart';
 import 'package:smartlogproject/src/constantes/cores.dart';
 import 'package:smartlogproject/src/funcoes/appText.dart';
 import 'package:smartlogproject/src/funcoes/buscaCaminhoes.dart';
-import 'package:smartlogproject/src/screen/screenPattern.dart';
 
 class ListaValoresCaminhao extends StatelessWidget {
+  final double pesoCarregado;
+
+  const ListaValoresCaminhao(this.pesoCarregado);
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -15,13 +17,16 @@ class ListaValoresCaminhao extends StatelessWidget {
       color: corTransparente,
       child: BlocProvider(
         bloc: CaminhaoBloc(context),
-        child: CriaCardFormulario(),
+        child: CriaCardFormulario(pesoCarregado),
       ),
     );
   }
 }
 
 class CriaCardFormulario extends StatelessWidget {
+  final double pesoCarregado;
+
+  const CriaCardFormulario(this.pesoCarregado);
   @override
   Widget build(BuildContext context) {
     return Scroll(
@@ -88,7 +93,7 @@ class CriaCardFormulario extends StatelessWidget {
                     ),
                     Row(
                       children: [
-                        BuscaCaminhao(Icons.add, () {}, 'CARGA'),
+                        BuscaCaminhao(Icons.add, () {}, 'CARGA', pesoCarregado),
                       ],
                     )
                   ],

@@ -81,7 +81,14 @@ class _BuscaCarregamentoMercadoriaState
                               Padding(
                                 padding: const EdgeInsets.only(left: 315.0),
                                 child: AppText(
-                                  'Prev. Entrega',
+                                  'Prev. Entr.',
+                                  bold: true,
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 25.0),
+                                child: AppText(
+                                  'Sit. Expedição',
                                   bold: true,
                                 ),
                               ),
@@ -93,7 +100,7 @@ class _BuscaCarregamentoMercadoriaState
                             Container(
                               padding: EdgeInsets.only(bottom: 15),
                               alignment: Alignment.topLeft,
-                              width: 810,
+                              width: 945,
                               child: ListView.builder(
                                 shrinkWrap: true,
                                 itemCount: carregamentoContador,
@@ -106,6 +113,8 @@ class _BuscaCarregamentoMercadoriaState
                                   final dynamic carga = document['carga'];
                                   final dynamic dataEntrega =
                                       document['dataEntrega'];
+                                  final dynamic situacaoExpedicao =
+                                      document['situacaoExpedicao'];
 
                                   final String chaveConsulta = numeroCarga;
 
@@ -160,6 +169,23 @@ class _BuscaCarregamentoMercadoriaState
                                               ),
                                             ),
                                             child: Text(dataEntrega.toString()),
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.all(2.0),
+                                          child: Container(
+                                            padding: EdgeInsets.all(10),
+                                            width: 170,
+                                            decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(5)),
+                                              border: new Border.all(
+                                                color: Colors.black,
+                                              ),
+                                            ),
+                                            child: Text(
+                                                situacaoExpedicao.toString()),
                                           ),
                                         ),
                                         GestureDetector(

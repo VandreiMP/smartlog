@@ -4,22 +4,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:smartlogproject/src/Entidades/classes/embalagem.dart';
+import 'package:smartlogproject/src/constantes/mensagens.dart';
 import 'package:smartlogproject/src/funcoes/alert.dart';
 import 'package:smartlogproject/src/funcoes/alertErro.dart';
 import 'package:smartlogproject/src/funcoes/alertFuncao.dart';
 
 class EmbalagemBloc extends BlocBase {
-  String _documentId;
-  String _descricao;
-  String _categoriaEmbalagem;
-  double _capacidade;
-  String _tipoUnidade;
-  double _largura;
-  double _comprimento;
-  double _altura;
-  double _cubagem;
-  double _tara;
-
   BuildContext contextoAplicacao;
 
   EmbalagemBloc(BuildContext contextoAplicacao);
@@ -99,28 +89,40 @@ class EmbalagemBloc extends BlocBase {
     embalagem.cubagem = _cubagemController.value;
     embalagem.tara = _taraController.value;
 
-    try {
-      await Firestore.instance
-          .collection('embalagem')
-          .document(embalagem.identificacao)
-          .setData({
-        'identificacao': embalagem.identificacao,
-        'embalagem': embalagem.identificacao,
-        'descricao': embalagem.descricao,
-        'categoriaEmbalagem': embalagem.categoriaEmbalagem,
-        'capacidade': embalagem.capacidade,
-        'tipoUnidade': embalagem.tipoUnidade,
-        'largura': embalagem.largura,
-        'comprimento': embalagem.comprimento,
-        'altura': embalagem.altura,
-        'cubagem': embalagem.cubagem,
-        'tara': embalagem.tara,
-      }).then((value) async => await alert(
-              contextoAplicacao,
-              'Notificação de Sucesso',
-              'Os dados do formulário foram salvos com sucesso no banco de dados!'));
-    } catch (on) {
-      TextError('Erro ao salvar os dados do formulário no banco de dados!');
+    if (embalagem.identificacao == '' || embalagem.identificacao == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para salvar a embalagem é necessário informar a identificação!');
+    } else if (embalagem.descricao == '' || embalagem.descricao == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para salvar a embalagem é necessário informar a descrição!');
+    } else if (embalagem.categoriaEmbalagem == '' ||
+        embalagem.categoriaEmbalagem == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para salvar a embalagem é necessário informar a categoria!');
+    } else {
+      try {
+        await Firestore.instance
+            .collection('embalagem')
+            .document(embalagem.identificacao)
+            .setData({
+          'identificacao': embalagem.identificacao,
+          'embalagem': embalagem.identificacao,
+          'descricao': embalagem.descricao,
+          'categoriaEmbalagem': embalagem.categoriaEmbalagem,
+          'capacidade': embalagem.capacidade,
+          'tipoUnidade': embalagem.tipoUnidade,
+          'largura': embalagem.largura,
+          'comprimento': embalagem.comprimento,
+          'altura': embalagem.altura,
+          'cubagem': embalagem.cubagem,
+          'tara': embalagem.tara,
+        }).then((value) async => await alert(
+                contextoAplicacao,
+                'Notificação de Sucesso',
+                'Os dados do formulário foram salvos com sucesso no banco de dados!'));
+      } catch (on) {
+        TextError('Erro ao salvar os dados do formulário no banco de dados!');
+      }
     }
   }
 
@@ -173,28 +175,41 @@ class EmbalagemBloc extends BlocBase {
     embalagem.cubagem = _cubagemController.value;
     embalagem.tara = _taraController.value;
 
-    try {
-      await Firestore.instance
-          .collection('embalagem')
-          .document(embalagem.identificacao)
-          .updateData({
-        'identificacao': embalagem.identificacao,
-        'embalagem': embalagem.identificacao,
-        'descricao': embalagem.descricao,
-        'categoriaEmbalagem': embalagem.categoriaEmbalagem,
-        'capacidade': embalagem.capacidade,
-        'tipoUnidade': embalagem.tipoUnidade,
-        'largura': embalagem.largura,
-        'comprimento': embalagem.comprimento,
-        'altura': embalagem.altura,
-        'cubagem': embalagem.cubagem,
-        'tara': embalagem.tara,
-      }).then((value) async => await alert(
-              contextoAplicacao,
-              'Notificação de Sucesso',
-              'Os dados do formulário foram atualizados com sucesso no banco de dados!'));
-    } catch (on) {
-      TextError('Erro ao atualizar os dados do formulário no banco de dados!');
+    if (embalagem.identificacao == '' || embalagem.identificacao == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para salvar a embalagem é necessário informar a identificação!');
+    } else if (embalagem.descricao == '' || embalagem.descricao == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para salvar a embalagem é necessário informar a descrição!');
+    } else if (embalagem.categoriaEmbalagem == '' ||
+        embalagem.categoriaEmbalagem == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para salvar a embalagem é necessário informar a categoria!');
+    } else {
+      try {
+        await Firestore.instance
+            .collection('embalagem')
+            .document(embalagem.identificacao)
+            .updateData({
+          'identificacao': embalagem.identificacao,
+          'embalagem': embalagem.identificacao,
+          'descricao': embalagem.descricao,
+          'categoriaEmbalagem': embalagem.categoriaEmbalagem,
+          'capacidade': embalagem.capacidade,
+          'tipoUnidade': embalagem.tipoUnidade,
+          'largura': embalagem.largura,
+          'comprimento': embalagem.comprimento,
+          'altura': embalagem.altura,
+          'cubagem': embalagem.cubagem,
+          'tara': embalagem.tara,
+        }).then((value) async => await alert(
+                contextoAplicacao,
+                'Notificação de Sucesso',
+                'Os dados do formulário foram atualizados com sucesso no banco de dados!'));
+      } catch (on) {
+        TextError(
+            'Erro ao atualizar os dados do formulário no banco de dados!');
+      }
     }
   }
 

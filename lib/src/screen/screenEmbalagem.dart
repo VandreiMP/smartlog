@@ -4,11 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:smartlogproject/src/Components/scroll/scroll.dart';
 import 'package:smartlogproject/src/Entidades/Bloc/embalagem-bloc.dart';
 import 'package:smartlogproject/src/funcoes/calculaCubagem.dart';
-import '../constantes/mascaras.dart';
 import '../funcoes/appText.dart';
-import '../funcoes/appTextField.dart';
 import '../Cards/Widgets/criaCardAuxiliar.dart';
-import '../funcoes/criaLista.dart';
 import '../funcoes/requiredLabel.dart';
 import 'screenPattern.dart';
 
@@ -165,11 +162,11 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
 
       blocEmbalagem.setId(tId.text);
       blocEmbalagem.setDescricao(tDescricao.text);
-      blocEmbalagem.setLargura(double.parse(tLargura.text));
-      blocEmbalagem.setComprimento(double.parse(tComprimento.text));
-      blocEmbalagem.setAltura(double.parse(tAltura.text));
-      blocEmbalagem.setCubagem(double.parse(tCubagem.text));
-      blocEmbalagem.setTara(double.parse(tTara.text));
+      blocEmbalagem.setLargura(double.tryParse(tLargura.text));
+      blocEmbalagem.setComprimento(double.tryParse(tComprimento.text));
+      blocEmbalagem.setAltura(double.tryParse(tAltura.text));
+      blocEmbalagem.setCubagem(double.tryParse(tCubagem.text));
+      blocEmbalagem.setTara(double.tryParse(tTara.text));
     }
 
     if (codigoEmbalagem != null) {
@@ -269,6 +266,8 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
                                               padding: const EdgeInsets.only(
                                                   left: 20.0),
                                               child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
                                                 children: [
                                                   RequiredLabel(
                                                     'Categ.',
@@ -372,19 +371,21 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
                                                 controller: tCapacidade,
                                                 onChanged: (String valor) =>
                                                     blocEmbalagem.setCapacidade(
-                                                        double.parse(
+                                                        double.tryParse(
                                                             tCapacidade.text)),
-                                                obrigaCampo: true,
+                                                obrigaCampo: false,
                                               ),
                                             ),
                                             Padding(
                                               padding: const EdgeInsets.only(
                                                   left: 20.0),
                                               child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
                                                 children: [
                                                   RequiredLabel(
                                                     'Unidade',
-                                                    true,
+                                                    false,
                                                   ),
                                                   Container(
                                                     height: 50.0,
@@ -428,62 +429,78 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
                                               MainAxisAlignment.spaceBetween,
                                           children: <Widget>[
                                             Container(
-                                                alignment:
-                                                    Alignment.centerRight,
-                                                child: constroiCampo(
-                                                  labelCampo: 'Largura',
-                                                  largura: 70,
-                                                  altura: 30,
-                                                  controller: tLargura,
-                                                  onChanged: (String valor) {
-                                                    blocEmbalagem.setLargura(
-                                                      double.parse(
-                                                          tLargura.text),
-                                                    );
-                                                    tCubagem
-                                                        .text = calculaCubagem(
-                                                            double.parse(
-                                                                tLargura.text),
-                                                            double.parse(
-                                                                tComprimento
-                                                                    .text),
-                                                            double.parse(
-                                                                tAltura.text))
-                                                        .toString();
-                                                    blocEmbalagem.setCubagem(
-                                                        double.parse(
-                                                            tCubagem.text));
-                                                  },
-                                                  obrigaCampo: false,
-                                                )),
+                                              alignment: Alignment.centerRight,
+                                              child: constroiCampo(
+                                                labelCampo: 'Largura',
+                                                largura: 70,
+                                                altura: 30,
+                                                controller: tLargura,
+                                                onChanged: (String valor) {
+                                                  blocEmbalagem.setLargura(
+                                                    double.tryParse(
+                                                        tLargura.text),
+                                                  );
+                                                  tCubagem
+                                                      .text = calculaCubagem(
+                                                          double.tryParse(
+                                                              tLargura.text),
+                                                          double.tryParse(
+                                                              tComprimento
+                                                                  .text),
+                                                          double.tryParse(
+                                                              tAltura.text))
+                                                      .toString();
+                                                  blocEmbalagem.setCubagem(
+                                                      double.tryParse(
+                                                          tCubagem.text));
+                                                },
+                                                obrigaCampo: false,
+                                              ),
+                                            ),
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.all(4.0),
+                                              child: AppText(
+                                                '*',
+                                                bold: true,
+                                              ),
+                                            ),
                                             Padding(
                                               padding: const EdgeInsets.only(
                                                 left: 20.0,
                                               ),
                                               child: constroiCampo(
-                                                labelCampo: 'Comprimento',
+                                                labelCampo: 'Compr.',
                                                 largura: 70,
                                                 altura: 30,
                                                 controller: tComprimento,
                                                 onChanged: (String valor) {
                                                   blocEmbalagem.setComprimento(
-                                                      double.parse(
+                                                      double.tryParse(
                                                           tComprimento.text));
                                                   tCubagem
                                                       .text = calculaCubagem(
-                                                          double.parse(
+                                                          double.tryParse(
                                                               tLargura.text),
-                                                          double.parse(
+                                                          double.tryParse(
                                                               tComprimento
                                                                   .text),
-                                                          double.parse(
+                                                          double.tryParse(
                                                               tAltura.text))
                                                       .toString();
                                                   blocEmbalagem.setCubagem(
-                                                      double.parse(
+                                                      double.tryParse(
                                                           tCubagem.text));
                                                 },
                                                 obrigaCampo: false,
+                                              ),
+                                            ),
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.all(4.0),
+                                              child: AppText(
+                                                '*',
+                                                bold: true,
                                               ),
                                             ),
                                             Padding(
@@ -497,23 +514,31 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
                                                 controller: tAltura,
                                                 onChanged: (String valor) {
                                                   blocEmbalagem.setAltura(
-                                                      double.parse(
+                                                      double.tryParse(
                                                           tAltura.text));
                                                   tCubagem
                                                       .text = calculaCubagem(
-                                                          double.parse(
+                                                          double.tryParse(
                                                               tLargura.text),
-                                                          double.parse(
+                                                          double.tryParse(
                                                               tComprimento
                                                                   .text),
-                                                          double.parse(
+                                                          double.tryParse(
                                                               tAltura.text))
                                                       .toString();
                                                   blocEmbalagem.setCubagem(
-                                                      double.parse(
+                                                      double.tryParse(
                                                           tCubagem.text));
                                                 },
                                                 obrigaCampo: false,
+                                              ),
+                                            ),
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.all(4.0),
+                                              child: AppText(
+                                                '=',
+                                                bold: true,
                                               ),
                                             ),
                                             Padding(
@@ -523,6 +548,7 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
                                               child: constroiCampo(
                                                 labelCampo: 'Cubagem',
                                                 largura: 70,
+                                                enabled: false,
                                                 altura: 30,
                                                 controller: tCubagem,
                                                 obrigaCampo: false,
@@ -539,7 +565,7 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
                                                   controller: tTara,
                                                   onChanged: (String valor) {
                                                     blocEmbalagem.setTara(
-                                                        double.parse(
+                                                        double.tryParse(
                                                             tTara.text));
                                                   },
                                                   obrigaCampo: false),

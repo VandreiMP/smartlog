@@ -9,20 +9,6 @@ import 'package:smartlogproject/src/funcoes/alertErro.dart';
 import 'package:smartlogproject/src/funcoes/alertFuncao.dart';
 
 class CaminhaoBloc extends BlocBase {
-  String _identificacao;
-  String _placa;
-  int _anoFabricacao;
-  String _uf;
-  String _descricao;
-  String _modeloCaminhao;
-  String _fabricante;
-  String _tipoCarroceria;
-  String _categoriaCaminhao;
-  String _chassiCaminhao;
-  int _numeroRenavam;
-  int _numeroRntrc;
-  String _tipoCombustivel;
-
   BuildContext contextoAplicacao;
 
   CaminhaoBloc(BuildContext contextoAplicacao);
@@ -118,28 +104,60 @@ class CaminhaoBloc extends BlocBase {
     caminhao.numeroRntrc = _numeroRntrcController.value;
     caminhao.tipoCombustivel = _tipoCombustivelController.value;
 
-    try {
-      await Firestore.instance
-          .collection('caminhao')
-          .document(caminhao.identificacao)
-          .setData({
-        'identificacao': caminhao.identificacao,
-        'placa': caminhao.placa,
-        'anoFabricacao': caminhao.anoFabricacao,
-        'uf': caminhao.uf,
-        'descricao': caminhao.descricao,
-        'modeloCaminhao': caminhao.modeloCaminhao,
-        'fabricante': caminhao.fabricante,
-        'tipoCarroceria': caminhao.tipoCarroceria,
-        'categoriaCaminhao': caminhao.categoriaCaminhao,
-        'chassiCaminhao': caminhao.chassiCaminhao,
-        'numeroRenavam': caminhao.numeroRenavam,
-        'numeroRntrc': caminhao.numeroRntrc,
-        'tipoCombustivel': caminhao.tipoCombustivel,
-      }).then((value) async => await alert(
-              contextoAplicacao, mensagemNotificacao, mensagemSucessoSalvar));
-    } catch (on) {
-      TextError(mensagemErroSalvar);
+    if (caminhao.identificacao == '' || caminhao.identificacao == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para salvar o caminhão é necessário informar a identificação!');
+    } else if (caminhao.placa == '' || caminhao.placa == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para salvar o caminhao é necessário informar a placa!');
+    } else if (caminhao.anoFabricacao == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para salvar o caminhao é necessário informar o ano de fabricação!');
+    } else if (caminhao.uf == '' || caminhao.uf == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para salvar o caminhao é necessário informar a UF!');
+    } else if (caminhao.categoriaCaminhao == '' ||
+        caminhao.categoriaCaminhao == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para salvar o caminhao é necessário informar a categoria!');
+    } else if (caminhao.descricao == '' || caminhao.descricao == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para salvar o caminhao é necessário informar a descrição!');
+    } else if (caminhao.chassiCaminhao == '' ||
+        caminhao.chassiCaminhao == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para salvar o caminhao é necessário informar o chassi!');
+    } else if (caminhao.numeroRenavam == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para salvar o caminhao é necessário informar o número do Renavam!');
+    } else if (caminhao.tipoCombustivel == '' ||
+        caminhao.tipoCombustivel == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para salvar o caminhao é necessário informar o tipo de combustível!');
+    } else {
+      try {
+        await Firestore.instance
+            .collection('caminhao')
+            .document(caminhao.identificacao)
+            .setData({
+          'identificacao': caminhao.identificacao,
+          'placa': caminhao.placa,
+          'anoFabricacao': caminhao.anoFabricacao,
+          'uf': caminhao.uf,
+          'descricao': caminhao.descricao,
+          'modeloCaminhao': caminhao.modeloCaminhao,
+          'fabricante': caminhao.fabricante,
+          'tipoCarroceria': caminhao.tipoCarroceria,
+          'categoriaCaminhao': caminhao.categoriaCaminhao,
+          'chassiCaminhao': caminhao.chassiCaminhao,
+          'numeroRenavam': caminhao.numeroRenavam,
+          'numeroRntrc': caminhao.numeroRntrc,
+          'tipoCombustivel': caminhao.tipoCombustivel,
+        }).then((value) async => await alert(
+                contextoAplicacao, mensagemNotificacao, mensagemSucessoSalvar));
+      } catch (on) {
+        TextError(mensagemErroSalvar);
+      }
     }
   }
 
@@ -154,8 +172,13 @@ class CaminhaoBloc extends BlocBase {
     var caminhao = Caminhao();
 
     caminhao.identificacao = _idController.value;
+    WriteBatch transacaoBanco = Firestore.instance.batch();
 
     try {
+      await Firestore.instance
+          .collection('fichaCaminhao')
+          .document(caminhao.identificacao)
+          .delete();
       await Firestore.instance
           .collection('caminhao')
           .document(caminhao.identificacao)
@@ -175,6 +198,7 @@ class CaminhaoBloc extends BlocBase {
     } catch (on) {
       TextError(mensagemErroApagar);
     }
+    transacaoBanco.commit();
   }
 
   Future<void> atualizaDados(BuildContext contextoAplicacao) async {
@@ -194,28 +218,60 @@ class CaminhaoBloc extends BlocBase {
     caminhao.numeroRntrc = _numeroRntrcController.value;
     caminhao.tipoCombustivel = _tipoCombustivelController.value;
 
-    try {
-      await Firestore.instance
-          .collection('caminhao')
-          .document(caminhao.identificacao)
-          .updateData({
-        'identificacao': caminhao.identificacao,
-        'placa': caminhao.placa,
-        'anoFabricacao': caminhao.anoFabricacao,
-        'uf': caminhao.uf,
-        'descricao': caminhao.descricao,
-        'modeloCaminhao': caminhao.modeloCaminhao,
-        'fabricante': caminhao.fabricante,
-        'tipoCarroceria': caminhao.tipoCarroceria,
-        'categoriaCaminhao': caminhao.categoriaCaminhao,
-        'chassiCaminhao': caminhao.chassiCaminhao,
-        'numeroRenavam': caminhao.numeroRenavam,
-        'numeroRntrc': caminhao.numeroRntrc,
-        'tipoCombustivel': caminhao.tipoCombustivel,
-      }).then((value) async => await alert(
-              contextoAplicacao, mensagemNotificacao, mensagemSucessoSalvar));
-    } catch (on) {
-      TextError(mensagemErroSalvar);
+    if (caminhao.identificacao == '' || caminhao.identificacao == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para salvar o caminhão é necessário informar a identificação!');
+    } else if (caminhao.placa == '' || caminhao.placa == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para salvar o caminhao é necessário informar a placa!');
+    } else if (caminhao.anoFabricacao == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para salvar o caminhao é necessário informar o ano de fabricação!');
+    } else if (caminhao.uf == '' || caminhao.uf == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para salvar o caminhao é necessário informar a UF!');
+    } else if (caminhao.categoriaCaminhao == '' ||
+        caminhao.categoriaCaminhao == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para salvar o caminhao é necessário informar a categoria!');
+    } else if (caminhao.descricao == '' || caminhao.descricao == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para salvar o caminhao é necessário informar a descrição!');
+    } else if (caminhao.chassiCaminhao == '' ||
+        caminhao.chassiCaminhao == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para salvar o caminhao é necessário informar o chassi!');
+    } else if (caminhao.numeroRenavam == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para salvar o caminhao é necessário informar o número do Renavam!');
+    } else if (caminhao.tipoCombustivel == '' ||
+        caminhao.tipoCombustivel == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para salvar o caminhao é necessário informar o tipo de combustível!');
+    } else {
+      try {
+        await Firestore.instance
+            .collection('caminhao')
+            .document(caminhao.identificacao)
+            .updateData({
+          'identificacao': caminhao.identificacao,
+          'placa': caminhao.placa,
+          'anoFabricacao': caminhao.anoFabricacao,
+          'uf': caminhao.uf,
+          'descricao': caminhao.descricao,
+          'modeloCaminhao': caminhao.modeloCaminhao,
+          'fabricante': caminhao.fabricante,
+          'tipoCarroceria': caminhao.tipoCarroceria,
+          'categoriaCaminhao': caminhao.categoriaCaminhao,
+          'chassiCaminhao': caminhao.chassiCaminhao,
+          'numeroRenavam': caminhao.numeroRenavam,
+          'numeroRntrc': caminhao.numeroRntrc,
+          'tipoCombustivel': caminhao.tipoCombustivel,
+        }).then((value) async => await alert(
+                contextoAplicacao, mensagemNotificacao, mensagemSucessoSalvar));
+      } catch (on) {
+        TextError(mensagemErroSalvar);
+      }
     }
   }
 

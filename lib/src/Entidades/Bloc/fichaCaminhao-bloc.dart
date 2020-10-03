@@ -1,28 +1,12 @@
 import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:smartlogproject/src/Entidades/classes/custo.dart';
-import 'package:smartlogproject/src/Entidades/classes/embalagem.dart';
-import 'package:smartlogproject/src/Entidades/classes/empresa.dart';
 import 'package:smartlogproject/src/Entidades/classes/fichaCaminhao.dart';
 import 'package:smartlogproject/src/funcoes/alert.dart';
 import 'package:smartlogproject/src/funcoes/alertErro.dart';
-import 'package:smartlogproject/src/funcoes/alertFuncao.dart';
 
 class FichaCaminhaoBloc extends BlocBase {
-  String _idCaminhao;
-  String _cor;
-  double _quilometragemLitro;
-  double _capacidadeCarga;
-  double _pesoVazio;
-  int _numeroEixos;
-  double _comprimentoCarga;
-  double _alturaCarga;
-  double _larguraCarga;
-  double _cubagemCarga;
-
   BuildContext contextoAplicacao;
 
   FichaCaminhaoBloc(BuildContext contextoAplicacao);

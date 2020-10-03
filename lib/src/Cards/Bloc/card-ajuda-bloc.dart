@@ -96,7 +96,7 @@ class CardAjudaBloc extends BlocBase {
         await blocCarregamentoMercadoria.insereDados(contextoAplicacao);
       } else
         await blocCarregamentoMercadoria.atualizaDados(
-            contextoAplicacao, chaveConsulta);
+            contextoAplicacao);
     }
     if (origemDado == 'ROMANEIO') {
       if (chaveConsulta == null) {

@@ -78,7 +78,7 @@ class Main extends StatelessWidget {
         */
         '/ListaValoresEmbalagem': (context) => ListaValoresEmbalagem(),
         '/ListaValoresCusto': (context) => ListaValoresCusto(),
-        '/ListaValoresCaminhao': (context) => ListaValoresCaminhao(),
+        '/ListaValoresCaminhao': (context) => ListaValoresCaminhao(0),
         '/ListaValoresMotorista': (context) => ListaValoresMotorista()
       },
     );

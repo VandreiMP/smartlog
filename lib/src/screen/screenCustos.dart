@@ -1,16 +1,12 @@
-import 'dart:html';
-
 import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:smartlogproject/src/Components/scroll/scroll.dart';
 import 'package:smartlogproject/src/Entidades/Bloc/custo-bloc.dart';
-import 'package:smartlogproject/src/funcoes/alertErro.dart';
 import '../constantes/mascaras.dart';
 import '../funcoes/appText.dart';
 import '../Cards/Widgets/criaCardAuxiliar.dart';
-import '../funcoes/criaLista.dart';
 import '../funcoes/requiredLabel.dart';
 import 'screenPattern.dart';
 
@@ -108,7 +104,7 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
   /*
   Variáveis de Controle para exibição das listas.
   */
-  String valorModalidadeCusto = 'Variável';
+  String valorModalidadeCusto;
   bool consultaModalidadeCusto = true;
   String valorPeriodoCusto;
   bool consultaPeriodoCusto = true;
@@ -160,10 +156,10 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
       tDetalhes.text = coluna.data['detalhes'];
       tValor.text = coluna.data['valor'].toString();
 
-      // if (consultaModalidadeCusto == true) {
-      //   tModalidade.text = coluna.data['modalidade'];
-      //   atualizaModalidadeCusto(tModalidade.text);
-      // }
+      if (consultaModalidadeCusto == true) {
+        tModalidade.text = coluna.data['modalidade'];
+        atualizaModalidadeCusto(tModalidade.text);
+      }
 
       if (consultaPeriodoCusto == true) {
         tPeriodicidade.text = coluna.data['periodicidade'];
@@ -177,7 +173,7 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
 
       blocCusto.setId(tId.text);
       blocCusto.setDetalhes(tDetalhes.text);
-      blocCusto.setValor(double.parse(tValor.text));
+      blocCusto.setValor(double.tryParse(tValor.text));
     }
 
     /*
@@ -265,10 +261,6 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
                                                 onChanged: (String valor) {
                                                   blocCusto.setId(tId.text);
                                                 },
-                                                mascara:
-                                                    new MaskedTextController(
-                                                  mask: mascaraIdentificao,
-                                                ),
                                               ),
                                             ),
                                             Padding(
@@ -339,14 +331,9 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
                                                                     dropDownStringItem),
                                                               );
                                                             }).toList(),
-                                                            onTap: () {
-                                                              TextError('Erro');
-                                                            },
                                                             onChanged: (novoValorSelecionado) =>
-                                                            
-                                                                // atualizaModalidadeCusto(
-                                                                //     novoValorSelecionado),
-                                                                     TextError('Erro'),
+                                                                atualizaModalidadeCusto(
+                                                                    novoValorSelecionado),
                                                             value:
                                                                 valorModalidadeCusto,
                                                           ),
@@ -501,14 +488,10 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
                                                 altura: 30,
                                                 onChanged: (String valor) {
                                                   blocCusto.setValor(
-                                                      double.parse(
+                                                      double.tryParse(
                                                           tValor.text));
                                                 },
                                                 obrigaCampo: false,
-                                                mascara:
-                                                    new MaskedTextController(
-                                                  mask: mascaraIdentificao,
-                                                ),
                                               ),
                                             ),
                                           ],
@@ -548,7 +531,6 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
     double altura,
     bool obrigaCampo,
     BuildContext contextoAplicacao,
-    TextEditingController mascara,
     bool enabled,
     TextEditingController controller,
     String valorInicial,

@@ -1,15 +1,10 @@
 import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:smartlogproject/src/Components/scroll/scroll.dart';
 import 'package:smartlogproject/src/Entidades/Bloc/caminhao-bloc.dart';
-
-import '../constantes/mascaras.dart';
 import '../funcoes/appText.dart';
-import '../funcoes/appTextField.dart';
 import '../Cards/Widgets/criaCardAuxiliar.dart';
-import '../funcoes/criaLista.dart';
 import '../funcoes/requiredLabel.dart';
 import 'screenPattern.dart';
 
@@ -45,12 +40,15 @@ class _BodyState extends State<Body> {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
-                CriaCardAuxiliar(
-                  caminhoImagem: "Images/veiculo.png",
-                  nomeFormulario: "Cadastro de Frota",
-                  origem: 'CAMINHAO',
-                  origemDado: 'CAMINHAO',
-                  chaveConsulta: ModalRoute.of(context).settings.arguments,
+                Scroll(
+                  //height: double.infinity,
+                  child: CriaCardAuxiliar(
+                    caminhoImagem: "Images/veiculo.png",
+                    nomeFormulario: "Cadastro de Frota",
+                    origem: 'CAMINHAO',
+                    origemDado: 'CAMINHAO',
+                    chaveConsulta: ModalRoute.of(context).settings.arguments,
+                  ),
                 ),
                 // CriaCardAjudaCaminhao(),
               ],
@@ -191,7 +189,11 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
       tFabricante.text = coluna.data['fabricante'];
       tChassiCaminhao.text = coluna.data['chassiCaminhao'];
       tNumeroRenavam.text = coluna.data['numeroRenavam'].toString();
-      tNumeroRntrc.text = coluna.data['numeroRntrc'].toString();
+      print('aqui');
+      print(coluna.data['numeroRntrc']);
+      if (coluna.data['numeroRntrc'] != null) {
+        tNumeroRntrc.text = coluna.data['numeroRntrc'].toString();
+      }
 
       if (consultaTipoCarroceria == true) {
         tTipoCarroceria.text = coluna.data['tipoCarroceria'];
@@ -211,13 +213,13 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
       blocCaminhao.setIdentificacao(tId.text);
       blocCaminhao.setDescricao(tDescricao.text);
       blocCaminhao.setPlaca(tPlaca.text);
-      blocCaminhao.setAnoFabricacao(int.parse(tAnoFabricacao.text));
+      blocCaminhao.setAnoFabricacao(int.tryParse(tAnoFabricacao.text));
       blocCaminhao.setUf(tUf.text);
       blocCaminhao.setModeloCaminhao(tModeloCaminhao.text);
       blocCaminhao.setFabricante(tFabricante.text);
       blocCaminhao.setChassiCaminhao(tChassiCaminhao.text);
-      blocCaminhao.setNumeroRenavam(int.parse(tNumeroRenavam.text));
-      blocCaminhao.setNumeroRntrc(int.parse(tNumeroRntrc.text));
+      blocCaminhao.setNumeroRenavam(int.tryParse(tNumeroRenavam.text));
+      blocCaminhao.setNumeroRntrc(int.tryParse(tNumeroRntrc.text));
     }
 
     if (codigoCaminhao != null) {
@@ -325,7 +327,8 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
                                           obrigaCampo: true,
                                           onChanged: (String valor) {
                                             blocCaminhao.setAnoFabricacao(
-                                                int.parse(tAnoFabricacao.text));
+                                                int.tryParse(
+                                                    tAnoFabricacao.text));
                                           },
                                         ),
                                       ),
@@ -530,7 +533,7 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
                                             blocCaminhao.setFabricante(
                                                 tFabricante.text);
                                           },
-                                          obrigaCampo: true,
+                                          obrigaCampo: false,
                                         ),
                                       ),
                                       Padding(
@@ -546,10 +549,14 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
                                               padding: const EdgeInsets.only(
                                                   left: 20.0),
                                               child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.start,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
                                                 children: [
                                                   RequiredLabel(
                                                     'Carroceria',
-                                                    true,
+                                                    false,
                                                   ),
                                                   Column(
                                                     crossAxisAlignment:
@@ -666,7 +673,7 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
                                           controller: tNumeroRenavam,
                                           onChanged: (String valor) {
                                             blocCaminhao.setNumeroRenavam(
-                                              int.parse(tNumeroRenavam.text),
+                                              int.tryParse(tNumeroRenavam.text),
                                             );
                                           },
                                         ),
@@ -681,10 +688,10 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
                                           controller: tNumeroRntrc,
                                           onChanged: (String valor) {
                                             blocCaminhao.setNumeroRntrc(
-                                              int.parse(tNumeroRntrc.text),
+                                              int.tryParse(tNumeroRntrc.text),
                                             );
                                           },
-                                          obrigaCampo: true,
+                                          obrigaCampo: false,
                                         ),
                                       ),
                                       Padding(
