@@ -1,30 +1,14 @@
 import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:date_format/date_format.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:smartlogproject/src/Entidades/classes/solicitacaoAbastecimento.dart';
-import 'package:smartlogproject/src/Entidades/classes/embalagem.dart';
+import 'package:smartlogproject/src/constantes/mensagens.dart';
 import 'package:smartlogproject/src/funcoes/alert.dart';
 import 'package:smartlogproject/src/funcoes/alertErro.dart';
 import 'package:smartlogproject/src/funcoes/alertFuncao.dart';
-import 'package:smartlogproject/src/funcoes/calculaCustoSolicitacao.dart';
 
 class SolicitacaoAbastecimentoBloc extends BlocBase {
-  String _identificacao;
-  String _detalhes;
-  String _situacaoSolicitacao;
-  String _solicitante;
-  String _dataAbertura;
-  String _dataEfetivacao;
-  String _posto;
-  String _tipoCombustivel;
-  double _precoLitro;
-  double _quantidade;
-  double _custoTotal;
-  String _custoVinculado;
-
   BuildContext contextoAplicacao;
 
   SolicitacaoAbastecimentoBloc(BuildContext contextoAplicacao);
@@ -112,35 +96,54 @@ class SolicitacaoAbastecimentoBloc extends BlocBase {
     solicitacaoAbastecimento.tipoCombustivel = _tipoCombustivelController.value;
     solicitacaoAbastecimento.precoLitro = _precoLitroController.value;
     solicitacaoAbastecimento.quantidade = _quantidadeController.value;
-    solicitacaoAbastecimento.custoTotal = calculaValorTotalSolicitacao(
-      _precoLitroController.value,
-      _quantidadeController.value,
-    );
+    solicitacaoAbastecimento.custoTotal = _custoTotalController.value;
     solicitacaoAbastecimento.custoVinculado = _custoVinculadoController.value;
 
-    try {
-      await Firestore.instance
-          .collection('solicitacaoAbastecimento')
-          .document(solicitacaoAbastecimento.identificacao)
-          .setData({
-        'identificacao': solicitacaoAbastecimento.identificacao,
-        'detalhes': solicitacaoAbastecimento.detalhes,
-        'situacaoSolicitacao': solicitacaoAbastecimento.situacaoSolicitacao,
-        'solicitante': solicitacaoAbastecimento.solicitante,
-        'dataAbertura': solicitacaoAbastecimento.dataAbertura,
-        'dataEfetivacao': solicitacaoAbastecimento.dataEfetivacao,
-        'posto': solicitacaoAbastecimento.posto,
-        'tipoCombustivel': solicitacaoAbastecimento.tipoCombustivel,
-        'precoLitro': solicitacaoAbastecimento.precoLitro,
-        'quantidade': solicitacaoAbastecimento.quantidade,
-        'custoTotal': solicitacaoAbastecimento.custoTotal,
-        'custoVinculado': solicitacaoAbastecimento.custoVinculado
-      }).then((value) async => await alert(
-              contextoAplicacao,
-              'Notificação de Sucesso',
-              'Os dados do formulário foram salvos com sucesso no banco de dados!'));
-    } catch (on) {
-      TextError('Erro ao salvar os dados do formulário no banco de dados!');
+    if (solicitacaoAbastecimento.identificacao == '' ||
+        solicitacaoAbastecimento.identificacao == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para salvar a programação é necessário informar a identificação!');
+    } else if (solicitacaoAbastecimento.detalhes == '' ||
+        solicitacaoAbastecimento.detalhes == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para salvar a programação é necessário informar os detalhes!');
+    } else if (solicitacaoAbastecimento.solicitante == '' ||
+        solicitacaoAbastecimento.solicitante == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para salvar a programação é necessário informar o nome do solicitante!');
+    } else if (solicitacaoAbastecimento.posto == '' ||
+        solicitacaoAbastecimento.posto == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para salvar a programação é necessário informar o posto!');
+    } else if (solicitacaoAbastecimento.posto == '' ||
+        solicitacaoAbastecimento.posto == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para salvar a programação é necessário informar o combustível!');
+    } else if (solicitacaoAbastecimento.custoTotal == null) {
+      solicitacaoAbastecimento.custoTotal = 0.00;
+    } else {
+      try {
+        await Firestore.instance
+            .collection('solicitacaoAbastecimento')
+            .document(solicitacaoAbastecimento.identificacao)
+            .setData({
+          'identificacao': solicitacaoAbastecimento.identificacao,
+          'detalhes': solicitacaoAbastecimento.detalhes,
+          'situacaoSolicitacao': solicitacaoAbastecimento.situacaoSolicitacao,
+          'solicitante': solicitacaoAbastecimento.solicitante,
+          'dataAbertura': solicitacaoAbastecimento.dataAbertura,
+          'dataEfetivacao': solicitacaoAbastecimento.dataEfetivacao,
+          'posto': solicitacaoAbastecimento.posto,
+          'tipoCombustivel': solicitacaoAbastecimento.tipoCombustivel,
+          'precoLitro': solicitacaoAbastecimento.precoLitro,
+          'quantidade': solicitacaoAbastecimento.quantidade,
+          'custoTotal': solicitacaoAbastecimento.custoTotal,
+          'custoVinculado': solicitacaoAbastecimento.custoVinculado
+        }).then((value) async => await alert(
+                contextoAplicacao, mensagemNotificacao, mensagemSucessoSalvar));
+      } catch (on) {
+        TextError(mensagemErroSalvar);
+      }
     }
   }
 
@@ -162,19 +165,18 @@ class SolicitacaoAbastecimentoBloc extends BlocBase {
           .document(solicitacaoAbastecimento.identificacao)
           .delete()
           .then(
-            (value) => alertFuncao(contextoAplicacao, 'Notificação de Sucesso',
-                'Os dados do formulário foram apagados com sucesso no banco de dados!',
+            (value) => alertFuncao(
+                contextoAplicacao, mensagemNotificacao, mensagemSucessoApagar,
                 () {
-              Navigator.of(contextoAplicacao).pushNamed(
-                '/FormularioAbastecimento',
-              );
+              Navigator.of(contextoAplicacao)
+                  .pushNamed('/FormularioAbastecimento', arguments: 'NULO');
             }),
           )
           .catchError((ErrorAndStacktrace erro) {
         print(erro.error);
       });
     } catch (on) {
-      TextError('Erro ao apagar os dados do formulário no banco de dados!');
+      TextError(mensagemErroApagar);
     }
   }
 
@@ -192,36 +194,103 @@ class SolicitacaoAbastecimentoBloc extends BlocBase {
     solicitacaoAbastecimento.tipoCombustivel = _tipoCombustivelController.value;
     solicitacaoAbastecimento.precoLitro = _precoLitroController.value;
     solicitacaoAbastecimento.quantidade = _quantidadeController.value;
-    // solicitacaoAbastecimento.custoTotal = calculaValorTotalSolicitacao(
-    //   _precoLitroController.value,
-    //   _quantidadeController.value,
-    // );
+    solicitacaoAbastecimento.custoTotal = _custoTotalController.value;
     solicitacaoAbastecimento.custoVinculado = _custoVinculadoController.value;
-    print(solicitacaoAbastecimento.identificacao);
-    try {
-      await Firestore.instance
-          .collection('solicitacaoAbastecimento')
-          .document(solicitacaoAbastecimento.identificacao)
-          .updateData({
-        'identificacao': solicitacaoAbastecimento.identificacao,
-        'detalhes': solicitacaoAbastecimento.detalhes,
-        'situacaoSolicitacao': solicitacaoAbastecimento.situacaoSolicitacao,
-        'solicitante': solicitacaoAbastecimento.solicitante,
-        'dataAbertura': solicitacaoAbastecimento.dataAbertura,
-        'dataEfetivacao': solicitacaoAbastecimento.dataEfetivacao,
-        'posto': solicitacaoAbastecimento.posto,
-        'tipoCombustivel': solicitacaoAbastecimento.tipoCombustivel,
-        'precoLitro': solicitacaoAbastecimento.precoLitro,
-        'quantidade': solicitacaoAbastecimento.quantidade,
-        'custoTotal': solicitacaoAbastecimento.custoTotal,
-        'custoVinculado': solicitacaoAbastecimento.custoVinculado
-      }).then((value) async => await alert(
-              contextoAplicacao,
-              'Notificação de Sucesso',
-              'Os dados do formulário foram atualizados com sucesso no banco de dados!'));
-    } catch (on) {
-      TextError('Erro ao atualizar os dados do formulário no banco de dados!');
+
+    if (solicitacaoAbastecimento.identificacao == '' ||
+        solicitacaoAbastecimento.identificacao == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para salvar a programação é necessário informar a identificação!');
+    } else if (solicitacaoAbastecimento.detalhes == '' ||
+        solicitacaoAbastecimento.detalhes == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para salvar a programação é necessário informar os detalhes!');
+    } else if (solicitacaoAbastecimento.solicitante == '' ||
+        solicitacaoAbastecimento.solicitante == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para salvar a programação é necessário informar o nome do solicitante!');
+    } else if (solicitacaoAbastecimento.posto == '' ||
+        solicitacaoAbastecimento.posto == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para salvar a programação é necessário informar o posto!');
+    } else if (solicitacaoAbastecimento.tipoCombustivel == '' ||
+        solicitacaoAbastecimento.tipoCombustivel == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para salvar a programação é necessário informar o combustível!');
+    } else {
+      try {
+        await Firestore.instance
+            .collection('solicitacaoAbastecimento')
+            .document(solicitacaoAbastecimento.identificacao)
+            .updateData({
+          'identificacao': solicitacaoAbastecimento.identificacao,
+          'detalhes': solicitacaoAbastecimento.detalhes,
+          'situacaoSolicitacao': solicitacaoAbastecimento.situacaoSolicitacao,
+          'solicitante': solicitacaoAbastecimento.solicitante,
+          'dataAbertura': solicitacaoAbastecimento.dataAbertura,
+          'dataEfetivacao': solicitacaoAbastecimento.dataEfetivacao,
+          'posto': solicitacaoAbastecimento.posto,
+          'tipoCombustivel': solicitacaoAbastecimento.tipoCombustivel,
+          'precoLitro': solicitacaoAbastecimento.precoLitro,
+          'quantidade': solicitacaoAbastecimento.quantidade,
+          'custoTotal': solicitacaoAbastecimento.custoTotal,
+          'custoVinculado': solicitacaoAbastecimento.custoVinculado
+        }).then((value) async => await alert(
+                contextoAplicacao, mensagemNotificacao, mensagemSucessoSalvar));
+      } catch (on) {
+        TextError(mensagemErroSalvar);
+      }
     }
+  }
+
+  Future<String> verificaAlteracaoSituacao(String numeroSolicitiacao,
+      BuildContext contextoAplicacao, String origem) async {
+    String mensagemRetorno = 'OK';
+
+    void validaSituacao(DocumentSnapshot coluna, String origem) {
+      if (coluna.data['situacaoSolicitacao'] == 'Negada' &&
+          origem == 'EFETIVAR') {
+        alert(contextoAplicacao, mensagemAlerta,
+            'Não é possível realizar esta operação, pois esta programação já foi negada!');
+        mensagemRetorno = 'PROG_NEGADA';
+      } else if (coluna.data['situacaoSolicitacao'] == 'Efetivada' &&
+          origem == 'NEGAR') {
+        alert(contextoAplicacao, mensagemAlerta,
+            'Não é possível realizar esta operação, pois esta programação já foi efetivada!');
+        mensagemRetorno = 'PROG_EFETIVADA';
+      } else if (coluna.data['situacaoSolicitacao'] == 'Negada' &&
+          origem == 'NEGAR') {
+        alert(contextoAplicacao, mensagemAlerta,
+            'Não é possível realizar esta operação, pois esta programação já foi negada!');
+        mensagemRetorno = 'PROG_EFETIVADA';
+      } else if (coluna.data['situacaoSolicitacao'] == 'Efetivada' &&
+          origem == 'EFETIVAR') {
+        alert(contextoAplicacao, mensagemAlerta,
+            'Não é possível realizar esta operação, pois esta programação já foi evetivada!');
+        mensagemRetorno = 'PROG_EFETIVADA';
+      }
+    }
+
+    if (numeroSolicitiacao.isNotEmpty) {
+      await Firestore.instance
+          .collection("solicitacaoAbastecimento")
+          .document(numeroSolicitiacao)
+          .get()
+          .then(
+            (coluna) async => coluna.exists == false
+                ? mensagemRetorno = 'SEM_DADOS'
+                : validaSituacao(coluna, origem),
+          );
+    } else {
+      mensagemRetorno = 'SEM_DADOS';
+    }
+
+    if (mensagemRetorno == 'SEM_DADOS') {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para realizar esta operação é necessário gravar a programação no sistema!');
+    }
+
+    return mensagemRetorno;
   }
 
   @override

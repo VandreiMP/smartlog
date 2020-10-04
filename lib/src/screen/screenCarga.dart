@@ -1,5 +1,3 @@
-import 'dart:html';
-
 import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +7,6 @@ import 'package:smartlogproject/src/constantes/fatoresCubagem.dart';
 import 'package:smartlogproject/src/constantes/mensagens.dart';
 import 'package:smartlogproject/src/funcoes/alert.dart';
 import 'package:smartlogproject/src/funcoes/calculaTotalCarga.dart';
-import 'package:smartlogproject/src/funcoes/criaLista.dart';
 import 'package:smartlogproject/src/funcoes/criaListaValoresCaminhao.dart';
 import 'package:smartlogproject/src/funcoes/criaListaValoresEmbalagem.dart';
 import 'package:smartlogproject/src/funcoes/criaListaValoresMotorista.dart';
@@ -582,7 +579,7 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
                                                       child: Container(
                                                         decoration:
                                                             BoxDecoration(
-                                                          color: Colors.white,
+                                                          color: Colors.red,
                                                           borderRadius:
                                                               BorderRadius.all(
                                                             Radius.circular(
@@ -590,9 +587,9 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
                                                           ),
                                                         ),
                                                         child: Icon(
-                                                          Icons.cancel,
+                                                          Icons.close,
                                                           size: 25.0,
-                                                          color: Colors.red,
+                                                          color: Colors.white,
                                                         ),
                                                       ),
                                                     ),
@@ -711,7 +708,7 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
                                                       child: Container(
                                                         decoration:
                                                             BoxDecoration(
-                                                          color: Colors.white,
+                                                          color: Colors.red,
                                                           borderRadius:
                                                               BorderRadius.all(
                                                             Radius.circular(
@@ -719,9 +716,9 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
                                                           ),
                                                         ),
                                                         child: Icon(
-                                                          Icons.cancel,
+                                                          Icons.close,
                                                           size: 25.0,
-                                                          color: Colors.red,
+                                                          color: Colors.white,
                                                         ),
                                                       ),
                                                     ),
@@ -949,7 +946,7 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
                                                       child: Container(
                                                         decoration:
                                                             BoxDecoration(
-                                                          color: Colors.white,
+                                                          color: Colors.red,
                                                           borderRadius:
                                                               BorderRadius.all(
                                                             Radius.circular(
@@ -957,9 +954,9 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
                                                           ),
                                                         ),
                                                         child: Icon(
-                                                          Icons.cancel,
+                                                          Icons.close,
                                                           size: 25.0,
-                                                          color: Colors.red,
+                                                          color: Colors.white,
                                                         ),
                                                       ),
                                                     ),

@@ -189,8 +189,8 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
       tFabricante.text = coluna.data['fabricante'];
       tChassiCaminhao.text = coluna.data['chassiCaminhao'];
       tNumeroRenavam.text = coluna.data['numeroRenavam'].toString();
-      print('aqui');
-      print(coluna.data['numeroRntrc']);
+   
+     
       if (coluna.data['numeroRntrc'] != null) {
         tNumeroRntrc.text = coluna.data['numeroRntrc'].toString();
       }

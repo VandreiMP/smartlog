@@ -1,12 +1,13 @@
 import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:smartlogproject/src/Components/scroll/scroll.dart';
 import 'package:smartlogproject/src/Entidades/Bloc/solicitacaoManutencao-bloc.dart';
 import 'package:smartlogproject/src/funcoes/appTextField.dart';
+import 'package:smartlogproject/src/funcoes/criaListaValoresCusto.dart';
 import '../funcoes/appText.dart';
 import '../Cards/Widgets/criaCardAuxiliar.dart';
-import '../funcoes/criaLista.dart';
 import '../funcoes/requiredLabel.dart';
 import 'screenPattern.dart';
 
@@ -58,49 +59,121 @@ class _BodyState extends State<Body> {
   }
 }
 
-class CriaCardFormulario extends StatelessWidget {
+class CriaCardFormulario extends StatefulWidget {
+  @override
+  _CriaCardFormularioState createState() => _CriaCardFormularioState();
+}
+
+class _CriaCardFormularioState extends State<CriaCardFormulario> {
+  List<String> situacaoSolicitacao = [
+    'Aberta',
+    'Negada',
+    'Efetivada',
+  ];
+
+  List<String> tipoManutencao = [
+    'Troca de Peça',
+    'Lavagem',
+    'Motor',
+    'Elétrica',
+    'Freios',
+    'Luzes',
+    'Pneu',
+    'Revisão'
+  ];
+
+  final tDetalhes = TextEditingController();
+
+  final tId = TextEditingController();
+
+  final tTipoManutencao = TextEditingController();
+
+  final tSituacao = TextEditingController();
+
+  final tSolicitante = TextEditingController();
+
+  final tDataAbertura = TextEditingController();
+
+  final tDataEfetivacao = TextEditingController();
+
+  final tOficina = TextEditingController();
+
+  final tFornecedor = TextEditingController();
+
+  final tQuantidade = TextEditingController();
+
+  final tCustoTotal = TextEditingController();
+
+  final tCustoVinculado = TextEditingController();
+
+  final tDsCusto = TextEditingController();
+
+  /*
+  Variáveis de Controle para exibição das listas.
+  */
+  String valorSituacaoProg = 'Aberta';
+  bool consultaSituacaoProg = true;
+  String valorTipoManutencao;
+  bool consultaTipoManutencao = true;
+
+  bool preencheDadosIniciais = true;
+
   @override
   Widget build(BuildContext context) {
-    /*
-    Variáveis usadas para capturar o valor dos campos do formulário
-    e salvar no banco
-  */
-    final tDetalhes = TextEditingController();
-    final tId = TextEditingController();
-    final tTipoManutencao = TextEditingController();
-    final tSituacao = TextEditingController();
-    final tSolicitante = TextEditingController();
-    final tDataAbertura = TextEditingController();
-    final tDataEfetivacao = TextEditingController();
-    final tOficina = TextEditingController();
-    final tFornecedor = TextEditingController();
-    final tQuantidade = TextEditingController();
-    final tCustoTotal = TextEditingController();
-    final tCustoVinculado = TextEditingController();
-
-    List<String> situacaoSolicitacao = [
-      'Aberta',
-      'Negada',
-      'Efetivada',
-    ];
-
-    List<String> tipoManutencao = [
-      'Troca de Peça',
-      'Lavagem',
-      'Motor',
-      'Elétrica',
-      'Freios',
-      'Luzes',
-      'Pneu',
-      'Revisão'
-    ];
-
     SolicitacaoManutencaoBloc blocSolicitacaoManutencao =
         BlocProvider.of<SolicitacaoManutencaoBloc>(context);
 
     String codigoSolicitacao = ModalRoute.of(context).settings.arguments;
     final Firestore firestore = Firestore.instance;
     bool campoHabilitado = true;
+
+    final DateFormat formataData = DateFormat('dd/MM/yyyy H:m');
+
+    if (codigoSolicitacao != null) {
+      preencheDadosIniciais = false;
+    }
+
+    if (codigoSolicitacao == null ||
+        (codigoSolicitacao != 'NULO' && preencheDadosIniciais == true)) {
+      tDataAbertura.text = formataData.format(DateTime.now());
+      blocSolicitacaoManutencao.setDataAbertura(tDataAbertura.text);
+    }
+    void atualizaSituacaoProg(String valor, String origem) {
+      if (valor.isNotEmpty) {
+        setState(() {
+          valorSituacaoProg = valor;
+          blocSolicitacaoManutencao.setSituacaoSolicitacao(valorSituacaoProg);
+          consultaSituacaoProg = false;
+          if (origem == 'BOTAO') {
+            if (valorSituacaoProg == 'Efetivada') {
+              tDataEfetivacao.text = formataData.format(DateTime.now());
+              blocSolicitacaoManutencao.setDataEfetivacao(tDataEfetivacao.text);
+            } else if (valorSituacaoProg == 'Negada') {
+              tDataEfetivacao.text = formataData.format(DateTime.now());
+              blocSolicitacaoManutencao.setDataEfetivacao(tDataEfetivacao.text);
+            }
+          }
+        });
+      }
+    }
+
+    void atualizaTipoManutencao(String valor) {
+      if (valor.isNotEmpty) {
+        setState(() {
+          valorTipoManutencao = valor;
+          blocSolicitacaoManutencao.setTipoManutencao(valorTipoManutencao);
+          consultaTipoManutencao = false;
+        });
+      }
+    }
+
+    void consultaCusto() async {
+      firestore
+          .collection("custos")
+          .document(tCustoVinculado.text)
+          .get()
+          .then((value) async => tDsCusto.text = value.data['detalhes']);
+    }
 
     /*
     Aqui consulta os dados e seta o retorno da tabela nos controllers
@@ -118,15 +191,28 @@ class CriaCardFormulario extends StatelessWidget {
       tDataEfetivacao.text = coluna.data['dataEfetivacao'];
       tOficina.text = coluna.data['oficina'];
       tTipoManutencao.text = coluna.data['tipoManutencao'];
-      tSituacao.text = coluna.data['situacaoSolicitacao'];
       tCustoTotal.text = coluna.data['custoTotal'].toString();
       tCustoVinculado.text = coluna.data['custoVinculado'].toString();
+
+      if (consultaTipoManutencao == true) {
+        tTipoManutencao.text = coluna.data['tipoManutencao'];
+        atualizaTipoManutencao(tTipoManutencao.text);
+      }
+
+      if (consultaSituacaoProg == true) {
+        preencheDadosIniciais = false;
+        tSituacao.text = coluna.data['situacaoSolicitacao'];
+        atualizaSituacaoProg(tSituacao.text, 'CONSULTA');
+        tDataEfetivacao.text = coluna.data['dataEfetivacao'];
+        blocSolicitacaoManutencao.setDataEfetivacao(tDataEfetivacao.text);
+      }
+
+      consultaCusto();
 
       blocSolicitacaoManutencao.setId(tId.text);
       blocSolicitacaoManutencao.setDetalhes(tDetalhes.text);
       blocSolicitacaoManutencao.setSolicitante(tSolicitante.text);
       blocSolicitacaoManutencao.setDataAbertura(tDataAbertura.text);
-      blocSolicitacaoManutencao.setDataEfetivacao(tDataEfetivacao.text);
       blocSolicitacaoManutencao.setOficina(tOficina.text);
       blocSolicitacaoManutencao.setCustoTotal(double.parse(tCustoTotal.text));
       blocSolicitacaoManutencao.setCustoVinculado(tCustoVinculado.text);
@@ -212,7 +298,7 @@ class CriaCardFormulario extends StatelessWidget {
                                             ),
                                             Padding(
                                               padding: const EdgeInsets.only(
-                                                  left: 70.0),
+                                                  left: 20.0),
                                               child: Column(
                                                 mainAxisAlignment:
                                                     MainAxisAlignment.start,
@@ -220,12 +306,40 @@ class CriaCardFormulario extends StatelessWidget {
                                                     CrossAxisAlignment.start,
                                                 children: [
                                                   RequiredLabel(
-                                                    'Tipo Manutenção',
+                                                    'Tipo Manut.',
                                                     true,
                                                   ),
                                                   Container(
-                                                    child: DropDown(
-                                                      valores: tipoManutencao,
+                                                    height: 50.0,
+                                                    child: Column(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .start,
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: <Widget>[
+                                                        DropdownButton<String>(
+                                                          items: tipoManutencao
+                                                              .map((
+                                                            String
+                                                                dropDownStringItem,
+                                                          ) {
+                                                            return DropdownMenuItem<
+                                                                String>(
+                                                              value:
+                                                                  dropDownStringItem,
+                                                              child: Text(
+                                                                  dropDownStringItem),
+                                                            );
+                                                          }).toList(),
+                                                          onChanged: (novoValorSelecionado) =>
+                                                              atualizaTipoManutencao(
+                                                                  novoValorSelecionado),
+                                                          value:
+                                                              valorTipoManutencao,
+                                                        ),
+                                                      ],
                                                     ),
                                                   ),
                                                 ],
@@ -256,7 +370,7 @@ class CriaCardFormulario extends StatelessWidget {
                                             ),
                                             Padding(
                                               padding: const EdgeInsets.only(
-                                                  left: 70.0),
+                                                  left: 20.0),
                                               child: Column(
                                                 mainAxisAlignment:
                                                     MainAxisAlignment.start,
@@ -265,12 +379,38 @@ class CriaCardFormulario extends StatelessWidget {
                                                 children: [
                                                   RequiredLabel(
                                                     'Situação',
-                                                    true,
+                                                    false,
                                                   ),
                                                   Container(
-                                                    child: DropDown(
-                                                      valores:
-                                                          situacaoSolicitacao,
+                                                    height: 50.0,
+                                                    child: Column(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .start,
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: <Widget>[
+                                                        DropdownButton<String>(
+                                                            items:
+                                                                situacaoSolicitacao
+                                                                    .map((
+                                                              String
+                                                                  dropDownStringItem,
+                                                            ) {
+                                                              return DropdownMenuItem<
+                                                                  String>(
+                                                                value:
+                                                                    dropDownStringItem,
+                                                                child: Text(
+                                                                    dropDownStringItem),
+                                                              );
+                                                            }).toList(),
+                                                            onChanged: (String
+                                                                novoValorSelecionado) {},
+                                                            value:
+                                                                valorSituacaoProg),
+                                                      ],
                                                     ),
                                                   ),
                                                 ],
@@ -297,7 +437,21 @@ class CriaCardFormulario extends StatelessWidget {
                                                                 .start,
                                                         children: [
                                                           GestureDetector(
-                                                            onTap: () {},
+                                                            onTap: () {
+                                                              preencheDadosIniciais =
+                                                                  false;
+                                                              blocSolicitacaoManutencao
+                                                                  .verificaAlteracaoSituacao(
+                                                                      tId.text,
+                                                                      context,
+                                                                      'EFETIVAR')
+                                                                  .then((mensagemRetorno) => mensagemRetorno ==
+                                                                          'OK'
+                                                                      ? atualizaSituacaoProg(
+                                                                          'Efetivada',
+                                                                          'BOTAO')
+                                                                      : null);
+                                                            },
                                                             child: Container(
                                                               decoration:
                                                                   BoxDecoration(
@@ -340,7 +494,19 @@ class CriaCardFormulario extends StatelessWidget {
                                                                 .start,
                                                         children: [
                                                           GestureDetector(
-                                                            onTap: () {},
+                                                            onTap: () {
+                                                              blocSolicitacaoManutencao
+                                                                  .verificaAlteracaoSituacao(
+                                                                      tId.text,
+                                                                      context,
+                                                                      'NEGAR')
+                                                                  .then((mensagemRetorno) => mensagemRetorno ==
+                                                                          'OK'
+                                                                      ? atualizaSituacaoProg(
+                                                                          'Negada',
+                                                                          'BOTAO')
+                                                                      : null);
+                                                            },
                                                             child: Container(
                                                               decoration:
                                                                   BoxDecoration(
@@ -396,7 +562,7 @@ class CriaCardFormulario extends StatelessWidget {
                                                   left: 25.0),
                                               child: constroiCampo(
                                                 labelCampo: 'Data Abertura',
-                                                largura: 85,
+                                                largura: 140,
                                                 altura: 30,
                                                 obrigaCampo: true,
                                                 controller: tDataAbertura,
@@ -411,8 +577,8 @@ class CriaCardFormulario extends StatelessWidget {
                                               padding: const EdgeInsets.only(
                                                   left: 25.0),
                                               child: constroiCampo(
-                                                labelCampo: 'Data Efetivação',
-                                                largura: 85,
+                                                labelCampo: 'Data Encerramento',
+                                                largura: 140,
                                                 altura: 30,
                                                 obrigaCampo: false,
                                                 controller: tDataEfetivacao,
@@ -516,17 +682,13 @@ class CriaCardFormulario extends StatelessWidget {
                                             constroiCampo(
                                               labelCampo: 'Custo Vinculado',
                                               largura: 450,
+                                              controller: tDsCusto,
                                               altura: 30,
-                                              onChanged: (String valor) {
-                                                blocSolicitacaoManutencao
-                                                    .setCustoVinculado(
-                                                        tCustoVinculado.text);
-                                              },
                                               obrigaCampo: false,
                                             ),
                                             Padding(
                                               padding:
-                                                  const EdgeInsets.all(20.0),
+                                                  const EdgeInsets.all(5.0),
                                               child: Container(
                                                 alignment:
                                                     Alignment.bottomCenter,
@@ -537,10 +699,80 @@ class CriaCardFormulario extends StatelessWidget {
                                                       CrossAxisAlignment.start,
                                                   children: [
                                                     GestureDetector(
-                                                      onTap: () {
-                                                        Navigator.of(context)
-                                                            .pushNamed(
-                                                                '/ListaValoresCusto');
+                                                      onTap: () async {
+                                                        tCustoVinculado.text =
+                                                            '';
+                                                        tDsCusto.text = '';
+                                                        blocSolicitacaoManutencao
+                                                            .setCustoVinculado(
+                                                                tCustoVinculado
+                                                                    .text);
+                                                      },
+                                                      child: Container(
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          color: Colors.red,
+                                                          borderRadius:
+                                                              BorderRadius.all(
+                                                            Radius.circular(
+                                                                2.0),
+                                                          ),
+                                                        ),
+                                                        child: Icon(
+                                                          Icons.close,
+                                                          size: 25.0,
+                                                          color: Colors.white,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.all(1.0),
+                                              child: Container(
+                                                alignment:
+                                                    Alignment.bottomCenter,
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    GestureDetector(
+                                                      onTap: () async {
+                                                        tCustoVinculado
+                                                            .text = await Navigator
+                                                                .of(context)
+                                                            .push(
+                                                                PageRouteBuilder(
+                                                          opaque: false,
+                                                          pageBuilder: (_, __,
+                                                                  ___) =>
+                                                              ListaValoresCusto(),
+                                                        ));
+
+                                                        if (tCustoVinculado
+                                                            .text.isNotEmpty) {
+                                                          firestore
+                                                              .collection(
+                                                                  "custos")
+                                                              .document(
+                                                                  tCustoVinculado
+                                                                      .text)
+                                                              .get()
+                                                              .then((value) async =>
+                                                                  tDsCusto
+                                                                      .text = value
+                                                                          .data[
+                                                                      'detalhes']);
+                                                          blocSolicitacaoManutencao
+                                                              .setCustoVinculado(
+                                                                  tCustoVinculado
+                                                                      .text);
+                                                        }
                                                       },
                                                       child: Container(
                                                         decoration:
@@ -554,7 +786,7 @@ class CriaCardFormulario extends StatelessWidget {
                                                           ),
                                                         ),
                                                         child: Icon(
-                                                          Icons.add,
+                                                          Icons.attach_money,
                                                           size: 25.0,
                                                           color: Colors.white,
                                                         ),

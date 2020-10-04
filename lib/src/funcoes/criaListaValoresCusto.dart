@@ -2,16 +2,16 @@ import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:flutter/material.dart';
 import 'package:smartlogproject/src/Components/scroll/scroll.dart';
 import 'package:smartlogproject/src/Entidades/Bloc/custo-bloc.dart';
-import 'package:smartlogproject/src/Entidades/Bloc/embalagem-bloc.dart';
+import 'package:smartlogproject/src/constantes/cores.dart';
 import 'package:smartlogproject/src/funcoes/appText.dart';
 import 'package:smartlogproject/src/funcoes/buscaCustos.dart';
-import 'package:smartlogproject/src/funcoes/buscaEmbalagens.dart';
-import 'package:smartlogproject/src/screen/screenPattern.dart';
 
 class ListaValoresCusto extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return ScreenPattern(
+    return Container(
+      color: corTransparente,
+      alignment: Alignment.center,
       child: BlocProvider(
         bloc: CustoBloc(context),
         child: CriaCardFormulario(),
@@ -25,9 +25,9 @@ class CriaCardFormulario extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scroll(
       width: 720,
-      height: double.infinity,
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Container(
             alignment: Alignment.center,

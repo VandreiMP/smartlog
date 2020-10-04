@@ -1,33 +1,14 @@
 import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:date_format/date_format.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:smartlogproject/src/Entidades/classes/solicitacaoManutencao.dart';
-import 'package:smartlogproject/src/Entidades/classes/embalagem.dart';
 import 'package:smartlogproject/src/Entidades/classes/solicitacaoManutencao.dart';
 import 'package:smartlogproject/src/constantes/mensagens.dart';
 import 'package:smartlogproject/src/funcoes/alert.dart';
 import 'package:smartlogproject/src/funcoes/alertErro.dart';
 import 'package:smartlogproject/src/funcoes/alertFuncao.dart';
-import 'package:smartlogproject/src/funcoes/calculaCustoSolicitacao.dart';
 
 class SolicitacaoManutencaoBloc extends BlocBase {
-  String _identificacao;
-  String _tipoManutencao;
-  String _detalhes;
-  String _situacaoSolicitacao;
-  String _solicitante;
-  String _dataAbertura;
-  String _dataEfetivacao;
-  String _oficina;
-  String _fornecedor;
-  double _precoLitro;
-  double _quantidade;
-  double _custoTotal;
-  String _custoVinculado;
-
   BuildContext contextoAplicacao;
 
   SolicitacaoManutencaoBloc(BuildContext contextoAplicacao);
@@ -108,25 +89,43 @@ class SolicitacaoManutencaoBloc extends BlocBase {
     solicitacaoManutencao.custoTotal = _custoTotalController.value;
     solicitacaoManutencao.custoVinculado = _custoVinculadoController.value;
 
-    try {
-      await Firestore.instance
-          .collection('solicitacaoManutencao')
-          .document(solicitacaoManutencao.identificacao)
-          .setData({
-        'identificacao': solicitacaoManutencao.identificacao,
-        'tipoManutencao': solicitacaoManutencao.tipoManutencao,
-        'detalhes': solicitacaoManutencao.detalhes,
-        'situacaoSolicitacao': solicitacaoManutencao.situacaoSolicitacao,
-        'solicitante': solicitacaoManutencao.solicitante,
-        'dataAbertura': solicitacaoManutencao.dataAbertura,
-        'dataEfetivacao': solicitacaoManutencao.dataEfetivacao,
-        'oficina': solicitacaoManutencao.oficina,
-        'custoTotal': solicitacaoManutencao.custoTotal,
-        'custoVinculado': solicitacaoManutencao.custoVinculado
-      }).then((value) async => await alert(
-              contextoAplicacao, mensagemNotificacao, mensagemSucessoSalvar));
-    } catch (on) {
-      TextError('Erro ao salvar os dados do formulário no banco de dados!');
+    if (solicitacaoManutencao.identificacao == '' ||
+        solicitacaoManutencao.identificacao == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para salvar a programação é necessário informar a identificação!');
+    } else if (solicitacaoManutencao.tipoManutencao == '' ||
+        solicitacaoManutencao.tipoManutencao == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para salvar a programação é necessário informar o tipo de manutenção!');
+    } else if (solicitacaoManutencao.detalhes == '' ||
+        solicitacaoManutencao.detalhes == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para salvar a programação é necessário informar os detalhes!');
+    } else if (solicitacaoManutencao.solicitante == '' ||
+        solicitacaoManutencao.solicitante == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para salvar a programação é necessário informar o nome do solicitante!');
+    } else {
+      try {
+        await Firestore.instance
+            .collection('solicitacaoManutencao')
+            .document(solicitacaoManutencao.identificacao)
+            .setData({
+          'identificacao': solicitacaoManutencao.identificacao,
+          'tipoManutencao': solicitacaoManutencao.tipoManutencao,
+          'detalhes': solicitacaoManutencao.detalhes,
+          'situacaoSolicitacao': solicitacaoManutencao.situacaoSolicitacao,
+          'solicitante': solicitacaoManutencao.solicitante,
+          'dataAbertura': solicitacaoManutencao.dataAbertura,
+          'dataEfetivacao': solicitacaoManutencao.dataEfetivacao,
+          'oficina': solicitacaoManutencao.oficina,
+          'custoTotal': solicitacaoManutencao.custoTotal,
+          'custoVinculado': solicitacaoManutencao.custoVinculado
+        }).then((value) async => await alert(
+                contextoAplicacao, mensagemNotificacao, mensagemSucessoSalvar));
+      } catch (on) {
+        TextError('Erro ao salvar os dados do formulário no banco de dados!');
+      }
     }
   }
 
@@ -153,6 +152,7 @@ class SolicitacaoManutencaoBloc extends BlocBase {
                 () {
               Navigator.of(contextoAplicacao).pushNamed(
                 '/FormularioManutencao',
+                arguments: 'NULO'
               );
             }),
           )
@@ -179,26 +179,95 @@ class SolicitacaoManutencaoBloc extends BlocBase {
     solicitacaoManutencao.custoTotal = _custoTotalController.value;
     solicitacaoManutencao.custoVinculado = _custoVinculadoController.value;
 
-    try {
-      await Firestore.instance
-          .collection('solicitacaoManutencao')
-          .document(solicitacaoManutencao.identificacao)
-          .updateData({
-        'identificacao': solicitacaoManutencao.identificacao,
-        'tipoManutencao': solicitacaoManutencao.tipoManutencao,
-        'detalhes': solicitacaoManutencao.detalhes,
-        'situacaoSolicitacao': solicitacaoManutencao.situacaoSolicitacao,
-        'solicitante': solicitacaoManutencao.solicitante,
-        'dataAbertura': solicitacaoManutencao.dataAbertura,
-        'dataEfetivacao': solicitacaoManutencao.dataEfetivacao,
-        'oficina': solicitacaoManutencao.oficina,
-        'custoTotal': solicitacaoManutencao.custoTotal,
-        'custoVinculado': solicitacaoManutencao.custoVinculado
-      }).then((value) async => await alert(
-              contextoAplicacao, mensagemNotificacao, mensagemSucessoSalvar));
-    } catch (on) {
-      TextError('Erro ao atualizar os dados do formulário no banco de dados!');
+    if (solicitacaoManutencao.identificacao == '' ||
+        solicitacaoManutencao.identificacao == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para salvar a programação é necessário informar a identificação!');
+    } else if (solicitacaoManutencao.tipoManutencao == '' ||
+        solicitacaoManutencao.tipoManutencao == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para salvar a programação é necessário informar o tipo de manutenção!');
+    } else if (solicitacaoManutencao.detalhes == '' ||
+        solicitacaoManutencao.detalhes == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para salvar a programação é necessário informar os detalhes!');
+    } else if (solicitacaoManutencao.solicitante == '' ||
+        solicitacaoManutencao.solicitante == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para salvar a programação é necessário informar o nome do solicitante!');
+    } else {
+      try {
+        await Firestore.instance
+            .collection('solicitacaoManutencao')
+            .document(solicitacaoManutencao.identificacao)
+            .updateData({
+          'identificacao': solicitacaoManutencao.identificacao,
+          'tipoManutencao': solicitacaoManutencao.tipoManutencao,
+          'detalhes': solicitacaoManutencao.detalhes,
+          'situacaoSolicitacao': solicitacaoManutencao.situacaoSolicitacao,
+          'solicitante': solicitacaoManutencao.solicitante,
+          'dataAbertura': solicitacaoManutencao.dataAbertura,
+          'dataEfetivacao': solicitacaoManutencao.dataEfetivacao,
+          'oficina': solicitacaoManutencao.oficina,
+          'custoTotal': solicitacaoManutencao.custoTotal,
+          'custoVinculado': solicitacaoManutencao.custoVinculado
+        }).then((value) async => await alert(
+                contextoAplicacao, mensagemNotificacao, mensagemSucessoSalvar));
+      } catch (on) {
+        TextError(
+            'Erro ao atualizar os dados do formulário no banco de dados!');
+      }
     }
+  }
+
+  Future<String> verificaAlteracaoSituacao(String numeroSolicitiacao,
+      BuildContext contextoAplicacao, String origem) async {
+    String mensagemRetorno = 'OK';
+
+    void validaSituacao(DocumentSnapshot coluna, String origem) {
+      if (coluna.data['situacaoSolicitacao'] == 'Negada' &&
+          origem == 'EFETIVAR') {
+        alert(contextoAplicacao, mensagemAlerta,
+            'Não é possível realizar esta operação, pois esta programação já foi negada!');
+        mensagemRetorno = 'PROG_NEGADA';
+      } else if (coluna.data['situacaoSolicitacao'] == 'Efetivada' &&
+          origem == 'NEGAR') {
+        alert(contextoAplicacao, mensagemAlerta,
+            'Não é possível realizar esta operação, pois esta programação já foi efetivada!');
+        mensagemRetorno = 'PROG_EFETIVADA';
+      } else if (coluna.data['situacaoSolicitacao'] == 'Negada' &&
+          origem == 'NEGAR') {
+        alert(contextoAplicacao, mensagemAlerta,
+            'Não é possível realizar esta operação, pois esta programação já foi negada!');
+        mensagemRetorno = 'PROG_EFETIVADA';
+      } else if (coluna.data['situacaoSolicitacao'] == 'Efetivada' &&
+          origem == 'EFETIVAR') {
+        alert(contextoAplicacao, mensagemAlerta,
+            'Não é possível realizar esta operação, pois esta programação já foi evetivada!');
+        mensagemRetorno = 'PROG_EFETIVADA';
+      }
+    }
+
+    if (numeroSolicitiacao.isNotEmpty) {
+      await Firestore.instance
+          .collection("solicitacaoManutencao")
+          .document(numeroSolicitiacao)
+          .get()
+          .then(
+            (coluna) async => coluna.exists == false
+                ? mensagemRetorno = 'SEM_DADOS'
+                : validaSituacao(coluna, origem),
+          );
+    } else {
+      mensagemRetorno = 'SEM_DADOS';
+    }
+
+    if (mensagemRetorno == 'SEM_DADOS') {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para realizar esta operação é necessário gravar a programação no sistema!');
+    }
+
+    return mensagemRetorno;
   }
 
   @override

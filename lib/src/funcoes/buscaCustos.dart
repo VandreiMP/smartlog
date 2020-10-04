@@ -143,6 +143,9 @@ class _BuscaCustosState extends State<BuscaCustos> {
                                             Navigator.of(context).pushNamed(
                                                 '/FormularioCustos',
                                                 arguments: identificacao);
+                                          } else {
+                                            Navigator.pop(
+                                                context, identificacao);
                                           }
                                         },
                                         child: Padding(

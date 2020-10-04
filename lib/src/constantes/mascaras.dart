@@ -18,9 +18,10 @@ Máscara para o campo do Renavam
 const String mascaraRenavam = '0000.00000-0';
 
 /*
-Máscara para o campo da Data
+Máscaras para os campo de Data
 */
 const String mascaraData = '00/00/0000';
+const String mascaraDataHora = 'dd/MM/yyyy H:m';
 
 /*
 Máscara para o campo do CNPJ/CPF/RG

@@ -3,11 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:smartlogproject/src/Components/scroll/scroll.dart';
 import 'package:smartlogproject/src/Entidades/Bloc/solicitacaoManutencao-bloc.dart';
-import 'package:smartlogproject/src/Entidades/Bloc/solicitacaoTrocaOleo-bloc.dart';
 import 'package:smartlogproject/src/constantes/mascaras.dart';
 import 'package:smartlogproject/src/funcoes/appText.dart';
 import 'package:smartlogproject/src/funcoes/buscaManutencao.dart';
-import 'package:smartlogproject/src/funcoes/buscaTrocaOleo.dart';
 import 'package:smartlogproject/src/funcoes/requiredLabel.dart';
 import 'package:smartlogproject/src/screen/screenPattern.dart';
 
@@ -52,70 +50,31 @@ class CriaCardFormulario extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Container(
-                      child: AppText(
-                        'Filtros para Consulta',
-                        bold: true,
-                      ),
-                    ),
-                    SizedBox(
-                      height: 10.0,
-                    ),
                     Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Container(
-                          //height: 150.0,
-                          padding: EdgeInsets.all(10.0),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.all(Radius.circular(5)),
-                            border: new Border.all(
-                              color: Colors.black,
-                            ),
-                          ),
-                          child: Row(
-                            children: <Widget>[
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  Container(
-                                    child: constroiCampo(
-                                      labelCampo: 'Oficina',
-                                      largura: 500,
-                                      altura: 30,
-                                      contextoAplicacao: context,
-                                      obrigaCampo: false,
-                                      controller: tOficina,
-                                    ),
+                        GestureDetector(
+                          child: Padding(
+                            padding: const EdgeInsets.all(1.0),
+                            child: GestureDetector(
+                              onTap: () {
+                                Navigator.of(context).pushNamed('/VisaoGeral');
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.blue[900],
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(2.0),
                                   ),
-                                  Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: <Widget>[
-                                      Container(
-                                        alignment: Alignment.topLeft,
-                                        child: constroiCampo(
-                                          labelCampo: 'Solicitação',
-                                          largura: 150,
-                                          altura: 30,
-                                          obrigaCampo: false,
-                                          contextoAplicacao: context,
-                                          controller: tId,
-                                          mascara: new MaskedTextController(
-                                            mask: mascaraIdentificao,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
+                                ),
+                                child: Icon(
+                                  Icons.home,
+                                  size: 30.0,
+                                  color: Colors.white,
+                                ),
                               ),
-                            ],
+                            ),
                           ),
                         ),
                         GestureDetector(
@@ -135,7 +94,7 @@ class CriaCardFormulario extends StatelessWidget {
                               ),
                               child: Icon(
                                 Icons.add,
-                                size: 50.0,
+                                size: 30.0,
                                 color: Colors.white,
                               ),
                             ),

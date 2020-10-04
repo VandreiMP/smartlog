@@ -2,14 +2,15 @@ import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
+import 'package:intl/intl.dart';
 import 'package:smartlogproject/src/Components/scroll/scroll.dart';
 import 'package:smartlogproject/src/Entidades/Bloc/solicitacaoAbastecimento-bloc.dart';
 import 'package:smartlogproject/src/funcoes/appTextField.dart';
 import 'package:smartlogproject/src/funcoes/calculaCustoSolicitacao.dart';
+import 'package:smartlogproject/src/funcoes/criaListaValoresCusto.dart';
 import '../constantes/mascaras.dart';
 import '../funcoes/appText.dart';
 import '../Cards/Widgets/criaCardAuxiliar.dart';
-import '../funcoes/criaLista.dart';
 import '../funcoes/requiredLabel.dart';
 import 'screenPattern.dart';
 
@@ -61,45 +62,112 @@ class _BodyState extends State<Body> {
   }
 }
 
-class CriaCardFormulario extends StatelessWidget {
+class CriaCardFormulario extends StatefulWidget {
   @override
-  Widget build(BuildContext context) {
-    /*
+  _CriaCardFormularioState createState() => _CriaCardFormularioState();
+}
+
+class _CriaCardFormularioState extends State<CriaCardFormulario> {
+  List<String> situacaoSolicitacao = [
+    'Aberta',
+    'Negada',
+    'Efetivada',
+  ];
+
+  List<String> tipoCombustivel = [
+    'Diesel',
+    'Gasolina',
+    'Etanol',
+    'Flex',
+    'GLP',
+    'Outros'
+  ];
+  /*
     Variáveis usadas para capturar o valor dos campos do formulário
     e salvar no banco
   */
-    final tDetalhes = TextEditingController();
-    final tId = TextEditingController();
-    final tSituacao = TextEditingController();
-    final tSolicitante = TextEditingController();
-    final tDataAbertura = MaskedTextController(mask: mascaraData);
-    final tDataEfetivacao = MaskedTextController(mask: mascaraData);
-    final tPosto = TextEditingController();
-    final tTipoCombustivel = TextEditingController();
-    final tPrecoLitro = TextEditingController();
-    final tQuantidade = TextEditingController();
-    final tCustoTotal = TextEditingController();
-    final tCustoVinculado = TextEditingController();
+  final tDetalhes = TextEditingController();
+  final tId = TextEditingController();
+  final tSituacao = TextEditingController();
+  final tSolicitante = TextEditingController();
+  final tDataAbertura = TextEditingController();
+  final tDataEfetivacao = TextEditingController();
+  final tPosto = TextEditingController();
+  final tTipoCombustivel = TextEditingController();
+  final tPrecoLitro = TextEditingController();
+  final tQuantidade = TextEditingController();
+  final tCustoTotal = TextEditingController();
+  final tCustoVinculado = TextEditingController();
+  final tDsCusto = TextEditingController();
 
-    List<String> situacaoSolicitacao = [
-      'Aberta',
-      'Negada',
-      'Efetivada',
-    ];
+  /*
+  Variáveis de Controle para exibição das listas.
+  */
+  String valorSituacaoProg = 'Aberta';
+  bool consultaSituacaoProg = true;
+  String valorTipoCombustivel;
+  bool consultaTipoCombustivel = true;
 
-    List<String> tipoCombustivel = [
-      'Diesel',
-      'Gasolina',
-      'Etanol',
-      'Flex',
-      'GLP',
-      'Outros'
-    ];
+  bool preencheDadosIniciais = true;
+
+  @override
+  Widget build(BuildContext context) {
     SolicitacaoAbastecimentoBloc blocSolicitacaoAbastecimento =
         BlocProvider.of<SolicitacaoAbastecimentoBloc>(context);
     String codigoSolicitacao = ModalRoute.of(context).settings.arguments;
     final Firestore firestore = Firestore.instance;
     bool campoHabilitado = true;
+
+    final DateFormat formataData = DateFormat('dd/MM/yyyy H:mm');
+
+    if (codigoSolicitacao != null) {
+      preencheDadosIniciais = false;
+    }
+
+    if (codigoSolicitacao == null ||
+        (codigoSolicitacao != 'NULO' && preencheDadosIniciais == true)) {
+      tDataAbertura.text = formataData.format(DateTime.now());
+      blocSolicitacaoAbastecimento.setDataAbertura(tDataAbertura.text);
+    }
+    void atualizaSituacaoProg(String valor, String origem) {
+      if (valor.isNotEmpty) {
+        setState(() {
+          valorSituacaoProg = valor;
+          blocSolicitacaoAbastecimento
+              .setSituacaoSolicitacao(valorSituacaoProg);
+          consultaSituacaoProg = false;
+          if (origem == 'BOTAO') {
+            if (valorSituacaoProg == 'Efetivada') {
+              tDataEfetivacao.text = formataData.format(DateTime.now());
+              blocSolicitacaoAbastecimento
+                  .setDataEfetivacao(tDataEfetivacao.text);
+            } else if (valorSituacaoProg == 'Negada') {
+              tDataEfetivacao.text = formataData.format(DateTime.now());
+              blocSolicitacaoAbastecimento
+                  .setDataEfetivacao(tDataEfetivacao.text);
+            }
+          }
+        });
+      }
+    }
+
+    void atualizaTipoCombustivel(String valor) {
+      if (valor.isNotEmpty) {
+        setState(() {
+          valorTipoCombustivel = valor;
+          blocSolicitacaoAbastecimento.setCombustivel(valorTipoCombustivel);
+          consultaTipoCombustivel = false;
+        });
+      }
+    }
+
+    void consultaCusto() async {
+      firestore
+          .collection("custos")
+          .document(tCustoVinculado.text)
+          .get()
+          .then((value) async => tDsCusto.text = value.data['detalhes']);
+    }
 
     /*
     Aqui consulta os dados e seta o retorno da tabela nos controllers
@@ -114,24 +182,40 @@ class CriaCardFormulario extends StatelessWidget {
       tDetalhes.text = coluna.data['detalhes'];
       tSolicitante.text = coluna.data['solicitante'];
       tDataAbertura.text = coluna.data['dataAbertura'];
-      tDataEfetivacao.text = coluna.data['dataEfetivacao'];
+
       tPosto.text = coluna.data['posto'];
       tPrecoLitro.text = coluna.data['precoLitro'].toString();
       tQuantidade.text = coluna.data['quantidade'].toString();
       tCustoTotal.text = coluna.data['custoTotal'].toString();
+      tCustoVinculado.text = coluna.data['custoVinculado'];
+
+      if (consultaTipoCombustivel == true) {
+        tTipoCombustivel.text = coluna.data['tipoCombustivel'];
+        atualizaTipoCombustivel(tTipoCombustivel.text);
+      }
+
+      if (consultaSituacaoProg == true) {
+        preencheDadosIniciais = false;
+        tSituacao.text = coluna.data['situacaoSolicitacao'];
+        atualizaSituacaoProg(tSituacao.text, 'CONSULTA');
+        tDataEfetivacao.text = coluna.data['dataEfetivacao'];
+        blocSolicitacaoAbastecimento.setDataEfetivacao(tDataEfetivacao.text);
+      }
+
+      consultaCusto();
 
       blocSolicitacaoAbastecimento.setId(tId.text);
       blocSolicitacaoAbastecimento.setDetalhes(tDetalhes.text);
       blocSolicitacaoAbastecimento.setSolicitante(tSolicitante.text);
       blocSolicitacaoAbastecimento.setDataAbertura(tDataAbertura.text);
-      blocSolicitacaoAbastecimento.setDataEfetivacao(tDataEfetivacao.text);
+
       blocSolicitacaoAbastecimento.setPosto(tPosto.text);
       blocSolicitacaoAbastecimento
-          .setPrecoLitro(double.parse(tPrecoLitro.text));
+          .setPrecoLitro(double.tryParse(tPrecoLitro.text));
       blocSolicitacaoAbastecimento
-          .setQuantidade(double.parse(tQuantidade.text));
+          .setQuantidade(double.tryParse(tQuantidade.text));
       blocSolicitacaoAbastecimento
-          .setCustoTotal(double.parse(tCustoTotal.text));
+          .setCustoTotal(double.tryParse(tCustoTotal.text));
     }
 
     if (codigoSolicitacao != null) {
@@ -237,7 +321,7 @@ class CriaCardFormulario extends StatelessWidget {
                                             ),
                                             Padding(
                                               padding: const EdgeInsets.only(
-                                                  left: 70.0),
+                                                  left: 20.0),
                                               child: Column(
                                                 mainAxisAlignment:
                                                     MainAxisAlignment.start,
@@ -246,12 +330,38 @@ class CriaCardFormulario extends StatelessWidget {
                                                 children: [
                                                   RequiredLabel(
                                                     'Situação',
-                                                    true,
+                                                    false,
                                                   ),
                                                   Container(
-                                                    child: DropDown(
-                                                      valores:
-                                                          situacaoSolicitacao,
+                                                    height: 50.0,
+                                                    child: Column(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .start,
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: <Widget>[
+                                                        DropdownButton<String>(
+                                                            items:
+                                                                situacaoSolicitacao
+                                                                    .map((
+                                                              String
+                                                                  dropDownStringItem,
+                                                            ) {
+                                                              return DropdownMenuItem<
+                                                                  String>(
+                                                                value:
+                                                                    dropDownStringItem,
+                                                                child: Text(
+                                                                    dropDownStringItem),
+                                                              );
+                                                            }).toList(),
+                                                            onChanged: (String
+                                                                novoValorSelecionado) {},
+                                                            value:
+                                                                valorSituacaoProg),
+                                                      ],
                                                     ),
                                                   ),
                                                 ],
@@ -278,7 +388,21 @@ class CriaCardFormulario extends StatelessWidget {
                                                                 .start,
                                                         children: [
                                                           GestureDetector(
-                                                            onTap: () {},
+                                                            onTap: () {
+                                                              preencheDadosIniciais =
+                                                                  false;
+                                                              blocSolicitacaoAbastecimento
+                                                                  .verificaAlteracaoSituacao(
+                                                                      tId.text,
+                                                                      context,
+                                                                      'EFETIVAR')
+                                                                  .then((mensagemRetorno) => mensagemRetorno ==
+                                                                          'OK'
+                                                                      ? atualizaSituacaoProg(
+                                                                          'Efetivada',
+                                                                          'BOTAO')
+                                                                      : null);
+                                                            },
                                                             child: Container(
                                                               decoration:
                                                                   BoxDecoration(
@@ -321,7 +445,19 @@ class CriaCardFormulario extends StatelessWidget {
                                                                 .start,
                                                         children: [
                                                           GestureDetector(
-                                                            onTap: () {},
+                                                            onTap: () {
+                                                              blocSolicitacaoAbastecimento
+                                                                  .verificaAlteracaoSituacao(
+                                                                      tId.text,
+                                                                      context,
+                                                                      'NEGAR')
+                                                                  .then((mensagemRetorno) => mensagemRetorno ==
+                                                                          'OK'
+                                                                      ? atualizaSituacaoProg(
+                                                                          'Negada',
+                                                                          'BOTAO')
+                                                                      : null);
+                                                            },
                                                             child: Container(
                                                               decoration:
                                                                   BoxDecoration(
@@ -377,24 +513,21 @@ class CriaCardFormulario extends StatelessWidget {
                                                   left: 25.0),
                                               child: constroiCampo(
                                                 labelCampo: 'Data Abertura',
-                                                largura: 85,
+                                                largura: 140,
                                                 altura: 30,
+                                                enabled: false,
                                                 obrigaCampo: true,
                                                 controller: tDataAbertura,
-                                                onChanged: (String valor) {
-                                                  blocSolicitacaoAbastecimento
-                                                      .setDataAbertura(
-                                                          tDataAbertura.text);
-                                                },
                                               ),
                                             ),
                                             Padding(
                                               padding: const EdgeInsets.only(
                                                   left: 25.0),
                                               child: constroiCampo(
-                                                labelCampo: 'Data Efetivação',
-                                                largura: 85,
+                                                labelCampo: 'Data Encerramento',
+                                                largura: 140,
                                                 altura: 30,
+                                                enabled: false,
                                                 obrigaCampo: false,
                                                 controller: tDataEfetivacao,
                                                 onChanged: (String valor) {
@@ -466,7 +599,7 @@ class CriaCardFormulario extends StatelessWidget {
                                               ),
                                               Padding(
                                                 padding: const EdgeInsets.only(
-                                                    left: 70.0),
+                                                    left: 20.0),
                                                 child: Column(
                                                   mainAxisAlignment:
                                                       MainAxisAlignment.start,
@@ -474,17 +607,47 @@ class CriaCardFormulario extends StatelessWidget {
                                                       CrossAxisAlignment.start,
                                                   children: [
                                                     RequiredLabel(
-                                                      'Combust.',
+                                                      'Combustível',
                                                       true,
                                                     ),
                                                     Container(
-                                                      child: DropDown(
-                                                          valores:
-                                                              tipoCombustivel),
+                                                      height: 50.0,
+                                                      child: Column(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .start,
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        children: <Widget>[
+                                                          DropdownButton<
+                                                              String>(
+                                                            items:
+                                                                tipoCombustivel
+                                                                    .map((
+                                                              String
+                                                                  dropDownStringItem,
+                                                            ) {
+                                                              return DropdownMenuItem<
+                                                                  String>(
+                                                                value:
+                                                                    dropDownStringItem,
+                                                                child: Text(
+                                                                    dropDownStringItem),
+                                                              );
+                                                            }).toList(),
+                                                            onChanged: (novoValorSelecionado) =>
+                                                                atualizaTipoCombustivel(
+                                                                    novoValorSelecionado),
+                                                            value:
+                                                                valorTipoCombustivel,
+                                                          ),
+                                                        ],
+                                                      ),
                                                     ),
                                                   ],
                                                 ),
-                                              )
+                                              ),
                                             ],
                                           ),
                                         ),
@@ -505,16 +668,21 @@ class CriaCardFormulario extends StatelessWidget {
                                                 onChanged: (String valor) {
                                                   blocSolicitacaoAbastecimento
                                                       .setPrecoLitro(
-                                                          double.parse(
+                                                          double.tryParse(
                                                               tPrecoLitro
                                                                   .text));
                                                   tCustoTotal.text =
                                                       calculaValorTotalSolicitacao(
-                                                    double.parse(
+                                                    double.tryParse(
                                                         tPrecoLitro.text),
-                                                    double.parse(
+                                                    double.tryParse(
                                                         tQuantidade.text),
                                                   ).toString();
+                                                  blocSolicitacaoAbastecimento
+                                                      .setCustoTotal(
+                                                          double.tryParse(
+                                                              tCustoTotal
+                                                                  .text));
                                                 },
                                                 obrigaCampo: false,
                                               ),
@@ -538,14 +706,19 @@ class CriaCardFormulario extends StatelessWidget {
                                                 onChanged: (String valor) {
                                                   blocSolicitacaoAbastecimento
                                                       .setQuantidade(
-                                                          double.parse(
+                                                          double.tryParse(
                                                               tQuantidade
+                                                                  .text));
+                                                  blocSolicitacaoAbastecimento
+                                                      .setCustoTotal(
+                                                          double.tryParse(
+                                                              tCustoTotal
                                                                   .text));
                                                   tCustoTotal.text =
                                                       calculaValorTotalSolicitacao(
-                                                    double.parse(
+                                                    double.tryParse(
                                                         tPrecoLitro.text),
-                                                    double.parse(
+                                                    double.tryParse(
                                                         tQuantidade.text),
                                                   ).toString();
                                                 },
@@ -583,17 +756,13 @@ class CriaCardFormulario extends StatelessWidget {
                                               labelCampo: 'Custo Vinculado',
                                               largura: 450,
                                               altura: 30,
-                                              controller: tCustoVinculado,
-                                              onChanged: (String valor) {
-                                                blocSolicitacaoAbastecimento
-                                                    .setCustoVinculado(
-                                                        tCustoVinculado.text);
-                                              },
+                                              controller: tDsCusto,
+                                              enabled: false,
                                               obrigaCampo: false,
                                             ),
                                             Padding(
                                               padding:
-                                                  const EdgeInsets.all(20.0),
+                                                  const EdgeInsets.all(5.0),
                                               child: Container(
                                                 alignment:
                                                     Alignment.bottomCenter,
@@ -604,10 +773,80 @@ class CriaCardFormulario extends StatelessWidget {
                                                       CrossAxisAlignment.start,
                                                   children: [
                                                     GestureDetector(
-                                                      onTap: () {
-                                                        Navigator.of(context)
-                                                            .pushNamed(
-                                                                '/ListaValoresCusto');
+                                                      onTap: () async {
+                                                        tCustoVinculado.text =
+                                                            '';
+                                                        tDsCusto.text = '';
+                                                        blocSolicitacaoAbastecimento
+                                                            .setCustoVinculado(
+                                                                tCustoVinculado
+                                                                    .text);
+                                                      },
+                                                      child: Container(
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          color: Colors.red,
+                                                          borderRadius:
+                                                              BorderRadius.all(
+                                                            Radius.circular(
+                                                                2.0),
+                                                          ),
+                                                        ),
+                                                        child: Icon(
+                                                          Icons.close,
+                                                          size: 25.0,
+                                                          color: Colors.white,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.all(1.0),
+                                              child: Container(
+                                                alignment:
+                                                    Alignment.bottomCenter,
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    GestureDetector(
+                                                      onTap: () async {
+                                                        tCustoVinculado
+                                                            .text = await Navigator
+                                                                .of(context)
+                                                            .push(
+                                                                PageRouteBuilder(
+                                                          opaque: false,
+                                                          pageBuilder: (_, __,
+                                                                  ___) =>
+                                                              ListaValoresCusto(),
+                                                        ));
+
+                                                        if (tCustoVinculado
+                                                            .text.isNotEmpty) {
+                                                          firestore
+                                                              .collection(
+                                                                  "custos")
+                                                              .document(
+                                                                  tCustoVinculado
+                                                                      .text)
+                                                              .get()
+                                                              .then((value) async =>
+                                                                  tDsCusto
+                                                                      .text = value
+                                                                          .data[
+                                                                      'detalhes']);
+                                                          blocSolicitacaoAbastecimento
+                                                              .setCustoVinculado(
+                                                                  tCustoVinculado
+                                                                      .text);
+                                                        }
                                                       },
                                                       child: Container(
                                                         decoration:
@@ -621,7 +860,7 @@ class CriaCardFormulario extends StatelessWidget {
                                                           ),
                                                         ),
                                                         child: Icon(
-                                                          Icons.add,
+                                                          Icons.attach_money,
                                                           size: 25.0,
                                                           color: Colors.white,
                                                         ),
