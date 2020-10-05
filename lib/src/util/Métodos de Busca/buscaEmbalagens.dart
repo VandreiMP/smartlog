@@ -1,25 +1,25 @@
-import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:smartlogproject/src/Entidades/Bloc/embalagem-bloc.dart';
-import 'package:smartlogproject/src/Entidades/Bloc/usuario-bloc.dart';
-import 'package:smartlogproject/src/funcoes/appText.dart';
+import 'package:smartlogproject/src/util/Componentes/appText.dart';
+import 'package:smartlogproject/src/screen/screenCarga.dart';
 
-class BuscaCustos extends StatefulWidget {
+class BuscaEmbalagens extends StatefulWidget {
   final IconData iconeLista;
+  final String chaveListaValores;
   final String origem;
 
-  const BuscaCustos(this.iconeLista, this.origem);
-
+  BuscaEmbalagens(this.iconeLista, this.chaveListaValores, this.origem);
   @override
-  _BuscaCustosState createState() => _BuscaCustosState(iconeLista, origem);
+  _BuscaEmbalagensState createState() =>
+      _BuscaEmbalagensState(iconeLista, chaveListaValores, origem);
 }
 
-class _BuscaCustosState extends State<BuscaCustos> {
+class _BuscaEmbalagensState extends State<BuscaEmbalagens> {
   final IconData iconeLista;
+  final String chaveListaValores;
   final String origem;
 
-  _BuscaCustosState(this.iconeLista, this.origem);
+  _BuscaEmbalagensState(this.iconeLista, this.chaveListaValores, this.origem);
   @override
   Widget build(BuildContext context) {
     final Firestore firestore = Firestore.instance;
@@ -29,7 +29,7 @@ class _BuscaCustosState extends State<BuscaCustos> {
           children: [
             StreamBuilder<QuerySnapshot>(
               stream: firestore
-                  .collection("custos")
+                  .collection("embalagem")
                   .orderBy("identificacao", descending: false)
                   .snapshots(),
               builder: (BuildContext context,
@@ -78,7 +78,7 @@ class _BuscaCustosState extends State<BuscaCustos> {
                             Padding(
                               padding: const EdgeInsets.only(left: 5.0),
                               child: AppText(
-                                'Detalhes',
+                                'Descrição',
                                 bold: true,
                               ),
                             ),
@@ -97,9 +97,17 @@ class _BuscaCustosState extends State<BuscaCustos> {
                               itemBuilder: (BuildContext context, int index) {
                                 final DocumentSnapshot document =
                                     snapshot.data.documents[index];
-                                final dynamic descricao = document['detalhes'];
+                                final dynamic descricao = document['descricao'];
                                 final dynamic identificacao =
                                     document['identificacao'];
+                                String listaValoresEmbalagem;
+                                if (chaveListaValores != null) {
+                                  listaValoresEmbalagem =
+                                      '${chaveListaValores}&${identificacao}';
+                                } else if (chaveListaValores == null) {
+                                  listaValoresEmbalagem =
+                                      'NULO&${identificacao}';
+                                }
                                 return Container(
                                   child: Row(
                                     children: [
@@ -139,13 +147,18 @@ class _BuscaCustosState extends State<BuscaCustos> {
                                       ),
                                       GestureDetector(
                                         onTap: () {
-                                          if (origem == 'LISTA_REGISTROS') {
-                                            Navigator.of(context).pushNamed(
-                                                '/FormularioCustos',
-                                                arguments: identificacao);
+                                          /*
+                                          Se possuir a variável chaveListaValores deve passar os valores de descrição
+                                          e código da embalagem para preencher na tela de origem
+                                          */
+                                          ScreenCarga();
+                                          if (origem == 'CARGA') {
+                                            Navigator.pop(context, identificacao);
                                           } else {
-                                            Navigator.pop(
-                                                context, identificacao);
+                                            Navigator.of(context).pushNamed(
+                                              '/FormularioEmbalagem',
+                                              arguments: identificacao,
+                                            );
                                           }
                                         },
                                         child: Padding(

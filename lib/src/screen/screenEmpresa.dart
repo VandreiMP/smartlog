@@ -5,13 +5,11 @@ import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:smartlogproject/src/Components/scroll/scroll.dart';
 import 'package:smartlogproject/src/Entidades/Bloc/empresa-bloc.dart';
 import 'package:smartlogproject/src/constantes/mascaras.dart';
-import 'package:smartlogproject/src/funcoes/alert.dart';
-import 'package:smartlogproject/src/funcoes/alertErro.dart';
-import '../funcoes/appText.dart';
-import '../funcoes/appTextField.dart';
+import 'package:smartlogproject/src/util/Componentes/alert.dart';
+import 'package:smartlogproject/src/util/Componentes/appText.dart';
+import 'package:smartlogproject/src/util/Componentes/appTextField.dart';
+import 'package:smartlogproject/src/util/Componentes/requiredLabel.dart';
 import '../Cards/Widgets/criaCardAuxiliar.dart';
-import '../funcoes/criaLista.dart';
-import '../funcoes/requiredLabel.dart';
 import 'screenPattern.dart';
 
 class ScreenEmpresa extends StatefulWidget {
@@ -462,6 +460,10 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
                                               padding: const EdgeInsets.only(
                                                   left: 20.0),
                                               child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.start,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
                                                 children: [
                                                   RequiredLabel(
                                                     'Tipo',

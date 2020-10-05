@@ -3,10 +3,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:smartlogproject/src/Components/scroll/scroll.dart';
 import 'package:smartlogproject/src/Entidades/Bloc/embalagem-bloc.dart';
-import 'package:smartlogproject/src/funcoes/calculaCubagem.dart';
-import '../funcoes/appText.dart';
+import 'package:smartlogproject/src/util/Componentes/appText.dart';
+import 'package:smartlogproject/src/util/Componentes/requiredLabel.dart';
+import 'package:smartlogproject/src/util/M%C3%A9todos%20de%20C%C3%A1lculo/calculaCubagem.dart';
 import '../Cards/Widgets/criaCardAuxiliar.dart';
-import '../funcoes/requiredLabel.dart';
 import 'screenPattern.dart';
 
 class ScreenEmbalagem extends StatefulWidget {

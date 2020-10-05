@@ -1,13 +1,10 @@
 import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:smartlogproject/src/Components/scroll/scroll.dart';
 import 'package:smartlogproject/src/Entidades/Bloc/empresa-bloc.dart';
-import 'package:smartlogproject/src/constantes/mascaras.dart';
-import 'package:smartlogproject/src/funcoes/appText.dart';
-import 'package:smartlogproject/src/funcoes/buscaEmpresa.dart';
-import 'package:smartlogproject/src/funcoes/requiredLabel.dart';
+import 'package:smartlogproject/src/util/Componentes/appText.dart';
 import 'package:smartlogproject/src/screen/screenPattern.dart';
+import 'package:smartlogproject/src/util/M%C3%A9todos%20de%20Busca/buscaEmpresa.dart';
 
 class ListaEmpresas extends StatelessWidget {
   @override
@@ -22,16 +19,6 @@ class ListaEmpresas extends StatelessWidget {
 }
 
 class CriaCardFormulario extends StatelessWidget {
-  /*
-    Variáveis usadas para capturar o valor dos campos do formulário
-    e salvar no banco
-  */
-
-  final tDescricao = TextEditingController();
-  final tId = TextEditingController();
- 
-  bool inverteOrdenacao = false;
-
   @override
   Widget build(BuildContext context) {
     return Scroll(
@@ -54,70 +41,31 @@ class CriaCardFormulario extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Container(
-                      child: AppText(
-                        'Filtros para Consulta',
-                        bold: true,
-                      ),
-                    ),
-                    SizedBox(
-                      height: 10.0,
-                    ),
                     Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Container(
-                          //height: 150.0,
-                          padding: EdgeInsets.all(10.0),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.all(Radius.circular(5)),
-                            border: new Border.all(
-                              color: Colors.black,
-                            ),
-                          ),
-                          child: Row(
-                            children: <Widget>[
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  Container(
-                                    child: constroiCampo(
-                                      labelCampo: 'Razão Social',
-                                      largura: 500,
-                                      altura: 30,
-                                      contextoAplicacao: context,
-                                      obrigaCampo: false,
-                                      controller: tDescricao,
-                                    ),
+                        GestureDetector(
+                          child: Padding(
+                            padding: const EdgeInsets.all(1.0),
+                            child: GestureDetector(
+                              onTap: () {
+                                Navigator.of(context).pushNamed('/VisaoGeral');
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.blue[900],
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(2.0),
                                   ),
-                                  Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: <Widget>[
-                                      Container(
-                                        alignment: Alignment.topLeft,
-                                        child: constroiCampo(
-                                          labelCampo: 'Identificação',
-                                          largura: 150,
-                                          altura: 30,
-                                          obrigaCampo: false,
-                                          contextoAplicacao: context,
-                                          controller: tId,
-                                          mascara: new MaskedTextController(
-                                            mask: mascaraIdentificao,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
+                                ),
+                                child: Icon(
+                                  Icons.home,
+                                  size: 30.0,
+                                  color: Colors.white,
+                                ),
                               ),
-                            ],
+                            ),
                           ),
                         ),
                         GestureDetector(
@@ -137,7 +85,7 @@ class CriaCardFormulario extends StatelessWidget {
                               ),
                               child: Icon(
                                 Icons.add,
-                                size: 50.0,
+                                size: 30.0,
                                 color: Colors.white,
                               ),
                             ),
@@ -167,43 +115,6 @@ class CriaCardFormulario extends StatelessWidget {
               ),
             ),
           ),
-        ],
-      ),
-    );
-  }
-
-  Widget constroiCampo(
-      {String labelCampo,
-      Function onChanged,
-      double largura,
-      double altura,
-      bool obrigaCampo,
-      BuildContext contextoAplicacao,
-      TextEditingController mascara,
-      TextEditingController controller}) {
-    return Form(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          RequiredLabel(labelCampo, obrigaCampo),
-          Container(
-            height: altura,
-            width: largura ?? double.maxFinite,
-            child: TextFormField(
-              maxLengthEnforced: true,
-              cursorColor: Colors.black,
-              controller: controller,
-              onChanged: onChanged,
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.black,
-              ),
-              decoration: InputDecoration(),
-            ),
-          ),
-          SizedBox(
-            height: 10,
-          )
         ],
       ),
     );

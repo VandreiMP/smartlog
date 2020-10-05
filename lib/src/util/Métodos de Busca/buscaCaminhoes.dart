@@ -1,41 +1,32 @@
-import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:smartlogproject/src/Entidades/Bloc/usuario-bloc.dart';
-import 'package:smartlogproject/src/funcoes/appText.dart';
+import 'package:smartlogproject/src/constantes/mensagens.dart';
+import 'package:smartlogproject/src/util/Componentes/alert.dart';
+import 'package:smartlogproject/src/util/Componentes/appText.dart';
 
-class BuscaFuncionarios extends StatefulWidget {
+class BuscaCaminhao extends StatefulWidget {
   final IconData iconeLista;
   final Function funcaoLista;
   final String origem;
+  final double pesoCarregado;
 
-  const BuscaFuncionarios(
-    this.iconeLista,
-    this.funcaoLista,
-    this.origem,
-  );
-
+  const BuscaCaminhao(
+      this.iconeLista, this.funcaoLista, this.origem, this.pesoCarregado);
   @override
-  _BuscaFuncionariosState createState() => _BuscaFuncionariosState(
-        iconeLista,
-        funcaoLista,
-        origem,
-      );
+  _BuscaCaminhaoState createState() =>
+      _BuscaCaminhaoState(iconeLista, funcaoLista, origem, pesoCarregado);
 }
 
-class _BuscaFuncionariosState extends State<BuscaFuncionarios> {
+class _BuscaCaminhaoState extends State<BuscaCaminhao> {
   final IconData iconeLista;
   final Function funcaoLista;
   final String origem;
+  final double pesoCarregado;
 
-  _BuscaFuncionariosState(
-    this.iconeLista,
-    this.funcaoLista,
-    this.origem,
-  );
+  _BuscaCaminhaoState(
+      this.iconeLista, this.funcaoLista, this.origem, this.pesoCarregado);
   @override
   Widget build(BuildContext context) {
-    UsuarioBloc blocUsuario = BlocProvider.of<UsuarioBloc>(context);
     final Firestore firestore = Firestore.instance;
     return Row(
       children: [
@@ -43,8 +34,8 @@ class _BuscaFuncionariosState extends State<BuscaFuncionarios> {
           children: [
             StreamBuilder<QuerySnapshot>(
               stream: firestore
-                  .collection("usuario")
-                  .orderBy("nome", descending: true)
+                  .collection("caminhao")
+                  .orderBy("descricao", descending: false)
                   .snapshots(),
               builder: (BuildContext context,
                   AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -66,8 +57,8 @@ class _BuscaFuncionariosState extends State<BuscaFuncionarios> {
                     ],
                   ));
 
-                final int funcionarioContador = snapshot.data.documents.length;
-                if (funcionarioContador > 0) {
+                final int caminhaoContador = snapshot.data.documents.length;
+                if (caminhaoContador > 0) {
                   return Container(
                     decoration: BoxDecoration(
                       color: Colors.white,
@@ -80,19 +71,22 @@ class _BuscaFuncionariosState extends State<BuscaFuncionarios> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.only(left: 111.0, top: 15),
+                          padding: const EdgeInsets.only(left: 165.0, top: 15),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               AppText(
-                                'Identificação',
+                                'Placa',
                                 bold: true,
                               ),
+                              SizedBox(
+                                width: 5.0,
+                              ),
                               Padding(
-                                padding: const EdgeInsets.only(left: 5.0),
+                                padding: const EdgeInsets.only(left: 2.0),
                                 child: AppText(
-                                  'Nome',
+                                  'Decrição',
                                   bold: true,
                                 ),
                               ),
@@ -107,13 +101,16 @@ class _BuscaFuncionariosState extends State<BuscaFuncionarios> {
                               width: 670,
                               child: ListView.builder(
                                 shrinkWrap: true,
-                                itemCount: funcionarioContador,
+                                itemCount: caminhaoContador,
                                 itemBuilder: (BuildContext context, int index) {
                                   final DocumentSnapshot document =
                                       snapshot.data.documents[index];
-                                  final dynamic nome = document['nome'];
+                                  final dynamic descricao =
+                                      document['descricao'];
+                                  final dynamic placa = document['placa'];
                                   final dynamic identificacao =
                                       document['identificacao'];
+
                                   return Container(
                                     child: Row(
                                       children: [
@@ -132,11 +129,7 @@ class _BuscaFuncionariosState extends State<BuscaFuncionarios> {
                                                 color: Colors.black,
                                               ),
                                             ),
-                                            child: Text(
-                                              nome != null
-                                                  ? identificacao.toString()
-                                                  : '<Identificação do funcionário não informado no cadastro>',
-                                            ),
+                                            child: Text(placa.toString()),
                                           ),
                                         ),
                                         Padding(
@@ -152,23 +145,35 @@ class _BuscaFuncionariosState extends State<BuscaFuncionarios> {
                                                 color: Colors.black,
                                               ),
                                             ),
-                                            child: Text(
-                                              nome != null
-                                                  ? nome.toString()
-                                                  : '<Nome do funcionário não informado no cadastro>',
-                                            ),
+                                            child: Text(descricao.toString()),
                                           ),
                                         ),
                                         GestureDetector(
                                           onTap: () {
                                             if (origem == 'CARGA') {
-                                              Navigator.pop(
-                                                  context, identificacao);
+                                              if (pesoCarregado != null) {
+                                                Firestore.instance
+                                                    .collection("fichaCaminhao")
+                                                    .document(identificacao)
+                                                    .get()
+                                                    .then((coluna) async => coluna
+                                                                        .data[
+                                                                    'capacidadeCarga'] !=
+                                                                null &&
+                                                            coluna.data[
+                                                                    'capacidadeCarga'] <
+                                                                pesoCarregado
+                                                        ? alert(
+                                                            context,
+                                                            mensagemAlerta,
+                                                            'O peso carregado excede a capacidade máxima do caminhão!')
+                                                        : Navigator.pop(context,
+                                                            identificacao));
+                                              }
                                             } else {
                                               Navigator.of(context).pushNamed(
-                                                '/FormularioUsuario',
-                                                arguments: identificacao,
-                                              );
+                                                  '/FormularioCaminhao',
+                                                  arguments: identificacao);
                                             }
                                           },
                                           child: Padding(

@@ -1,13 +1,11 @@
 import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:smartlogproject/src/Components/scroll/scroll.dart';
 import 'package:smartlogproject/src/Entidades/Bloc/embalagem-bloc.dart';
-import 'package:smartlogproject/src/constantes/mascaras.dart';
-import 'package:smartlogproject/src/funcoes/appText.dart';
-import 'package:smartlogproject/src/funcoes/buscaEmbalagens.dart';
-import 'package:smartlogproject/src/funcoes/requiredLabel.dart';
+import 'package:smartlogproject/src/util/Componentes/appText.dart';
+import 'package:smartlogproject/src/util/Componentes/requiredLabel.dart';
 import 'package:smartlogproject/src/screen/screenPattern.dart';
+import 'package:smartlogproject/src/util/M%C3%A9todos%20de%20Busca/buscaEmbalagens.dart';
 
 class ListaEmbalagens extends StatelessWidget {
   @override
@@ -118,43 +116,6 @@ class CriaCardFormulario extends StatelessWidget {
               ),
             ),
           ),
-        ],
-      ),
-    );
-  }
-
-  Widget constroiCampo(
-      {String labelCampo,
-      Function onChanged,
-      double largura,
-      double altura,
-      bool obrigaCampo,
-      BuildContext contextoAplicacao,
-      TextEditingController mascara,
-      TextEditingController controller}) {
-    return Form(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          RequiredLabel(labelCampo, obrigaCampo),
-          Container(
-            height: altura,
-            width: largura ?? double.maxFinite,
-            child: TextFormField(
-              maxLengthEnforced: true,
-              cursorColor: Colors.black,
-              controller: controller,
-              onChanged: onChanged,
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.black,
-              ),
-              decoration: InputDecoration(),
-            ),
-          ),
-          SizedBox(
-            height: 10,
-          )
         ],
       ),
     );

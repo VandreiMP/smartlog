@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:smartlogproject/src/funcoes/requiredLabel.dart';
+import 'package:smartlogproject/src/util/Componentes/requiredLabel.dart';
 
 class AppTextField extends StatelessWidget {
   final String label;

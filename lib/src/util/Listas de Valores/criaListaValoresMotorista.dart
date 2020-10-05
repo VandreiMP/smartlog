@@ -1,19 +1,19 @@
 import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:flutter/material.dart';
 import 'package:smartlogproject/src/Components/scroll/scroll.dart';
-import 'package:smartlogproject/src/Entidades/Bloc/embalagem-bloc.dart';
+import 'package:smartlogproject/src/Entidades/Bloc/usuario-bloc.dart';
 import 'package:smartlogproject/src/constantes/cores.dart';
-import 'package:smartlogproject/src/funcoes/appText.dart';
-import 'package:smartlogproject/src/funcoes/buscaEmbalagens.dart';
+import 'package:smartlogproject/src/util/Componentes/appText.dart';
+import 'package:smartlogproject/src/util/M%C3%A9todos%20de%20Busca/buscaFuncionarios.dart';
 
-class ListaValoresEmbalagem extends StatelessWidget {
+class ListaValoresMotorista extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
       alignment: Alignment.center,
       color: corTransparente,
       child: BlocProvider(
-        bloc: EmbalagemBloc(context),
+        bloc: UsuarioBloc(context),
         child: CriaCardFormulario(),
       ),
     );
@@ -23,12 +23,10 @@ class ListaValoresEmbalagem extends StatelessWidget {
 class CriaCardFormulario extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    String numeroCarga = ModalRoute.of(context).settings.arguments;
     return Scroll(
       width: 720,
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Container(
             alignment: Alignment.center,
@@ -56,7 +54,7 @@ class CriaCardFormulario extends StatelessWidget {
                       children: [
                         Container(
                           child: AppText(
-                            'Relação de Embalagens',
+                            'Relação de Motoristas',
                             bold: true,
                           ),
                         ),
@@ -88,7 +86,7 @@ class CriaCardFormulario extends StatelessWidget {
                     ),
                     Row(
                       children: [
-                        BuscaEmbalagens(Icons.add, numeroCarga, 'CARGA'),
+                        BuscaFuncionarios(Icons.add, () {}, 'CARGA'),
                       ],
                     )
                   ],

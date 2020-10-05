@@ -1,40 +1,14 @@
-import 'dart:html';
-
 import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:date_format/date_format.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:smartlogproject/src/Entidades/Bloc/romaneio-bloc.dart';
 import 'package:smartlogproject/src/Entidades/classes/carregamentoMercadoria.dart';
-import 'package:smartlogproject/src/Entidades/classes/embalagem.dart';
 import 'package:smartlogproject/src/constantes/mensagens.dart';
-import 'package:smartlogproject/src/funcoes/alert.dart';
-import 'package:smartlogproject/src/funcoes/alertErro.dart';
-import 'package:smartlogproject/src/funcoes/alertFuncao.dart';
-import 'package:smartlogproject/src/funcoes/calculaTotalCarga.dart';
+import 'package:smartlogproject/src/util/Componentes/alert.dart';
+import 'package:smartlogproject/src/util/Componentes/alertErro.dart';
+import 'package:smartlogproject/src/util/Componentes/alertFuncao.dart';
 
 class CarregamentoMercadoriaBloc extends BlocBase {
-  String _carga;
-  String _saidaCaminhao;
-  String _numeroRomaneio;
-  String _situacaoExpedicao;
-  String _caminhao;
-  String _motorista;
-  String _comprador;
-  String _telefone;
-  String _dataEntrega;
-  String _situacaoEntrega;
-  String _produto;
-  String _embalagem;
-  double _quantidadeEmbalagem;
-  double _pesoBruto;
-  double _pesoLiquido;
-  double _cubagemCarga;
-  double _quantidade;
-  double _precoLiquido;
-  double _totalCarga;
 
   BuildContext contextoAplicacao;
 
@@ -66,6 +40,7 @@ class CarregamentoMercadoriaBloc extends BlocBase {
   void setPesoLiquido(double value) => _pesoLiquidoController.sink.add(value);
   void setCubagemCarga(double value) => _cubagemCargaController.sink.add(value);
   void setQuantidade(double value) => _quantidadeController.sink.add(value);
+  void setTotalCarga(double value) => _totalCargaController.sink.add(value);
   void setTotalDesp(double value) => _totalDespController.sink.add(value);
   void setPrecoLiquido(double value) => _precoLiquidoController.sink.add(value);
 
@@ -166,10 +141,7 @@ class CarregamentoMercadoriaBloc extends BlocBase {
     carregamentoMercadoria.quantidade = _quantidadeController.value;
     carregamentoMercadoria.precoLiquido = _precoLiquidoController.value;
     carregamentoMercadoria.totalDesp = _totalDespController.value;
-    carregamentoMercadoria.totalCarga = calculaValorTotalCarga(
-        _precoLiquidoController.value,
-        _quantidadeController.value,
-        _totalDespController.value);
+    carregamentoMercadoria.totalCarga = _totalCargaController.value;
 
     if (carregamentoMercadoria.carga == null) {
       alert(contextoAplicacao, mensagemAlerta,

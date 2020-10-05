@@ -5,16 +5,16 @@ import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:smartlogproject/src/Entidades/Bloc/carregamentoMercadoria-bloc.dart';
 import 'package:smartlogproject/src/constantes/fatoresCubagem.dart';
 import 'package:smartlogproject/src/constantes/mensagens.dart';
-import 'package:smartlogproject/src/funcoes/alert.dart';
-import 'package:smartlogproject/src/funcoes/calculaTotalCarga.dart';
-import 'package:smartlogproject/src/funcoes/criaListaValoresCaminhao.dart';
-import 'package:smartlogproject/src/funcoes/criaListaValoresEmbalagem.dart';
-import 'package:smartlogproject/src/funcoes/criaListaValoresMotorista.dart';
-import 'package:smartlogproject/src/funcoes/requiredLabel.dart';
+import 'package:smartlogproject/src/util/Componentes/alert.dart';
+import 'package:smartlogproject/src/util/Componentes/appText.dart';
+import 'package:smartlogproject/src/util/Componentes/appTextField.dart';
+import 'package:smartlogproject/src/util/Componentes/requiredLabel.dart';
+import 'package:smartlogproject/src/util/Listas%20de%20Valores/criaListaValoresCaminhao.dart';
+import 'package:smartlogproject/src/util/Listas%20de%20Valores/criaListaValoresEmbalagem.dart';
+import 'package:smartlogproject/src/util/Listas%20de%20Valores/criaListaValoresMotorista.dart';
+import 'package:smartlogproject/src/util/M%C3%A9todos%20de%20C%C3%A1lculo/calculaTotalCarga.dart';
 import '../Components/scroll/scroll.dart';
 import '../constantes/mascaras.dart';
-import '../funcoes/appText.dart';
-import '../funcoes/appTextField.dart';
 import '../Cards/Widgets/criaCardAuxiliar.dart';
 import 'screenPattern.dart';
 
@@ -311,7 +311,7 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
                                             ),
                                             Padding(
                                               padding: const EdgeInsets.only(
-                                                  left: 25.0),
+                                                  left: 20.0),
                                               child: constroiCampo(
                                                 labelCampo: 'Data Saída',
                                                 largura: 85,
@@ -376,7 +376,7 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
                                             ),
                                             Padding(
                                               padding: const EdgeInsets.only(
-                                                  left: 20.0),
+                                                  left: 200.0),
                                               child: Column(
                                                 mainAxisAlignment:
                                                     MainAxisAlignment.start,
@@ -843,7 +843,7 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
                                           children: <Widget>[
                                             constroiCampo(
                                               labelCampo: 'Comprador',
-                                              largura: 300,
+                                              largura: 400,
                                               altura: 30,
                                               controller: tComprador,
                                               onChanged: (String valor) {
@@ -917,7 +917,7 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
                                             constroiCampo(
                                               labelCampo: 'Embalagem',
                                               enabled: false,
-                                              largura: 450,
+                                              largura: 550,
                                               altura: 30,
                                               controller: tEmbalagem,
                                               obrigaCampo: false,
@@ -1208,6 +1208,11 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
                                                     .setQuantidade(
                                                         double.tryParse(
                                                             tQuantidade.text));
+
+                                                blocCarregamentoMercadoria
+                                                    .setTotalCarga(
+                                                        double.tryParse(
+                                                            tTotalCarga.text));
                                               },
                                               obrigaCampo: false,
                                             ),
@@ -1241,6 +1246,11 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
                                                       .setPrecoLiquido(
                                                           double.tryParse(
                                                               tPrecoLiquido
+                                                                  .text));
+                                                  blocCarregamentoMercadoria
+                                                      .setTotalCarga(
+                                                          double.tryParse(
+                                                              tTotalCarga
                                                                   .text));
                                                 },
                                                 obrigaCampo: false,
@@ -1276,6 +1286,12 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
                                                       .setTotalDesp(
                                                           double.tryParse(
                                                               tTotalDesp.text));
+
+                                                  blocCarregamentoMercadoria
+                                                      .setTotalCarga(
+                                                          double.tryParse(
+                                                              tTotalCarga
+                                                                  .text));
                                                 },
                                                 obrigaCampo: false,
                                               ),

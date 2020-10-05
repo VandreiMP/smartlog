@@ -1,25 +1,22 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:smartlogproject/src/funcoes/appText.dart';
-import 'package:smartlogproject/src/screen/screenCarga.dart';
+import 'package:smartlogproject/src/util/Componentes/appText.dart';
 
-class BuscaEmbalagens extends StatefulWidget {
+class BuscaCustos extends StatefulWidget {
   final IconData iconeLista;
-  final String chaveListaValores;
   final String origem;
 
-  BuscaEmbalagens(this.iconeLista, this.chaveListaValores, this.origem);
+  const BuscaCustos(this.iconeLista, this.origem);
+
   @override
-  _BuscaEmbalagensState createState() =>
-      _BuscaEmbalagensState(iconeLista, chaveListaValores, origem);
+  _BuscaCustosState createState() => _BuscaCustosState(iconeLista, origem);
 }
 
-class _BuscaEmbalagensState extends State<BuscaEmbalagens> {
+class _BuscaCustosState extends State<BuscaCustos> {
   final IconData iconeLista;
-  final String chaveListaValores;
   final String origem;
 
-  _BuscaEmbalagensState(this.iconeLista, this.chaveListaValores, this.origem);
+  _BuscaCustosState(this.iconeLista, this.origem);
   @override
   Widget build(BuildContext context) {
     final Firestore firestore = Firestore.instance;
@@ -29,7 +26,7 @@ class _BuscaEmbalagensState extends State<BuscaEmbalagens> {
           children: [
             StreamBuilder<QuerySnapshot>(
               stream: firestore
-                  .collection("embalagem")
+                  .collection("custos")
                   .orderBy("identificacao", descending: false)
                   .snapshots(),
               builder: (BuildContext context,
@@ -78,7 +75,7 @@ class _BuscaEmbalagensState extends State<BuscaEmbalagens> {
                             Padding(
                               padding: const EdgeInsets.only(left: 5.0),
                               child: AppText(
-                                'Descrição',
+                                'Detalhes',
                                 bold: true,
                               ),
                             ),
@@ -97,17 +94,9 @@ class _BuscaEmbalagensState extends State<BuscaEmbalagens> {
                               itemBuilder: (BuildContext context, int index) {
                                 final DocumentSnapshot document =
                                     snapshot.data.documents[index];
-                                final dynamic descricao = document['descricao'];
+                                final dynamic descricao = document['detalhes'];
                                 final dynamic identificacao =
                                     document['identificacao'];
-                                String listaValoresEmbalagem;
-                                if (chaveListaValores != null) {
-                                  listaValoresEmbalagem =
-                                      '${chaveListaValores}&${identificacao}';
-                                } else if (chaveListaValores == null) {
-                                  listaValoresEmbalagem =
-                                      'NULO&${identificacao}';
-                                }
                                 return Container(
                                   child: Row(
                                     children: [
@@ -147,18 +136,13 @@ class _BuscaEmbalagensState extends State<BuscaEmbalagens> {
                                       ),
                                       GestureDetector(
                                         onTap: () {
-                                          /*
-                                          Se possuir a variável chaveListaValores deve passar os valores de descrição
-                                          e código da embalagem para preencher na tela de origem
-                                          */
-                                          ScreenCarga();
-                                          if (origem == 'CARGA') {
-                                            Navigator.pop(context, identificacao);
-                                          } else {
+                                          if (origem == 'LISTA_REGISTROS') {
                                             Navigator.of(context).pushNamed(
-                                              '/FormularioEmbalagem',
-                                              arguments: identificacao,
-                                            );
+                                                '/FormularioCustos',
+                                                arguments: identificacao);
+                                          } else {
+                                            Navigator.pop(
+                                                context, identificacao);
                                           }
                                         },
                                         child: Padding(

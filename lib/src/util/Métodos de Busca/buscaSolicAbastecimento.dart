@@ -1,9 +1,6 @@
-import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:smartlogproject/src/Entidades/Bloc/embalagem-bloc.dart';
-import 'package:smartlogproject/src/Entidades/Bloc/usuario-bloc.dart';
-import 'package:smartlogproject/src/funcoes/appText.dart';
+import 'package:smartlogproject/src/util/Componentes/appText.dart';
 
 class BuscaAbastecimento extends StatefulWidget {
   @override
@@ -63,9 +60,12 @@ class _BuscaAbastecimentoState extends State<BuscaAbastecimento> {
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              AppText(
-                                'Solicitação',
-                                bold: true,
+                              Padding(
+                                padding: const EdgeInsets.only(left: 30.0),
+                                child: AppText(
+                                  'Código',
+                                  bold: true,
+                                ),
                               ),
                               SizedBox(
                                 width: 5.0,
@@ -78,7 +78,7 @@ class _BuscaAbastecimentoState extends State<BuscaAbastecimento> {
                                 ),
                               ),
                               Padding(
-                                padding: const EdgeInsets.only(left: 293.0),
+                                padding: const EdgeInsets.only(left: 493.0),
                                 child: AppText(
                                   'Custo Total',
                                   bold: true,
@@ -92,7 +92,7 @@ class _BuscaAbastecimentoState extends State<BuscaAbastecimento> {
                             Container(
                               padding: EdgeInsets.only(bottom: 15),
                               alignment: Alignment.topLeft,
-                              width: 713,
+                              width: 916,
                               child: ListView.builder(
                                 shrinkWrap: true,
                                 itemCount: abastecimentoContador,
@@ -131,7 +131,7 @@ class _BuscaAbastecimentoState extends State<BuscaAbastecimento> {
                                           child: Container(
                                             alignment: Alignment.topLeft,
                                             padding: EdgeInsets.all(10),
-                                            width: 300,
+                                            width: 500,
                                             decoration: BoxDecoration(
                                               color: Colors.white,
                                               borderRadius: BorderRadius.all(

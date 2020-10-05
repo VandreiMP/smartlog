@@ -4,11 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:smartlogproject/src/Components/scroll/scroll.dart';
 import 'package:smartlogproject/src/Entidades/Bloc/solicitacaoManutencao-bloc.dart';
-import 'package:smartlogproject/src/funcoes/appTextField.dart';
-import 'package:smartlogproject/src/funcoes/criaListaValoresCusto.dart';
-import '../funcoes/appText.dart';
+import 'package:smartlogproject/src/util/Componentes/appText.dart';
+import 'package:smartlogproject/src/util/Componentes/appTextField.dart';
+import 'package:smartlogproject/src/util/Componentes/requiredLabel.dart';
+import 'package:smartlogproject/src/util/Listas%20de%20Valores/criaListaValoresCusto.dart';
 import '../Cards/Widgets/criaCardAuxiliar.dart';
-import '../funcoes/requiredLabel.dart';
 import 'screenPattern.dart';
 
 class ScreenManutencao extends StatefulWidget {

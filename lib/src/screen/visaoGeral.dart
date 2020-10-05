@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:smartlogproject/src/funcoes/alert.dart';
 import 'screenPattern.dart';
 
 class VisaoGeral extends StatefulWidget {
@@ -10,6 +9,9 @@ class VisaoGeral extends StatefulWidget {
 class _VisaoGeralState extends State<VisaoGeral> {
   @override
   Widget build(BuildContext context) {
+    //  print('validaAcessoUsuario()');
+    // validaAcessoUsuario().then((retornoValidacao) => print('retorno: $retornoValidacao'));
+
     return ScreenPattern(
       child: Body(),
     );
@@ -66,7 +68,6 @@ class _BodyState extends State<Body> {
                     ),
                   ),
                 ),
-               
               ],
             ),
           ),

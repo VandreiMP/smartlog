@@ -4,11 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:smartlogproject/src/Entidades/Bloc/romaneio-bloc.dart';
 import 'package:smartlogproject/src/constantes/mascaras.dart';
-import 'package:smartlogproject/src/funcoes/criaLista.dart';
-import 'package:smartlogproject/src/funcoes/requiredLabel.dart';
+import 'package:smartlogproject/src/util/Componentes/appText.dart';
+import 'package:smartlogproject/src/util/Componentes/appTextField.dart';
+import 'package:smartlogproject/src/util/Componentes/requiredLabel.dart';
 import '../Components/scroll/scroll.dart';
-import '../funcoes/appText.dart';
-import '../funcoes/appTextField.dart';
 import '../Cards/Widgets/criaCardAuxiliar.dart';
 import 'screenPattern.dart';
 
@@ -257,8 +256,7 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
                                               children: [
                                                 Column(
                                                   crossAxisAlignment:
-                                                      CrossAxisAlignment
-                                                          .start,
+                                                      CrossAxisAlignment.start,
                                                   mainAxisAlignment:
                                                       MainAxisAlignment.start,
                                                   children: [
@@ -277,8 +275,7 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
                                                             crossAxisAlignment:
                                                                 CrossAxisAlignment
                                                                     .center,
-                                                            children: <
-                                                                Widget>[
+                                                            children: <Widget>[
                                                               DropdownButton<
                                                                   String>(
                                                                 items:

@@ -3,8 +3,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:smartlogproject/src/Entidades/classes/fichaCaminhao.dart';
-import 'package:smartlogproject/src/funcoes/alert.dart';
-import 'package:smartlogproject/src/funcoes/alertErro.dart';
+import 'package:smartlogproject/src/util/Componentes/alert.dart';
+import 'package:smartlogproject/src/util/Componentes/alertErro.dart';
 
 class FichaCaminhaoBloc extends BlocBase {
   BuildContext contextoAplicacao;

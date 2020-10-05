@@ -1,19 +1,19 @@
 import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:flutter/material.dart';
 import 'package:smartlogproject/src/Components/scroll/scroll.dart';
-import 'package:smartlogproject/src/Entidades/Bloc/custo-bloc.dart';
+import 'package:smartlogproject/src/Entidades/Bloc/embalagem-bloc.dart';
 import 'package:smartlogproject/src/constantes/cores.dart';
-import 'package:smartlogproject/src/funcoes/appText.dart';
-import 'package:smartlogproject/src/funcoes/buscaCustos.dart';
+import 'package:smartlogproject/src/util/Componentes/appText.dart';
+import 'package:smartlogproject/src/util/M%C3%A9todos%20de%20Busca/buscaEmbalagens.dart';
 
-class ListaValoresCusto extends StatelessWidget {
+class ListaValoresEmbalagem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: corTransparente,
       alignment: Alignment.center,
+      color: corTransparente,
       child: BlocProvider(
-        bloc: CustoBloc(context),
+        bloc: EmbalagemBloc(context),
         child: CriaCardFormulario(),
       ),
     );
@@ -23,6 +23,7 @@ class ListaValoresCusto extends StatelessWidget {
 class CriaCardFormulario extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    String numeroCarga = ModalRoute.of(context).settings.arguments;
     return Scroll(
       width: 720,
       child: Column(
@@ -55,7 +56,7 @@ class CriaCardFormulario extends StatelessWidget {
                       children: [
                         Container(
                           child: AppText(
-                            'Relação de Custos',
+                            'Relação de Embalagens',
                             bold: true,
                           ),
                         ),
@@ -87,7 +88,7 @@ class CriaCardFormulario extends StatelessWidget {
                     ),
                     Row(
                       children: [
-                        BuscaCustos(Icons.add, 'LISTA_VALORES'),
+                        BuscaEmbalagens(Icons.add, numeroCarga, 'CARGA'),
                       ],
                     )
                   ],

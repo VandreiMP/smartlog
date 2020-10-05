@@ -4,9 +4,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:smartlogproject/src/Entidades/classes/solicitacaoManutencao.dart';
 import 'package:smartlogproject/src/constantes/mensagens.dart';
-import 'package:smartlogproject/src/funcoes/alert.dart';
-import 'package:smartlogproject/src/funcoes/alertErro.dart';
-import 'package:smartlogproject/src/funcoes/alertFuncao.dart';
+import 'package:smartlogproject/src/util/Componentes/alert.dart';
+import 'package:smartlogproject/src/util/Componentes/alertErro.dart';
+import 'package:smartlogproject/src/util/Componentes/alertFuncao.dart';
 
 class SolicitacaoManutencaoBloc extends BlocBase {
   BuildContext contextoAplicacao;

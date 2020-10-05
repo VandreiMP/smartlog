@@ -1,19 +1,19 @@
 import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:flutter/material.dart';
 import 'package:smartlogproject/src/Components/scroll/scroll.dart';
-import 'package:smartlogproject/src/Entidades/Bloc/usuario-bloc.dart';
+import 'package:smartlogproject/src/Entidades/Bloc/custo-bloc.dart';
 import 'package:smartlogproject/src/constantes/cores.dart';
-import 'package:smartlogproject/src/funcoes/appText.dart';
-import 'package:smartlogproject/src/funcoes/buscaFuncionarios.dart';
+import 'package:smartlogproject/src/util/Componentes/appText.dart';
+import 'package:smartlogproject/src/util/M%C3%A9todos%20de%20Busca/buscaCustos.dart';
 
-class ListaValoresMotorista extends StatelessWidget {
+class ListaValoresCusto extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      alignment: Alignment.center,
       color: corTransparente,
+      alignment: Alignment.center,
       child: BlocProvider(
-        bloc: UsuarioBloc(context),
+        bloc: CustoBloc(context),
         child: CriaCardFormulario(),
       ),
     );
@@ -26,7 +26,8 @@ class CriaCardFormulario extends StatelessWidget {
     return Scroll(
       width: 720,
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Container(
             alignment: Alignment.center,
@@ -54,7 +55,7 @@ class CriaCardFormulario extends StatelessWidget {
                       children: [
                         Container(
                           child: AppText(
-                            'Relação de Motoristas',
+                            'Relação de Custos',
                             bold: true,
                           ),
                         ),
@@ -86,7 +87,7 @@ class CriaCardFormulario extends StatelessWidget {
                     ),
                     Row(
                       children: [
-                        BuscaFuncionarios(Icons.add, () {}, 'CARGA'),
+                        BuscaCustos(Icons.add, 'LISTA_VALORES'),
                       ],
                     )
                   ],

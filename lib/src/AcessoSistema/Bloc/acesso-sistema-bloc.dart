@@ -1,11 +1,8 @@
-import 'dart:js';
-
 import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:smartlogproject/src/AcessoSistema/Servicos/Autenticacao.dart';
-import 'package:smartlogproject/src/funcoes/alert.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:smartlogproject/src/util/Componentes/alert.dart';
 
 class AcessoSistemaBloc extends BlocBase {
   var _controllerSelecionaCheckBox = BehaviorSubject<bool>(seedValue: false);
@@ -17,7 +14,6 @@ class AcessoSistemaBloc extends BlocBase {
   final BuildContext contextoAplicacao;
 
   AcessoSistemaBloc(this.contextoAplicacao);
-
 
   Future<void> eventoCliqueCheckBox(
       bool valor, TextEditingController senha) async {
@@ -38,7 +34,6 @@ class AcessoSistemaBloc extends BlocBase {
       alert(contextoAplicacao, 'Inconsistência na validação',
           'Para efetuar o acesso ao sistema é necessário preencher o usuário e a senha. Favor verificar!');
     } else {
-
       /*
       Autenticação do usuário feita via e-mail e senha que devem criados pelo administrador
       do sistema.
@@ -65,25 +60,15 @@ class AcessoSistemaBloc extends BlocBase {
             '/VisaoGeral',
           );
 
-          alert(contextoAplicacao, 'SmartLog - Sistemas Logísticos para Aviários',
-            'Bem vindo à area de trabalho do sistema. Em caso de dúvidas, favor entrar em contato com o suporte técnico pelo endereço "smartlogsuporte@outlook.com".');
+          alert(
+              contextoAplicacao,
+              'SmartLog - Sistemas Logísticos para Aviários',
+              'Bem vindo à area de trabalho do sistema. Em caso de dúvidas, favor entrar em contato com o suporte técnico pelo endereço "smartlogsuporte@outlook.com".');
         });
       } catch (on) {
         alert(contextoAplicacao, 'Inconsistência na validação',
             'Erro ao efetuar o acesso ao sistema. Favor entrar em contato com o administrador do sistema para conferir suas credenciais de acesso!');
       }
-
-      // AutenticacaoFirebase autenticacaoFirebase = AutenticacaoFirebase(
-      //     usuario.text, senha.text, contextoAplicacao, false);
-
-      // if (autenticacaoFirebase.autenticacao == true) {
-      //   _controllerValidaAcesso.add(!_controllerValidaAcesso.value);
-      //   await Future.delayed(Duration(seconds: 2));
-      //   _controllerValidaAcesso.add(!_controllerValidaAcesso.value);
-
-      //   Navigator.of(contextoAplicacao).pushNamed(
-      //     '/VisaoGeral',
-      //   );
     }
   }
 

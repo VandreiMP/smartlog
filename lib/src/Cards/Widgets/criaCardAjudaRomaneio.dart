@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:smartlogproject/src/funcoes/appText.dart';
+import 'package:smartlogproject/src/util/Componentes/appText.dart';
 
 class CriaCardAjudaRomaneio extends StatelessWidget {
   Widget build(BuildContext context) {

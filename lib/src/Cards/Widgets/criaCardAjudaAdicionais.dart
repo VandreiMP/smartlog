@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-import '../../funcoes/appText.dart';
+import 'package:smartlogproject/src/util/Componentes/appText.dart';
 
 class CriaCardAjudaAdicionais extends StatelessWidget {
   Widget build(BuildContext context) {

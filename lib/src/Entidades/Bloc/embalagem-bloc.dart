@@ -1,13 +1,12 @@
 import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:smartlogproject/src/Entidades/classes/embalagem.dart';
 import 'package:smartlogproject/src/constantes/mensagens.dart';
-import 'package:smartlogproject/src/funcoes/alert.dart';
-import 'package:smartlogproject/src/funcoes/alertErro.dart';
-import 'package:smartlogproject/src/funcoes/alertFuncao.dart';
+import 'package:smartlogproject/src/util/Componentes/alert.dart';
+import 'package:smartlogproject/src/util/Componentes/alertErro.dart';
+import 'package:smartlogproject/src/util/Componentes/alertFuncao.dart';
 
 class EmbalagemBloc extends BlocBase {
   BuildContext contextoAplicacao;

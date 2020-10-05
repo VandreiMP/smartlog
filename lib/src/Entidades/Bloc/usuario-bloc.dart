@@ -4,23 +4,15 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:smartlogproject/src/Entidades/classes/usuario.dart';
-import 'package:smartlogproject/src/funcoes/alert.dart';
-import 'package:smartlogproject/src/funcoes/alertErro.dart';
-import 'package:smartlogproject/src/funcoes/alertFuncao.dart';
+import 'package:smartlogproject/src/constantes/mensagens.dart';
+import 'package:smartlogproject/src/util/Componentes/alert.dart';
+import 'package:smartlogproject/src/util/Componentes/alertErro.dart';
+import 'package:smartlogproject/src/util/Componentes/alertFuncao.dart';
 
 class UsuarioBloc extends BlocBase {
-  String _documentId;
-  String _nome;
-  String _tpUsuario;
-  String _senha;
-  String _email;
-  String _telefone;
-  String _celular;
-  String _ramal;
   BuildContext contextoAplicacao;
 
   UsuarioBloc(BuildContext contextoAplicacao);
-
   /*
   Aqui seta os valores recebidos no formulário para os controllers.
   */
@@ -105,65 +97,49 @@ class UsuarioBloc extends BlocBase {
     usuario.celular = _celularController.value;
     usuario.ramal = _ramalController.value;
 
-    /*
-    Aqui realiza a validação dos campos obrigatórios.
-    */
-
-    if (usuario.nome == null) {
-      TextError(
-          'Para gravar o usuário no sistema, o campo "Nome" deve ser preenchido. Favor verificar!');
-    }
-
-    if (usuario.identificacao == null) {
-      TextError(
-          'Para gravar o usuário no sistema, o campo "Identificação" deve ser preenchido. Favor verificar!');
-    }
-
-    // if (usuario.tpUsuario == null) {
-    //   alert(contextoAplicacao, 'Campo Obrigatório',
-    //       'Para gravar o usuário no sistema, o campo "Tipo Usuário" deve ser preenchido. Favor verificar!');
-    // }
-
-    if (usuario.emailLogin == null) {
-      TextError(
-          'Para gravar o usuário no sistema, o campo "E-Mail Acesso" deve ser preenchido. Favor verificar!');
-    }
-
-    if (usuario.senha == null) {
-      TextError(
-          'Para gravar o usuário no sistema, o campo "Senha" deve ser preenchido. Favor verificar!');
-    }
-
-    final instanciaFirebaseAuth = FirebaseAuth.instance;
-
-    try {
-      await Firestore.instance
-              .collection('usuario')
-              .document(usuario.identificacao)
-              .setData({
-        'identificacao': usuario.identificacao,
-        'nome': usuario.nome,
-        'tipoUsuario': usuario.tpUsuario,
-        'email': usuario.email,
-        'emailLogin': usuario.emailLogin,
-        'senha': usuario.senha,
-        'telefone': usuario.telefone,
-        'celular': usuario.celular,
-        'ramal': usuario.ramal
-      }).then((value) async => await alert(
-                  contextoAplicacao,
-                  'Notificação',
-                  'Os dados do formulário foram salvos com sucesso no banco de dados!'))
-          // .whenComplete(() async => await instanciaFirebaseAuth
-          //         .createUserWithEmailAndPassword(
-          //             email: usuario.emailLogin, password: usuario.senha)
-          //         .whenComplete(() async {
-          //       await alert(contextoAplicacao, 'Notificação de Sucesso',
-          //           'As credenciais de acesso ao sistema foram criadas para o usuário informado. Para realizar o acesso devem ser informados o E-Mail Acesso e a Senha na tela de Autenticação.');
-          //     }))
-          ;
-    } catch (on) {
-      TextError('Erro ao salvar os dados do formulário no banco de dados!');
+    if (usuario.nome == '' || usuario.nome == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para salvar o usuário é necessário informar o nome!');
+    } else if (usuario.identificacao == '' || usuario.identificacao == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para salvar o usuário é necessário informar a identificação!');
+    } else if (usuario.tpUsuario == '' || usuario.tpUsuario == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para salvar o usuário é necessário informar o tipo!');
+    } else if (usuario.emailLogin == '' || usuario.emailLogin == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para salvar o usuário é necessário informar o E-Mail de acesso ao sistema!');
+    } else if (usuario.senha == '' || usuario.senha == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para salvar o usuário é necessário informar a senha de acesso ao sistema!');
+    } else {
+      try {
+        await Firestore.instance
+                .collection('usuario')
+                .document(usuario.identificacao)
+                .setData({
+          'identificacao': usuario.identificacao,
+          'nome': usuario.nome,
+          'tipoUsuario': usuario.tpUsuario,
+          'email': usuario.email,
+          'emailLogin': usuario.emailLogin,
+          'senha': usuario.senha,
+          'telefone': usuario.telefone,
+          'celular': usuario.celular,
+          'ramal': usuario.ramal
+        }).then((value) async => await alert(contextoAplicacao,
+                    mensagemNotificacao, mensagemSucessoSalvar))
+            // .whenComplete(() async => await instanciaFirebaseAuth
+            //         .createUserWithEmailAndPassword(
+            //             email: usuario.emailLogin, password: usuario.senha)
+            //         .whenComplete(() async {
+            //       await alert(contextoAplicacao, 'Notificação de Sucesso',
+            //           'As credenciais de acesso ao sistema foram criadas para o usuário informado. Para realizar o acesso devem ser informados o E-Mail Acesso e a Senha na tela de Autenticação.');
+            //     }))
+            ;
+      } catch (on) {
+        TextError(mensagemErroSalvar);
+      }
     }
   }
 
@@ -185,8 +161,8 @@ class UsuarioBloc extends BlocBase {
           .document(usuario.identificacao)
           .delete()
           .then(
-            (value) => alertFuncao(contextoAplicacao, 'Notificação',
-                'Os dados do formulário foram apagados com sucesso no banco de dados!',
+            (value) => alertFuncao(
+                contextoAplicacao, mensagemNotificacao, mensagemSucessoApagar,
                 () {
               Navigator.of(contextoAplicacao).pushNamed(
                 '/FormularioUsuario',
@@ -197,8 +173,7 @@ class UsuarioBloc extends BlocBase {
         print(erro.error);
       });
     } catch (on) {
-      alert(contextoAplicacao, 'Erro',
-          'Erro ao apagar os dados do formulário no banco de dados!');
+      alert(contextoAplicacao, mensagemErro, mensagemErroApagar);
     }
   }
 
@@ -215,29 +190,119 @@ class UsuarioBloc extends BlocBase {
     usuario.celular = _celularController.value;
     usuario.ramal = _ramalController.value;
 
-    try {
-      await Firestore.instance
-          .collection('usuario')
-          .document(usuario.identificacao)
-          .updateData({
-        'identificacao': usuario.identificacao,
-        'nome': usuario.nome,
-        'tipoUsuario': usuario.tpUsuario,
-        'email': usuario.email,
-        'emailLogin': usuario.emailLogin,
-        'senha': usuario.senha,
-        'telefone': usuario.telefone,
-        'celular': usuario.celular,
-        'ramal': usuario.ramal
-      }).then((value) async => await alert(
-              contextoAplicacao,
-              'Notificação',
-              'Os dados do formulário foram atualizados com sucesso no banco de dados!'));
-    } catch (on) {
-      TextError('Erro ao atualizar os dados do formulário no banco de dados!');
+    if (usuario.nome == '' || usuario.nome == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para salvar o usuário é necessário informar o nome!');
+    } else if (usuario.identificacao == '' || usuario.identificacao == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para salvar o usuário é necessário informar a identificação!');
+    } else if (usuario.tpUsuario == '' || usuario.tpUsuario == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para salvar o usuário é necessário informar o tipo!');
+    } else if (usuario.emailLogin == '' || usuario.emailLogin == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para salvar o usuário é necessário informar o E-Mail de acesso ao sistema!');
+    } else if (usuario.senha == '' || usuario.senha == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para salvar o usuário é necessário informar a senha de acesso ao sistema!');
+    } else {
+      try {
+        await Firestore.instance
+            .collection('usuario')
+            .document(usuario.identificacao)
+            .updateData({
+          'identificacao': usuario.identificacao,
+          'nome': usuario.nome,
+          'tipoUsuario': usuario.tpUsuario,
+          'email': usuario.email,
+          'emailLogin': usuario.emailLogin,
+          'senha': usuario.senha,
+          'telefone': usuario.telefone,
+          'celular': usuario.celular,
+          'ramal': usuario.ramal
+        }).then((value) async => await alert(
+                contextoAplicacao, mensagemNotificacao, mensagemSucessoSalvar));
+      } catch (on) {
+        TextError(mensagemErroSalvar);
+      }
+    }
+  }
+
+  /*
+  Método que apaga os dados do formulário na tabela do Firebase.
+  Primeiro busca a identificação informada no formulário através dos controllers,
+  para depois excluir o registro na tabela do Firebase filtrando pela
+  identificação, que é a PK desta tabela.
+  */
+
+  Future<bool> criaAlteraUsuario(BuildContext contextoAplicacao,
+      String emailAcesso, String senhaAcesso, String origem) async {
+    var usuario = Usuario();
+    bool criouUsuario;
+    usuario.identificacao = _idController.value;
+    FirebaseAuth instanciaFirebaseAuth = FirebaseAuth.instance;
+
+    void atualizaCredenciais(
+        DocumentSnapshot coluna, String emailAcesso, String senhaAcesso) {
+      if (coluna.data['emailLogin'] != emailAcesso) {
+        instanciaFirebaseAuth
+            .currentUser()
+            .then((usuario) => usuario.updateEmail(emailAcesso));
+      }
+      if (coluna.data['senha'] != senhaAcesso) {
+        instanciaFirebaseAuth
+            .currentUser()
+            .then((usuario) => usuario.updatePassword(emailAcesso));
+      }
+    }
+
+    if (emailAcesso == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para criar as credenciais de acesso do usuário, é necessário informar o E-Mail!');
+    } else if (senhaAcesso == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para criar as credenciais de acesso do usuário, é necessário informar a senha!');
+    } else {
+      if (origem == 'INSERIR') {
+        try {
+          await Firestore.instance
+              .collection('usuario')
+              .document(usuario.identificacao)
+              .get()
+              .then((coluna) => coluna.exists == true
+                  ? instanciaFirebaseAuth
+                      .createUserWithEmailAndPassword(
+                          email: emailAcesso, password: senhaAcesso)
+                      .whenComplete(() async {
+                      criouUsuario = true;
+                    })
+                  : alert(contextoAplicacao, mensagemNotificacao,
+                      'Para realizar esta operação é necessário salvar o usuário no sistema!'));
+        } catch (on) {
+          TextError(
+              'Erro ao criar o usuário. Favor verificar se este e-mail e senha já estão em uso no sistema!');
+        }
+      } else if (origem == 'ATUALIZAR') {
+        await Firestore.instance
+            .collection('usuario')
+            .document(usuario.identificacao)
+            .get()
+            .then((coluna) =>
+                atualizaCredenciais(coluna, emailAcesso, senhaAcesso));
+      } else if (origem == 'DELETAR') {
+        instanciaFirebaseAuth.currentUser().then((usuario) => usuario.delete());
+      }
+      if (criouUsuario == true) {
+        await alert(contextoAplicacao, mensagemNotificacao,
+            'As credenciais de acesso ao sistema foram criadas para o usuário informado. Para realizar o acesso devem ser informados o E-Mail Acesso e a Senha na tela de Autenticação.');
+      }
+
+      return criouUsuario;
     }
   }
 
   @override
-  void dispose() {}
+  void dispose() {
+    // TODO: implement dispose
+  }
 }

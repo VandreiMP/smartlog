@@ -2,10 +2,7 @@ import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:smartlogproject/src/AcessoSistema/Bloc/acesso-sistema-bloc.dart';
-import 'package:smartlogproject/src/Components/checkbox/checkbox-widget.dart';
 import 'package:smartlogproject/src/Components/scroll/scroll.dart';
-import 'package:smartlogproject/src/Modelos/checkBoxModelo.dart';
-import 'package:smartlogproject/src/funcoes/appTextField.dart';
 
 class AcessoSistemaWidget extends StatelessWidget {
   @override

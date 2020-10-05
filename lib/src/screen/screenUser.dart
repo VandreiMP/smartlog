@@ -4,19 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:smartlogproject/src/Components/scroll/scroll.dart';
 import 'package:smartlogproject/src/Entidades/Bloc/usuario-bloc.dart';
-import 'package:smartlogproject/src/Entidades/classes/usuario.dart';
+import 'package:smartlogproject/src/constantes/mensagens.dart';
+import 'package:smartlogproject/src/util/Componentes/alert.dart';
+import 'package:smartlogproject/src/util/Componentes/appText.dart';
+import 'package:smartlogproject/src/util/Componentes/requiredLabel.dart';
 import '../constantes/mascaras.dart';
-import '../funcoes/appText.dart';
 import '../Cards/Widgets/criaCardAuxiliar.dart';
-import '../funcoes/criaLista.dart';
-import '../funcoes/requiredLabel.dart';
 import 'screenPattern.dart';
-
-// class ScreenArguments {
-//   final String identificacao;
-
-//   ScreenArguments(this.identificacao);
-// }
 
 class ScreenUser extends StatelessWidget {
   Widget build(BuildContext context) {
@@ -96,6 +90,8 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
   String valorSelecionadoTipoUsuario;
   bool consultaListaTipoUsuario = true;
 
+  bool editaCredenciais = true;
+
   @override
   Widget build(BuildContext context) {
     UsuarioBloc blocFuncionario = BlocProvider.of<UsuarioBloc>(context);
@@ -103,7 +99,6 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
     final Firestore firestore = Firestore.instance;
     String idFuncionario = ModalRoute.of(context).settings.arguments;
     bool campoHabilitado = true;
-    bool escondeCampo;
 
     void atualizaTipoUsuario(String valor) {
       if (valor.isNotEmpty) {
@@ -155,6 +150,8 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
           .get()
           .then((coluna) async => consultaValor(coluna));
     }
+
+    //editaCredenciais =  campoHabilitado;
 
     return StreamBuilder<Object>(
         stream: blocFuncionario.outId,
@@ -248,7 +245,7 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
                                                 ),
                                               ),
                                             ),
-                                         Padding(
+                                            Padding(
                                               padding: const EdgeInsets.only(
                                                   left: 20.0),
                                               child: Column(
@@ -269,9 +266,7 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
                                                               .center,
                                                       children: <Widget>[
                                                         DropdownButton<String>(
-                                                          items:
-                                                              usuarios
-                                                                  .map((
+                                                          items: usuarios.map((
                                                             String
                                                                 dropDownStringItem,
                                                           ) {
@@ -311,6 +306,7 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
                                                 largura: 350,
                                                 altura: 30,
                                                 obrigaCampo: true,
+                                                enabled: editaCredenciais,
                                                 controller: tEmailLogin,
                                                 onChanged: (String valor) {
                                                   blocFuncionario.setEmailLogin(
@@ -330,11 +326,69 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
                                                   altura: 30,
                                                   contextoAplicacao: context,
                                                   obrigaCampo: true,
+                                                  enabled: editaCredenciais,
                                                   controller: tSenha,
                                                   onChanged: (String valor) {
                                                     blocFuncionario
                                                         .setSenha(tSenha.text);
                                                   },
+                                                ),
+                                              ),
+                                            ),
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.all(5.0),
+                                              child: Container(
+                                                alignment:
+                                                    Alignment.bottomCenter,
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    GestureDetector(
+                                                      onTap: () async {
+                                                        if (editaCredenciais) {
+                                                          blocFuncionario
+                                                              .criaAlteraUsuario(
+                                                                  context,
+                                                                  tEmailLogin
+                                                                      .text,
+                                                                  tSenha.text,
+                                                                  'INSERIR')
+                                                              .then((retornoBloc) =>
+                                                                  retornoBloc ==
+                                                                          true
+                                                                      ? editaCredenciais =
+                                                                          false
+                                                                      : editaCredenciais =
+                                                                          true);
+                                                        } else {
+                                                          alert(
+                                                              context,
+                                                              mensagemAlerta,
+                                                              'Para alterar o usuário e a senha de acesso, favor entrar em contato com o administrador do sistema!');
+                                                        }
+                                                      },
+                                                      child: Container(
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          color: Colors.red,
+                                                          borderRadius:
+                                                              BorderRadius.all(
+                                                            Radius.circular(
+                                                                2.0),
+                                                          ),
+                                                        ),
+                                                        child: Icon(
+                                                          Icons.person_add,
+                                                          size: 25.0,
+                                                          color: Colors.white,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
                                                 ),
                                               ),
                                             ),

@@ -1,16 +1,13 @@
-import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:smartlogproject/src/Entidades/Bloc/embalagem-bloc.dart';
-import 'package:smartlogproject/src/Entidades/Bloc/usuario-bloc.dart';
-import 'package:smartlogproject/src/funcoes/appText.dart';
+import 'package:smartlogproject/src/util/Componentes/appText.dart';
 
-class BuscaTrocaOleo extends StatefulWidget {
+class BuscaEmpresa extends StatefulWidget {
   @override
-  _BuscaTrocaOleoState createState() => _BuscaTrocaOleoState();
+  _BuscaEmpresaState createState() => _BuscaEmpresaState();
 }
 
-class _BuscaTrocaOleoState extends State<BuscaTrocaOleo> {
+class _BuscaEmpresaState extends State<BuscaEmpresa> {
   @override
   Widget build(BuildContext context) {
     final Firestore firestore = Firestore.instance;
@@ -20,7 +17,7 @@ class _BuscaTrocaOleoState extends State<BuscaTrocaOleo> {
           children: [
             StreamBuilder<QuerySnapshot>(
               stream: firestore
-                  .collection("solicitacaoTrocaOleo")
+                  .collection("empresa")
                   .orderBy("identificacao", descending: false)
                   .snapshots(),
               builder: (BuildContext context,
@@ -43,8 +40,8 @@ class _BuscaTrocaOleoState extends State<BuscaTrocaOleo> {
                     ],
                   ));
 
-                final int trocaOleoContador = snapshot.data.documents.length;
-                if (trocaOleoContador > 0) {
+                final int empresaContador = snapshot.data.documents.length;
+                if (empresaContador > 0) {
                   return Container(
                     decoration: BoxDecoration(
                       color: Colors.white,
@@ -57,29 +54,22 @@ class _BuscaTrocaOleoState extends State<BuscaTrocaOleo> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.only(left: 124.0, top: 15),
+                          padding: const EdgeInsets.only(left: 111.0, top: 15),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               AppText(
-                                'Solicitação',
+                                'Identificação',
                                 bold: true,
                               ),
                               SizedBox(
                                 width: 5.0,
                               ),
                               Padding(
-                                padding: const EdgeInsets.only(left: 0.0),
+                                padding: const EdgeInsets.only(left: 2.0),
                                 child: AppText(
-                                  'Detalhes',
-                                  bold: true,
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 293.0),
-                                child: AppText(
-                                  'Custo Total',
+                                  'Razão Social',
                                   bold: true,
                                 ),
                               ),
@@ -91,19 +81,17 @@ class _BuscaTrocaOleoState extends State<BuscaTrocaOleo> {
                             Container(
                               padding: EdgeInsets.only(bottom: 15),
                               alignment: Alignment.topLeft,
-                              width: 713,
+                              width: 670,
                               child: ListView.builder(
                                 shrinkWrap: true,
-                                itemCount: trocaOleoContador,
+                                itemCount: empresaContador,
                                 itemBuilder: (BuildContext context, int index) {
                                   final DocumentSnapshot document =
                                       snapshot.data.documents[index];
-                                  final dynamic detalhes = document['detalhes'];
+                                  final dynamic razaoSocial =
+                                      document['razaoSocial'];
                                   final dynamic identificacao =
                                       document['identificacao'];
-                                  final dynamic custoTotal =
-                                      document['custoTotal'];
-
                                   return Container(
                                     child: Row(
                                       children: [
@@ -122,15 +110,15 @@ class _BuscaTrocaOleoState extends State<BuscaTrocaOleo> {
                                                 color: Colors.black,
                                               ),
                                             ),
-                                            child: Text(identificacao),
+                                            child:
+                                                Text(identificacao.toString()),
                                           ),
                                         ),
                                         Padding(
                                           padding: const EdgeInsets.all(2.0),
                                           child: Container(
-                                            alignment: Alignment.topLeft,
                                             padding: EdgeInsets.all(10),
-                                            width: 300,
+                                            width: 400,
                                             decoration: BoxDecoration(
                                               color: Colors.white,
                                               borderRadius: BorderRadius.all(
@@ -139,30 +127,13 @@ class _BuscaTrocaOleoState extends State<BuscaTrocaOleo> {
                                                 color: Colors.black,
                                               ),
                                             ),
-                                            child: Text(detalhes),
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.all(0.0),
-                                          child: Container(
-                                            alignment: Alignment.topRight,
-                                            padding: EdgeInsets.all(10),
-                                            width: 150,
-                                            decoration: BoxDecoration(
-                                              color: Colors.white,
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(5)),
-                                              border: new Border.all(
-                                                color: Colors.black,
-                                              ),
-                                            ),
-                                            child: Text(custoTotal.toString()),
+                                            child: Text(razaoSocial.toString()),
                                           ),
                                         ),
                                         GestureDetector(
                                           onTap: () {
                                             Navigator.of(context).pushNamed(
-                                                '/FormularioTrocaDeOleo',
+                                                '/FormularioEmpresa',
                                                 arguments: identificacao);
                                           },
                                           child: Padding(

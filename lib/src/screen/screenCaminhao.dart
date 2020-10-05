@@ -3,10 +3,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:smartlogproject/src/Components/scroll/scroll.dart';
 import 'package:smartlogproject/src/Entidades/Bloc/caminhao-bloc.dart';
-import '../funcoes/appText.dart';
 import '../Cards/Widgets/criaCardAuxiliar.dart';
-import '../funcoes/requiredLabel.dart';
 import 'screenPattern.dart';
+import 'package:smartlogproject/src/util/Componentes/appText.dart';
+import 'package:smartlogproject/src/util/Componentes/requiredLabel.dart';
 
 class ScreenCaminhao extends StatefulWidget {
   @override
@@ -189,8 +189,7 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
       tFabricante.text = coluna.data['fabricante'];
       tChassiCaminhao.text = coluna.data['chassiCaminhao'];
       tNumeroRenavam.text = coluna.data['numeroRenavam'].toString();
-   
-     
+
       if (coluna.data['numeroRntrc'] != null) {
         tNumeroRntrc.text = coluna.data['numeroRntrc'].toString();
       }

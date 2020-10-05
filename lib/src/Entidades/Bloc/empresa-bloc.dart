@@ -1,31 +1,14 @@
 import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:smartlogproject/src/Entidades/classes/custo.dart';
-import 'package:smartlogproject/src/Entidades/classes/embalagem.dart';
 import 'package:smartlogproject/src/Entidades/classes/empresa.dart';
-import 'package:smartlogproject/src/funcoes/alert.dart';
-import 'package:smartlogproject/src/funcoes/alertErro.dart';
-import 'package:smartlogproject/src/funcoes/alertFuncao.dart';
+import 'package:smartlogproject/src/constantes/mensagens.dart';
+import 'package:smartlogproject/src/util/Componentes/alert.dart';
+import 'package:smartlogproject/src/util/Componentes/alertErro.dart';
+import 'package:smartlogproject/src/util/Componentes/alertFuncao.dart';
 
 class EmpresaBloc extends BlocBase {
-  String _identificacao;
-  String _razaoSocial;
-  String _nomeFantasia;
-  String _cnpj;
-  String _inscEstadual;
-  String _atividadeEmpresa;
-  String _matrizFilial;
-  String _telefone;
-  String _email;
-  String _endereco;
-  String _cidade;
-  String _uf;
-  String _bairro;
-  String _cep;
-
   BuildContext contextoAplicacao;
 
   EmpresaBloc(BuildContext contextoAplicacao);
@@ -121,37 +104,59 @@ class EmpresaBloc extends BlocBase {
     empresa.bairro = _bairroController.value;
     empresa.cep = _cepController.value;
 
-    await Firestore.instance
-        .collection("empresa")
-        .document(empresa.identificacao)
-        .get()
-        .then(
-          (coluna) async => coluna.exists == true
-              ? alert(contextoAplicacao, 'Atenção',
-                  'Este código de empresa já existe. Favor alterar!')
-              : Firestore.instance
-                  .collection('empresa')
-                  .document(empresa.identificacao)
-                  .setData({
-                  'identificacao': empresa.identificacao,
-                  'razaoSocial': empresa.razaoSocial,
-                  'nomeFantasia': empresa.nomeFantasia,
-                  'cnpj': empresa.cnpj,
-                  'inscEstadual': empresa.inscEstadual,
-                  'atividadeEmpresa': empresa.atividadeEmpresa,
-                  'matrizFilial': empresa.matrizFilial,
-                  'telefone': empresa.telefone,
-                  'email': empresa.email,
-                  'endereco': empresa.endereco,
-                  'cidade': empresa.cidade,
-                  'bairro': empresa.bairro,
-                  'uf': empresa.uf,
-                  'cep': empresa.cep
-                }).then((value) async => await alert(
-                      contextoAplicacao,
-                      'Notificação de Sucesso',
-                      'Os dados do formulário foram salvos com sucesso no banco de dados!')),
-        );
+    if (empresa.identificacao == '' || empresa.identificacao == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para salvar a empresa é necessário informar a identificação!');
+    } else if (empresa.razaoSocial == '' || empresa.razaoSocial == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para salvar a empresa é necessário informar a razão social!');
+    } else if (empresa.nomeFantasia == '' || empresa.nomeFantasia == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para salvar a empresa é necessário informar o nome fantasia!');
+    } else if (empresa.cnpj == '' || empresa.cnpj == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para salvar a empresa é necessário informar o CNPJ!');
+    } else if (empresa.inscEstadual == '' || empresa.inscEstadual == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para salvar a empresa é necessário informar a inscrição estuadual!');
+    } else if (empresa.atividadeEmpresa == '' ||
+        empresa.atividadeEmpresa == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para salvar a empresa é necessário informar o ramo de atidade!');
+    } else if (empresa.matrizFilial == '' || empresa.matrizFilial == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para salvar a empresa é necessário informar se a mesma é matriz ou filial!');
+    } else {
+      await Firestore.instance
+          .collection("empresa")
+          .document(empresa.identificacao)
+          .get()
+          .then(
+            (coluna) async => coluna.exists == true
+                ? alert(contextoAplicacao, mensagemAlerta,
+                    'Este código de empresa já existe. Favor alterar!')
+                : Firestore.instance
+                    .collection('empresa')
+                    .document(empresa.identificacao)
+                    .setData({
+                    'identificacao': empresa.identificacao,
+                    'razaoSocial': empresa.razaoSocial,
+                    'nomeFantasia': empresa.nomeFantasia,
+                    'cnpj': empresa.cnpj,
+                    'inscEstadual': empresa.inscEstadual,
+                    'atividadeEmpresa': empresa.atividadeEmpresa,
+                    'matrizFilial': empresa.matrizFilial,
+                    'telefone': empresa.telefone,
+                    'email': empresa.email,
+                    'endereco': empresa.endereco,
+                    'cidade': empresa.cidade,
+                    'bairro': empresa.bairro,
+                    'uf': empresa.uf,
+                    'cep': empresa.cep
+                  }).then((value) async => await alert(contextoAplicacao,
+                        mensagemNotificacao, mensagemSucessoSalvar)),
+          );
+    }
   }
 
   /*
@@ -168,18 +173,24 @@ class EmpresaBloc extends BlocBase {
 
     try {
       await Firestore.instance
+          .collection('responsavelEmpresa')
+          .document(empresa.identificacao)
+          .delete()
+          .catchError((ErrorAndStacktrace erro) {
+        print(erro.error);
+      });
+      await Firestore.instance
           .collection('empresa')
           .document(empresa.identificacao)
           .delete()
           .then(
             (value) => alertFuncao(
               contextoAplicacao,
-              'Notificação de Sucesso',
-              'Os dados do formulário foram apagados com sucesso no banco de dados!',
+              mensagemNotificacao,
+              mensagemSucessoApagar,
               () {
-                Navigator.of(contextoAplicacao).pushNamed(
-                  '/FormularioEmpresa',
-                );
+                Navigator.of(contextoAplicacao)
+                    .pushNamed('/FormularioEmpresa', arguments: 'NULO');
               },
             ),
           )
@@ -187,7 +198,7 @@ class EmpresaBloc extends BlocBase {
         print(erro.error);
       });
     } catch (on) {
-      TextError('Erro ao apagar os dados do formulário no banco de dados!');
+      TextError(mensagemErroApagar);
     }
   }
 
@@ -210,31 +221,54 @@ class EmpresaBloc extends BlocBase {
     empresa.bairro = _bairroController.value;
     empresa.cep = _cepController.value;
 
-    try {
-      await Firestore.instance
-          .collection('empresa')
-          .document(chaveConsulta)
-          .updateData({
-        'identificacao': empresa.identificacao,
-        'razaoSocial': empresa.razaoSocial,
-        'nomeFantasia': empresa.nomeFantasia,
-        'cnpj': empresa.cnpj,
-        'inscEstadual': empresa.inscEstadual,
-        'atividadeEmpresa': empresa.atividadeEmpresa,
-        'matrizFilial': empresa.matrizFilial,
-        'telefone': empresa.telefone,
-        'email': empresa.email,
-        'endereco': empresa.endereco,
-        'cidade': empresa.cidade,
-        'bairro': empresa.bairro,
-        'uf': empresa.uf,
-        'cep': empresa.cep
-      }).then((value) async => await alert(
-              contextoAplicacao,
-              'Notificação de Sucesso',
-              'Os dados do formulário foram atualizados com sucesso no banco de dados!'));
-    } catch (on) {
-      TextError('Erro ao atualizar os dados do formulário no banco de dados!');
+    if (empresa.identificacao == '' || empresa.identificacao == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para salvar a empresa é necessário informar a identificação!');
+    } else if (empresa.razaoSocial == '' || empresa.razaoSocial == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para salvar a empresa é necessário informar a razão social!');
+    } else if (empresa.nomeFantasia == '' || empresa.nomeFantasia == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para salvar a empresa é necessário informar o nome fantasia!');
+    } else if (empresa.cnpj == '' || empresa.cnpj == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para salvar a empresa é necessário informar o CNPJ!');
+    } else if (empresa.inscEstadual == '' || empresa.inscEstadual == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para salvar a empresa é necessário informar a inscrição estuadual!');
+    } else if (empresa.atividadeEmpresa == '' ||
+        empresa.atividadeEmpresa == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para salvar a empresa é necessário informar o ramo de atidade!');
+    } else if (empresa.matrizFilial == '' || empresa.matrizFilial == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para salvar a empresa é necessário informar se a mesma é matriz ou filial!');
+    } else {
+      try {
+        await Firestore.instance
+            .collection('empresa')
+            .document(chaveConsulta)
+            .updateData({
+          'identificacao': empresa.identificacao,
+          'razaoSocial': empresa.razaoSocial,
+          'nomeFantasia': empresa.nomeFantasia,
+          'cnpj': empresa.cnpj,
+          'inscEstadual': empresa.inscEstadual,
+          'atividadeEmpresa': empresa.atividadeEmpresa,
+          'matrizFilial': empresa.matrizFilial,
+          'telefone': empresa.telefone,
+          'email': empresa.email,
+          'endereco': empresa.endereco,
+          'cidade': empresa.cidade,
+          'bairro': empresa.bairro,
+          'uf': empresa.uf,
+          'cep': empresa.cep
+        }).then((value) async => await alert(
+                contextoAplicacao, mensagemNotificacao, mensagemSucessoSalvar));
+      } catch (on) {
+        TextError(
+            'Erro ao atualizar os dados do formulário no banco de dados!');
+      }
     }
   }
 
@@ -247,7 +281,7 @@ class EmpresaBloc extends BlocBase {
           .get()
           .then(
             (coluna) async => coluna.exists == false
-                ? alert(contextoAplicacao, 'Atenção',
+                ? alert(contextoAplicacao, mensagemAlerta,
                     'Para abrir as informações do responsável, é necessário salvar os dados do formulario!')
                 : Navigator.of(contextoAplicacao).pushNamed(
                     '/FormularioEmpresaDetalhes',
@@ -255,10 +289,12 @@ class EmpresaBloc extends BlocBase {
                   ),
           );
     } else {
-      alert(contextoAplicacao, 'Atenção',
+      alert(contextoAplicacao, mensagemAlerta,
           'Para abrir as informações do responsável, é necessário salvar os dados do formulario!');
     }
   }
+
+  
 
   @override
   void dispose() {}

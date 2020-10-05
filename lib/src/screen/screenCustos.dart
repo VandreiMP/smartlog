@@ -1,13 +1,11 @@
 import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:smartlogproject/src/Components/scroll/scroll.dart';
 import 'package:smartlogproject/src/Entidades/Bloc/custo-bloc.dart';
-import '../constantes/mascaras.dart';
-import '../funcoes/appText.dart';
+import 'package:smartlogproject/src/util/Componentes/appText.dart';
+import 'package:smartlogproject/src/util/Componentes/requiredLabel.dart';
 import '../Cards/Widgets/criaCardAuxiliar.dart';
-import '../funcoes/requiredLabel.dart';
 import 'screenPattern.dart';
 
 class ScreenCustos extends StatefulWidget {

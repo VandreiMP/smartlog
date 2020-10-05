@@ -1,7 +1,10 @@
-import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:smartlogproject/src/Components/menu/menu.dart';
+
+/*
+Modelo padrão de tela para o sistema
+Usar este modelo para construir todos os formulários
+*/
 
 class ScreenPattern extends StatelessWidget {
   const ScreenPattern({
@@ -15,9 +18,6 @@ class ScreenPattern extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.blueGrey[100],
       appBar: AppBar(
-        // actions: [
-        //   BotaoSair(),
-        // ],
         elevation: 0.1,
         backgroundColor: Colors.blueGrey[800],
         title: Text(

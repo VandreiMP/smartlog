@@ -1,15 +1,12 @@
-
 import 'package:flutter/material.dart';
 import 'package:smartlogproject/src/AcessoSistema/Widget/acesso-sistema-widget.dart';
-import 'package:smartlogproject/src/funcoes/criaListaValoresCaminhao.dart';
-import 'package:smartlogproject/src/funcoes/criaListaValoresCusto.dart';
-import 'package:smartlogproject/src/funcoes/criaListaValoresEmbalagem.dart';
-import 'package:smartlogproject/src/funcoes/criaListaValoresMotorista.dart';
 import 'package:smartlogproject/src/screen/screenCarga.dart';
-import 'package:smartlogproject/src/screen/screenContrato.dart';
-import 'package:smartlogproject/src/screen/screenDespesasContrato.dart';
 import 'package:smartlogproject/src/screen/screenManutencao.dart';
 import 'package:smartlogproject/src/screen/screenRomaneio.dart';
+import 'package:smartlogproject/src/util/Listas%20de%20Valores/criaListaValoresCaminhao.dart';
+import 'package:smartlogproject/src/util/Listas%20de%20Valores/criaListaValoresCusto.dart';
+import 'package:smartlogproject/src/util/Listas%20de%20Valores/criaListaValoresEmbalagem.dart';
+import 'package:smartlogproject/src/util/Listas%20de%20Valores/criaListaValoresMotorista.dart';
 import 'src/screen/screenAbastecimento.dart';
 import 'package:smartlogproject/src/screen/screenTrocaOleo.dart';
 import 'package:smartlogproject/src/tabelas/Widget/tabelaAbastecimento.dart';
@@ -66,8 +63,6 @@ class Main extends StatelessWidget {
         '/FormularioCustos': (context) => ScreenCustos(),
         '/FormularioEmpresa': (context) => ScreenEmpresa(),
         '/FormularioEmpresaDetalhes': (context) => ScreenRespEmpresa(),
-        '/FormularioContrato': (context) => ScreenContrato(),
-        '/FormularioDespesasContrato': (context) => ScreenDespesasContrato(),
         '/FormularioCarga': (context) => ScreenCarga(),
         '/FormularioRomaneio': (context) => ScreenRomaneio(),
         '/FormularioAbastecimento': (context) => ScreenAbastecimento(),
@@ -84,3 +79,5 @@ class Main extends StatelessWidget {
     );
   }
 }
+
+class ScreenDespesasContrato {}

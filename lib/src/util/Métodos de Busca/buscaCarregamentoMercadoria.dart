@@ -1,16 +1,15 @@
-import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:smartlogproject/src/Entidades/Bloc/embalagem-bloc.dart';
-import 'package:smartlogproject/src/Entidades/Bloc/usuario-bloc.dart';
-import 'package:smartlogproject/src/funcoes/appText.dart';
+import 'package:smartlogproject/src/util/Componentes/appText.dart';
 
-class BuscaEmpresa extends StatefulWidget {
+class BuscaCarregamentoMercadoria extends StatefulWidget {
   @override
-  _BuscaEmpresaState createState() => _BuscaEmpresaState();
+  _BuscaCarregamentoMercadoriaState createState() =>
+      _BuscaCarregamentoMercadoriaState();
 }
 
-class _BuscaEmpresaState extends State<BuscaEmpresa> {
+class _BuscaCarregamentoMercadoriaState
+    extends State<BuscaCarregamentoMercadoria> {
   @override
   Widget build(BuildContext context) {
     final Firestore firestore = Firestore.instance;
@@ -20,8 +19,8 @@ class _BuscaEmpresaState extends State<BuscaEmpresa> {
           children: [
             StreamBuilder<QuerySnapshot>(
               stream: firestore
-                  .collection("empresa")
-                  .orderBy("identificacao", descending: false)
+                  .collection("carregamentoMercadoria")
+                  .orderBy("dataEntrega", descending: false)
                   .snapshots(),
               builder: (BuildContext context,
                   AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -43,8 +42,8 @@ class _BuscaEmpresaState extends State<BuscaEmpresa> {
                     ],
                   ));
 
-                final int empresaContador = snapshot.data.documents.length;
-                if (empresaContador > 0) {
+                final int carregamentoContador = snapshot.data.documents.length;
+                if (carregamentoContador > 0) {
                   return Container(
                     decoration: BoxDecoration(
                       color: Colors.white,
@@ -57,22 +56,36 @@ class _BuscaEmpresaState extends State<BuscaEmpresa> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.only(left: 111.0, top: 15),
+                          padding: const EdgeInsets.only(left: 162.0, top: 15),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               AppText(
-                                'Identificação',
+                                'Carga',
                                 bold: true,
                               ),
                               SizedBox(
                                 width: 5.0,
                               ),
                               Padding(
-                                padding: const EdgeInsets.only(left: 2.0),
+                                padding: const EdgeInsets.only(left: 1.0),
                                 child: AppText(
-                                  'Razão Social',
+                                  'Comprador',
+                                  bold: true,
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 315.0),
+                                child: AppText(
+                                  'Prev. Entr.',
+                                  bold: true,
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 25.0),
+                                child: AppText(
+                                  'Sit. Expedição',
                                   bold: true,
                                 ),
                               ),
@@ -84,17 +97,24 @@ class _BuscaEmpresaState extends State<BuscaEmpresa> {
                             Container(
                               padding: EdgeInsets.only(bottom: 15),
                               alignment: Alignment.topLeft,
-                              width: 670,
+                              width: 945,
                               child: ListView.builder(
                                 shrinkWrap: true,
-                                itemCount: empresaContador,
+                                itemCount: carregamentoContador,
                                 itemBuilder: (BuildContext context, int index) {
                                   final DocumentSnapshot document =
                                       snapshot.data.documents[index];
-                                  final dynamic razaoSocial =
-                                      document['razaoSocial'];
-                                  final dynamic identificacao =
-                                      document['identificacao'];
+                                  final dynamic numeroCarga = document['carga'];
+                                  final dynamic comprador =
+                                      document['comprador'];
+                                  final dynamic carga = document['carga'];
+                                  final dynamic dataEntrega =
+                                      document['dataEntrega'];
+                                  final dynamic situacaoExpedicao =
+                                      document['situacaoExpedicao'];
+
+                                  final String chaveConsulta = numeroCarga;
+
                                   return Container(
                                     child: Row(
                                       children: [
@@ -113,8 +133,7 @@ class _BuscaEmpresaState extends State<BuscaEmpresa> {
                                                 color: Colors.black,
                                               ),
                                             ),
-                                            child:
-                                                Text(identificacao.toString()),
+                                            child: Text(carga.toString()),
                                           ),
                                         ),
                                         Padding(
@@ -130,14 +149,47 @@ class _BuscaEmpresaState extends State<BuscaEmpresa> {
                                                 color: Colors.black,
                                               ),
                                             ),
-                                            child: Text(razaoSocial.toString()),
+                                            child: Text(comprador.toString()),
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.all(2.0),
+                                          child: Container(
+                                            padding: EdgeInsets.all(10),
+                                            width: 100,
+                                            decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(5)),
+                                              border: new Border.all(
+                                                color: Colors.black,
+                                              ),
+                                            ),
+                                            child: Text(dataEntrega.toString()),
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.all(2.0),
+                                          child: Container(
+                                            padding: EdgeInsets.all(10),
+                                            width: 170,
+                                            decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(5)),
+                                              border: new Border.all(
+                                                color: Colors.black,
+                                              ),
+                                            ),
+                                            child: Text(
+                                                situacaoExpedicao.toString()),
                                           ),
                                         ),
                                         GestureDetector(
                                           onTap: () {
                                             Navigator.of(context).pushNamed(
-                                                '/FormularioEmpresa',
-                                                arguments: identificacao);
+                                                '/FormularioCarga',
+                                                arguments: chaveConsulta);
                                           },
                                           child: Padding(
                                             padding: const EdgeInsets.only(

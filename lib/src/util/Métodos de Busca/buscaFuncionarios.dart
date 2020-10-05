@@ -1,18 +1,41 @@
 import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:smartlogproject/src/Entidades/Bloc/embalagem-bloc.dart';
 import 'package:smartlogproject/src/Entidades/Bloc/usuario-bloc.dart';
-import 'package:smartlogproject/src/funcoes/appText.dart';
+import 'package:smartlogproject/src/util/Componentes/appText.dart';
 
-class BuscaManutencao extends StatefulWidget {
+class BuscaFuncionarios extends StatefulWidget {
+  final IconData iconeLista;
+  final Function funcaoLista;
+  final String origem;
+
+  const BuscaFuncionarios(
+    this.iconeLista,
+    this.funcaoLista,
+    this.origem,
+  );
+
   @override
-  _BuscaManutencaoState createState() => _BuscaManutencaoState();
+  _BuscaFuncionariosState createState() => _BuscaFuncionariosState(
+        iconeLista,
+        funcaoLista,
+        origem,
+      );
 }
 
-class _BuscaManutencaoState extends State<BuscaManutencao> {
+class _BuscaFuncionariosState extends State<BuscaFuncionarios> {
+  final IconData iconeLista;
+  final Function funcaoLista;
+  final String origem;
+
+  _BuscaFuncionariosState(
+    this.iconeLista,
+    this.funcaoLista,
+    this.origem,
+  );
   @override
   Widget build(BuildContext context) {
+    UsuarioBloc blocUsuario = BlocProvider.of<UsuarioBloc>(context);
     final Firestore firestore = Firestore.instance;
     return Row(
       children: [
@@ -20,8 +43,8 @@ class _BuscaManutencaoState extends State<BuscaManutencao> {
           children: [
             StreamBuilder<QuerySnapshot>(
               stream: firestore
-                  .collection("solicitacaoManutencao")
-                  .orderBy("identificacao", descending: false)
+                  .collection("usuario")
+                  .orderBy("nome", descending: true)
                   .snapshots(),
               builder: (BuildContext context,
                   AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -43,9 +66,8 @@ class _BuscaManutencaoState extends State<BuscaManutencao> {
                     ],
                   ));
 
-                final int manutencaoContador =
-                    snapshot.data.documents.length;
-                if (manutencaoContador > 0) {
+                final int funcionarioContador = snapshot.data.documents.length;
+                if (funcionarioContador > 0) {
                   return Container(
                     decoration: BoxDecoration(
                       color: Colors.white,
@@ -58,29 +80,19 @@ class _BuscaManutencaoState extends State<BuscaManutencao> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.only(left: 124.0, top: 15),
+                          padding: const EdgeInsets.only(left: 111.0, top: 15),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               AppText(
-                                'Solicitação',
+                                'Identificação',
                                 bold: true,
                               ),
-                              SizedBox(
-                                width: 5.0,
-                              ),
                               Padding(
-                                padding: const EdgeInsets.only(left: 0.0),
+                                padding: const EdgeInsets.only(left: 5.0),
                                 child: AppText(
-                                  'Detalhes',
-                                  bold: true,
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 435.0),
-                                child: AppText(
-                                  'Custo Total',
+                                  'Nome',
                                   bold: true,
                                 ),
                               ),
@@ -92,19 +104,16 @@ class _BuscaManutencaoState extends State<BuscaManutencao> {
                             Container(
                               padding: EdgeInsets.only(bottom: 15),
                               alignment: Alignment.topLeft,
-                              width: 925,
+                              width: 670,
                               child: ListView.builder(
                                 shrinkWrap: true,
-                                itemCount: manutencaoContador,
+                                itemCount: funcionarioContador,
                                 itemBuilder: (BuildContext context, int index) {
                                   final DocumentSnapshot document =
                                       snapshot.data.documents[index];
-                                  final dynamic detalhes = document['detalhes'];
+                                  final dynamic nome = document['nome'];
                                   final dynamic identificacao =
                                       document['identificacao'];
-                                  final dynamic custoTotal =
-                                      document['custoTotal'];
-
                                   return Container(
                                     child: Row(
                                       children: [
@@ -123,15 +132,18 @@ class _BuscaManutencaoState extends State<BuscaManutencao> {
                                                 color: Colors.black,
                                               ),
                                             ),
-                                            child: Text(identificacao),
+                                            child: Text(
+                                              nome != null
+                                                  ? identificacao.toString()
+                                                  : '<Identificação do funcionário não informado no cadastro>',
+                                            ),
                                           ),
                                         ),
                                         Padding(
                                           padding: const EdgeInsets.all(2.0),
                                           child: Container(
-                                            alignment: Alignment.topLeft,
                                             padding: EdgeInsets.all(10),
-                                            width: 500,
+                                            width: 400,
                                             decoration: BoxDecoration(
                                               color: Colors.white,
                                               borderRadius: BorderRadius.all(
@@ -140,31 +152,24 @@ class _BuscaManutencaoState extends State<BuscaManutencao> {
                                                 color: Colors.black,
                                               ),
                                             ),
-                                            child: Text(detalhes),
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.all(0.0),
-                                          child: Container(
-                                            alignment: Alignment.topRight,
-                                            padding: EdgeInsets.all(10),
-                                            width: 150,
-                                            decoration: BoxDecoration(  
-                                              color: Colors.white,
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(5)),
-                                              border: new Border.all(
-                                                color: Colors.black,
-                                              ),
+                                            child: Text(
+                                              nome != null
+                                                  ? nome.toString()
+                                                  : '<Nome do funcionário não informado no cadastro>',
                                             ),
-                                            child: Text(custoTotal.toString()),
                                           ),
                                         ),
                                         GestureDetector(
                                           onTap: () {
-                                            Navigator.of(context).pushNamed(
-                                                '/FormularioManutencao',
-                                                arguments: identificacao);
+                                            if (origem == 'CARGA') {
+                                              Navigator.pop(
+                                                  context, identificacao);
+                                            } else {
+                                              Navigator.of(context).pushNamed(
+                                                '/FormularioUsuario',
+                                                arguments: identificacao,
+                                              );
+                                            }
                                           },
                                           child: Padding(
                                             padding: const EdgeInsets.only(
@@ -177,7 +182,7 @@ class _BuscaManutencaoState extends State<BuscaManutencao> {
                                                 ),
                                               ),
                                               child: Icon(
-                                                Icons.search,
+                                                iconeLista,
                                                 size: 30.0,
                                                 color: Colors.white,
                                               ),

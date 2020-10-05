@@ -1,18 +1,13 @@
-import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:smartlogproject/src/Entidades/Bloc/embalagem-bloc.dart';
-import 'package:smartlogproject/src/Entidades/Bloc/usuario-bloc.dart';
-import 'package:smartlogproject/src/funcoes/appText.dart';
+import 'package:smartlogproject/src/util/Componentes/appText.dart';
 
-class BuscaCarregamentoMercadoria extends StatefulWidget {
+class BuscaTrocaOleo extends StatefulWidget {
   @override
-  _BuscaCarregamentoMercadoriaState createState() =>
-      _BuscaCarregamentoMercadoriaState();
+  _BuscaTrocaOleoState createState() => _BuscaTrocaOleoState();
 }
 
-class _BuscaCarregamentoMercadoriaState
-    extends State<BuscaCarregamentoMercadoria> {
+class _BuscaTrocaOleoState extends State<BuscaTrocaOleo> {
   @override
   Widget build(BuildContext context) {
     final Firestore firestore = Firestore.instance;
@@ -22,8 +17,8 @@ class _BuscaCarregamentoMercadoriaState
           children: [
             StreamBuilder<QuerySnapshot>(
               stream: firestore
-                  .collection("carregamentoMercadoria")
-                  .orderBy("dataEntrega", descending: false)
+                  .collection("solicitacaoTrocaOleo")
+                  .orderBy("identificacao", descending: false)
                   .snapshots(),
               builder: (BuildContext context,
                   AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -45,8 +40,8 @@ class _BuscaCarregamentoMercadoriaState
                     ],
                   ));
 
-                final int carregamentoContador = snapshot.data.documents.length;
-                if (carregamentoContador > 0) {
+                final int trocaOleoContador = snapshot.data.documents.length;
+                if (trocaOleoContador > 0) {
                   return Container(
                     decoration: BoxDecoration(
                       color: Colors.white,
@@ -59,36 +54,32 @@ class _BuscaCarregamentoMercadoriaState
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.only(left: 162.0, top: 15),
+                          padding: const EdgeInsets.only(left: 124.0, top: 15),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              AppText(
-                                'Carga',
-                                bold: true,
+                              Padding(
+                                padding: const EdgeInsets.only(left: 30.0),
+                                child: AppText(
+                                  'Código',
+                                  bold: true,
+                                ),
                               ),
                               SizedBox(
                                 width: 5.0,
                               ),
                               Padding(
-                                padding: const EdgeInsets.only(left: 1.0),
+                                padding: const EdgeInsets.only(left: 0.0),
                                 child: AppText(
-                                  'Comprador',
+                                  'Detalhes',
                                   bold: true,
                                 ),
                               ),
                               Padding(
-                                padding: const EdgeInsets.only(left: 315.0),
+                                padding: const EdgeInsets.only(left: 493.0),
                                 child: AppText(
-                                  'Prev. Entr.',
-                                  bold: true,
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 25.0),
-                                child: AppText(
-                                  'Sit. Expedição',
+                                  'Custo Total',
                                   bold: true,
                                 ),
                               ),
@@ -100,23 +91,18 @@ class _BuscaCarregamentoMercadoriaState
                             Container(
                               padding: EdgeInsets.only(bottom: 15),
                               alignment: Alignment.topLeft,
-                              width: 945,
+                              width: 916,
                               child: ListView.builder(
                                 shrinkWrap: true,
-                                itemCount: carregamentoContador,
+                                itemCount: trocaOleoContador,
                                 itemBuilder: (BuildContext context, int index) {
                                   final DocumentSnapshot document =
                                       snapshot.data.documents[index];
-                                  final dynamic numeroCarga = document['carga'];
-                                  final dynamic comprador =
-                                      document['comprador'];
-                                  final dynamic carga = document['carga'];
-                                  final dynamic dataEntrega =
-                                      document['dataEntrega'];
-                                  final dynamic situacaoExpedicao =
-                                      document['situacaoExpedicao'];
-
-                                  final String chaveConsulta = numeroCarga;
+                                  final dynamic detalhes = document['detalhes'];
+                                  final dynamic identificacao =
+                                      document['identificacao'];
+                                  final dynamic custoTotal =
+                                      document['custoTotal'];
 
                                   return Container(
                                     child: Row(
@@ -136,14 +122,15 @@ class _BuscaCarregamentoMercadoriaState
                                                 color: Colors.black,
                                               ),
                                             ),
-                                            child: Text(carga.toString()),
+                                            child: Text(identificacao),
                                           ),
                                         ),
                                         Padding(
                                           padding: const EdgeInsets.all(2.0),
                                           child: Container(
+                                            alignment: Alignment.topLeft,
                                             padding: EdgeInsets.all(10),
-                                            width: 400,
+                                            width: 500,
                                             decoration: BoxDecoration(
                                               color: Colors.white,
                                               borderRadius: BorderRadius.all(
@@ -152,14 +139,15 @@ class _BuscaCarregamentoMercadoriaState
                                                 color: Colors.black,
                                               ),
                                             ),
-                                            child: Text(comprador.toString()),
+                                            child: Text(detalhes),
                                           ),
                                         ),
                                         Padding(
-                                          padding: const EdgeInsets.all(2.0),
+                                          padding: const EdgeInsets.all(0.0),
                                           child: Container(
+                                            alignment: Alignment.topRight,
                                             padding: EdgeInsets.all(10),
-                                            width: 100,
+                                            width: 150,
                                             decoration: BoxDecoration(
                                               color: Colors.white,
                                               borderRadius: BorderRadius.all(
@@ -168,31 +156,14 @@ class _BuscaCarregamentoMercadoriaState
                                                 color: Colors.black,
                                               ),
                                             ),
-                                            child: Text(dataEntrega.toString()),
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.all(2.0),
-                                          child: Container(
-                                            padding: EdgeInsets.all(10),
-                                            width: 170,
-                                            decoration: BoxDecoration(
-                                              color: Colors.white,
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(5)),
-                                              border: new Border.all(
-                                                color: Colors.black,
-                                              ),
-                                            ),
-                                            child: Text(
-                                                situacaoExpedicao.toString()),
+                                            child: Text(custoTotal.toString()),
                                           ),
                                         ),
                                         GestureDetector(
                                           onTap: () {
                                             Navigator.of(context).pushNamed(
-                                                '/FormularioCarga',
-                                                arguments: chaveConsulta);
+                                                '/FormularioTrocaDeOleo',
+                                                arguments: identificacao);
                                           },
                                           child: Padding(
                                             padding: const EdgeInsets.only(

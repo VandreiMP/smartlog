@@ -2,13 +2,12 @@ import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
-import 'package:smartlogproject/src/Entidades/Bloc/empresa-bloc.dart';
 import 'package:smartlogproject/src/Entidades/Bloc/responsavelEmpresa-bloc.dart';
 import '../Components/scroll/scroll.dart';
 import '../constantes/mascaras.dart';
-import '../funcoes/appText.dart';
-import '../funcoes/appTextField.dart';
 import '../Cards/Widgets/criaCardAuxiliar.dart';
+import 'package:smartlogproject/src/util/Componentes/appText.dart';
+import 'package:smartlogproject/src/util/Componentes/appTextField.dart';
 import 'screenPattern.dart';
 
 class ScreenRespEmpresa extends StatefulWidget {
@@ -92,7 +91,6 @@ class CriaCardFormulario extends StatelessWidget {
     */
     Future consultaDados(DocumentSnapshot coluna) async {
       if (coluna.exists == true) {
-       
         if (codigoEmpresa.isNotEmpty) {
           tIdEmpresa.text = codigoEmpresa;
         }
@@ -192,7 +190,7 @@ class CriaCardFormulario extends StatelessWidget {
                                                   blocResponsavelEmpresa
                                                       .setNome(tNome.text);
                                                 },
-                                                obrigaCampo: true),
+                                                obrigaCampo: false),
                                           ],
                                         ),
                                         Row(
@@ -205,7 +203,7 @@ class CriaCardFormulario extends StatelessWidget {
                                               labelCampo: 'RG',
                                               largura: 100,
                                               altura: 30,
-                                              obrigaCampo: true,
+                                              obrigaCampo: false,
                                               controller: tRg,
                                               onChanged: (String valor) {
                                                 blocResponsavelEmpresa
@@ -219,7 +217,7 @@ class CriaCardFormulario extends StatelessWidget {
                                                 labelCampo: 'CPF',
                                                 largura: 120,
                                                 altura: 30,
-                                                obrigaCampo: true,
+                                                obrigaCampo: false,
                                                 controller: tcpf,
                                                 onChanged: (String valor) {
                                                   blocResponsavelEmpresa
@@ -239,7 +237,7 @@ class CriaCardFormulario extends StatelessWidget {
                                                   blocResponsavelEmpresa
                                                       .setCargo(tCargo.text);
                                                 },
-                                                obrigaCampo: true,
+                                                obrigaCampo: false,
                                               ),
                                             ),
                                           ],
@@ -269,16 +267,6 @@ class CriaCardFormulario extends StatelessWidget {
                                 ),
                               ),
                             ],
-                          ),
-                          SizedBox(
-                            height: 10.0,
-                          ),
-                          Container(
-                            child: AppText(
-                              '*Os campos marcados com o asterisco são obrigatórios.',
-                              color: Colors.red,
-                              bold: true,
-                            ),
                           ),
                         ],
                       ),

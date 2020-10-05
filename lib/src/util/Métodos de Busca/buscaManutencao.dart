@@ -1,33 +1,13 @@
-import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:smartlogproject/src/Entidades/Bloc/embalagem-bloc.dart';
-import 'package:smartlogproject/src/Entidades/Bloc/usuario-bloc.dart';
-import 'package:smartlogproject/src/constantes/mensagens.dart';
-import 'package:smartlogproject/src/funcoes/alert.dart';
-import 'package:smartlogproject/src/funcoes/appText.dart';
+import 'package:smartlogproject/src/util/Componentes/appText.dart';
 
-class BuscaCaminhao extends StatefulWidget {
-  final IconData iconeLista;
-  final Function funcaoLista;
-  final String origem;
-  final double pesoCarregado;
-
-  const BuscaCaminhao(
-      this.iconeLista, this.funcaoLista, this.origem, this.pesoCarregado);
+class BuscaManutencao extends StatefulWidget {
   @override
-  _BuscaCaminhaoState createState() =>
-      _BuscaCaminhaoState(iconeLista, funcaoLista, origem, pesoCarregado);
+  _BuscaManutencaoState createState() => _BuscaManutencaoState();
 }
 
-class _BuscaCaminhaoState extends State<BuscaCaminhao> {
-  final IconData iconeLista;
-  final Function funcaoLista;
-  final String origem;
-  final double pesoCarregado;
-
-  _BuscaCaminhaoState(
-      this.iconeLista, this.funcaoLista, this.origem, this.pesoCarregado);
+class _BuscaManutencaoState extends State<BuscaManutencao> {
   @override
   Widget build(BuildContext context) {
     final Firestore firestore = Firestore.instance;
@@ -37,8 +17,8 @@ class _BuscaCaminhaoState extends State<BuscaCaminhao> {
           children: [
             StreamBuilder<QuerySnapshot>(
               stream: firestore
-                  .collection("caminhao")
-                  .orderBy("descricao", descending: false)
+                  .collection("solicitacaoManutencao")
+                  .orderBy("identificacao", descending: false)
                   .snapshots(),
               builder: (BuildContext context,
                   AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -60,8 +40,9 @@ class _BuscaCaminhaoState extends State<BuscaCaminhao> {
                     ],
                   ));
 
-                final int caminhaoContador = snapshot.data.documents.length;
-                if (caminhaoContador > 0) {
+                final int manutencaoContador =
+                    snapshot.data.documents.length;
+                if (manutencaoContador > 0) {
                   return Container(
                     decoration: BoxDecoration(
                       color: Colors.white,
@@ -74,22 +55,32 @@ class _BuscaCaminhaoState extends State<BuscaCaminhao> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.only(left: 165.0, top: 15),
+                          padding: const EdgeInsets.only(left: 124.0, top: 15),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              AppText(
-                                'Placa',
-                                bold: true,
+                              Padding(
+                                padding: const EdgeInsets.only(left: 30.0),
+                                child: AppText(
+                                  'Código',
+                                  bold: true,
+                                ),
                               ),
                               SizedBox(
                                 width: 5.0,
                               ),
                               Padding(
-                                padding: const EdgeInsets.only(left: 2.0),
+                                padding: const EdgeInsets.only(left: 0.0),
                                 child: AppText(
-                                  'Decrição',
+                                  'Detalhes',
+                                  bold: true,
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 493.0),
+                                child: AppText(
+                                  'Custo Total',
                                   bold: true,
                                 ),
                               ),
@@ -101,18 +92,18 @@ class _BuscaCaminhaoState extends State<BuscaCaminhao> {
                             Container(
                               padding: EdgeInsets.only(bottom: 15),
                               alignment: Alignment.topLeft,
-                              width: 670,
+                              width: 925,
                               child: ListView.builder(
                                 shrinkWrap: true,
-                                itemCount: caminhaoContador,
+                                itemCount: manutencaoContador,
                                 itemBuilder: (BuildContext context, int index) {
                                   final DocumentSnapshot document =
                                       snapshot.data.documents[index];
-                                  final dynamic descricao =
-                                      document['descricao'];
-                                  final dynamic placa = document['placa'];
+                                  final dynamic detalhes = document['detalhes'];
                                   final dynamic identificacao =
                                       document['identificacao'];
+                                  final dynamic custoTotal =
+                                      document['custoTotal'];
 
                                   return Container(
                                     child: Row(
@@ -132,14 +123,15 @@ class _BuscaCaminhaoState extends State<BuscaCaminhao> {
                                                 color: Colors.black,
                                               ),
                                             ),
-                                            child: Text(placa.toString()),
+                                            child: Text(identificacao),
                                           ),
                                         ),
                                         Padding(
                                           padding: const EdgeInsets.all(2.0),
                                           child: Container(
+                                            alignment: Alignment.topLeft,
                                             padding: EdgeInsets.all(10),
-                                            width: 400,
+                                            width: 500,
                                             decoration: BoxDecoration(
                                               color: Colors.white,
                                               borderRadius: BorderRadius.all(
@@ -148,36 +140,31 @@ class _BuscaCaminhaoState extends State<BuscaCaminhao> {
                                                 color: Colors.black,
                                               ),
                                             ),
-                                            child: Text(descricao.toString()),
+                                            child: Text(detalhes),
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.all(0.0),
+                                          child: Container(
+                                            alignment: Alignment.topRight,
+                                            padding: EdgeInsets.all(10),
+                                            width: 150,
+                                            decoration: BoxDecoration(  
+                                              color: Colors.white,
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(5)),
+                                              border: new Border.all(
+                                                color: Colors.black,
+                                              ),
+                                            ),
+                                            child: Text(custoTotal.toString()),
                                           ),
                                         ),
                                         GestureDetector(
                                           onTap: () {
-                                            if (origem == 'CARGA') {
-                                              if (pesoCarregado != null) {
-                                                Firestore.instance
-                                                    .collection("fichaCaminhao")
-                                                    .document(identificacao)
-                                                    .get()
-                                                    .then((coluna) async => coluna
-                                                                        .data[
-                                                                    'capacidadeCarga'] !=
-                                                                null &&
-                                                            coluna.data[
-                                                                    'capacidadeCarga'] <
-                                                                pesoCarregado
-                                                        ? alert(
-                                                            context,
-                                                            mensagemAlerta,
-                                                            'O peso carregado excede a capacidade máxima do caminhão!')
-                                                        : Navigator.pop(context,
-                                                            identificacao));
-                                              }
-                                            } else {
-                                              Navigator.of(context).pushNamed(
-                                                  '/FormularioCaminhao',
-                                                  arguments: identificacao);
-                                            }
+                                            Navigator.of(context).pushNamed(
+                                                '/FormularioManutencao',
+                                                arguments: identificacao);
                                           },
                                           child: Padding(
                                             padding: const EdgeInsets.only(
@@ -190,7 +177,7 @@ class _BuscaCaminhaoState extends State<BuscaCaminhao> {
                                                 ),
                                               ),
                                               child: Icon(
-                                                iconeLista,
+                                                Icons.search,
                                                 size: 30.0,
                                                 color: Colors.white,
                                               ),

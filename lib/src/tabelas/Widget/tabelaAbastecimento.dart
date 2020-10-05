@@ -2,10 +2,10 @@ import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:flutter/material.dart';
 import 'package:smartlogproject/src/Components/scroll/scroll.dart';
 import 'package:smartlogproject/src/Entidades/Bloc/solicitacaoAbastecimento-bloc.dart';
-import 'package:smartlogproject/src/funcoes/appText.dart';
-import 'package:smartlogproject/src/funcoes/buscaSolicAbastecimento.dart';
-import 'package:smartlogproject/src/funcoes/requiredLabel.dart';
 import 'package:smartlogproject/src/screen/screenPattern.dart';
+import 'package:smartlogproject/src/util/Componentes/appText.dart';
+import 'package:smartlogproject/src/util/Componentes/requiredLabel.dart';
+import 'package:smartlogproject/src/util/M%C3%A9todos%20de%20Busca/buscaSolicAbastecimento.dart';
 
 class ListaAbastecimentos extends StatelessWidget {
   @override
@@ -20,7 +20,6 @@ class ListaAbastecimentos extends StatelessWidget {
 }
 
 class CriaCardFormulario extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
     return Scroll(
@@ -100,7 +99,7 @@ class CriaCardFormulario extends StatelessWidget {
                     ),
                     Container(
                       child: AppText(
-                        'Lista de Solicitações de Abastecimento',
+                        'Lista de Programações de Abastecimento',
                         bold: true,
                       ),
                     ),
@@ -117,43 +116,6 @@ class CriaCardFormulario extends StatelessWidget {
               ),
             ),
           ),
-        ],
-      ),
-    );
-  }
-
-  Widget constroiCampo(
-      {String labelCampo,
-      Function onChanged,
-      double largura,
-      double altura,
-      bool obrigaCampo,
-      BuildContext contextoAplicacao,
-      TextEditingController mascara,
-      TextEditingController controller}) {
-    return Form(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          RequiredLabel(labelCampo, obrigaCampo),
-          Container(
-            height: altura,
-            width: largura ?? double.maxFinite,
-            child: TextFormField(
-              maxLengthEnforced: true,
-              cursorColor: Colors.black,
-              controller: controller,
-              onChanged: onChanged,
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.black,
-              ),
-              decoration: InputDecoration(),
-            ),
-          ),
-          SizedBox(
-            height: 10,
-          )
         ],
       ),
     );
