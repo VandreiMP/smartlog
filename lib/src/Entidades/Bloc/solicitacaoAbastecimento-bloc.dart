@@ -18,6 +18,7 @@ class SolicitacaoAbastecimentoBloc extends BlocBase {
   */
 
   void setId(String value) => _idController.sink.add(value);
+  void setPrioridade(int value) => _prioridadeController.sink.add(value);
   void setDetalhes(String value) => _detalhesController.sink.add(value);
   void setSituacaoSolicitacao(String value) =>
       _situacaoSolicitacaoController.sink.add(value);
@@ -40,6 +41,9 @@ class SolicitacaoAbastecimentoBloc extends BlocBase {
 
   var _idController = BehaviorSubject<String>();
   Stream<String> get outId => _idController.stream;
+
+  var _prioridadeController = BehaviorSubject<int>();
+  Stream<int> get outPrioridade => _prioridadeController.stream;
 
   var _detalhesController = BehaviorSubject<String>();
   Stream<String> get outDetalhes => _detalhesController.stream;
@@ -86,6 +90,7 @@ class SolicitacaoAbastecimentoBloc extends BlocBase {
     var solicitacaoAbastecimento = SolicitacaoAbastecimento();
 
     solicitacaoAbastecimento.identificacao = _idController.value;
+    solicitacaoAbastecimento.prioridade = _prioridadeController.value;
     solicitacaoAbastecimento.detalhes = _detalhesController.value;
     solicitacaoAbastecimento.situacaoSolicitacao =
         _situacaoSolicitacaoController.value;
@@ -103,6 +108,9 @@ class SolicitacaoAbastecimentoBloc extends BlocBase {
         solicitacaoAbastecimento.identificacao == null) {
       alert(contextoAplicacao, mensagemAlerta,
           'Para salvar a programação é necessário informar a identificação!');
+    } else if (solicitacaoAbastecimento.prioridade == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para salvar a programação é necessário informar a prioridade!');
     } else if (solicitacaoAbastecimento.detalhes == '' ||
         solicitacaoAbastecimento.detalhes == null) {
       alert(contextoAplicacao, mensagemAlerta,
@@ -119,8 +127,6 @@ class SolicitacaoAbastecimentoBloc extends BlocBase {
         solicitacaoAbastecimento.posto == null) {
       alert(contextoAplicacao, mensagemAlerta,
           'Para salvar a programação é necessário informar o combustível!');
-    } else if (solicitacaoAbastecimento.custoTotal == null) {
-      solicitacaoAbastecimento.custoTotal = 0.00;
     } else {
       try {
         await Firestore.instance
@@ -128,6 +134,7 @@ class SolicitacaoAbastecimentoBloc extends BlocBase {
             .document(solicitacaoAbastecimento.identificacao)
             .setData({
           'identificacao': solicitacaoAbastecimento.identificacao,
+          'prioridade': solicitacaoAbastecimento.prioridade,
           'detalhes': solicitacaoAbastecimento.detalhes,
           'situacaoSolicitacao': solicitacaoAbastecimento.situacaoSolicitacao,
           'solicitante': solicitacaoAbastecimento.solicitante,
@@ -169,7 +176,7 @@ class SolicitacaoAbastecimentoBloc extends BlocBase {
                 contextoAplicacao, mensagemNotificacao, mensagemSucessoApagar,
                 () {
               Navigator.of(contextoAplicacao)
-                  .pushNamed('/FormularioAbastecimento', arguments: 'NULO');
+                  .pushNamed('/FormularioAbastecimento');
             }),
           )
           .catchError((ErrorAndStacktrace erro) {
@@ -184,6 +191,7 @@ class SolicitacaoAbastecimentoBloc extends BlocBase {
     var solicitacaoAbastecimento = SolicitacaoAbastecimento();
 
     solicitacaoAbastecimento.identificacao = _idController.value;
+    solicitacaoAbastecimento.prioridade = _prioridadeController.value;
     solicitacaoAbastecimento.detalhes = _detalhesController.value;
     solicitacaoAbastecimento.situacaoSolicitacao =
         _situacaoSolicitacaoController.value;
@@ -201,6 +209,9 @@ class SolicitacaoAbastecimentoBloc extends BlocBase {
         solicitacaoAbastecimento.identificacao == null) {
       alert(contextoAplicacao, mensagemAlerta,
           'Para salvar a programação é necessário informar a identificação!');
+    } else if (solicitacaoAbastecimento.prioridade == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para salvar a programação é necessário informar a prioridade!');
     } else if (solicitacaoAbastecimento.detalhes == '' ||
         solicitacaoAbastecimento.detalhes == null) {
       alert(contextoAplicacao, mensagemAlerta,
@@ -224,6 +235,7 @@ class SolicitacaoAbastecimentoBloc extends BlocBase {
             .document(solicitacaoAbastecimento.identificacao)
             .updateData({
           'identificacao': solicitacaoAbastecimento.identificacao,
+          'prioridade': solicitacaoAbastecimento.prioridade,
           'detalhes': solicitacaoAbastecimento.detalhes,
           'situacaoSolicitacao': solicitacaoAbastecimento.situacaoSolicitacao,
           'solicitante': solicitacaoAbastecimento.solicitante,

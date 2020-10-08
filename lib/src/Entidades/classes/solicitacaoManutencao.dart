@@ -3,6 +3,7 @@ import '../../shared/base_model.dart';
 
 class SolicitacaoManutencao extends BaseModel {
   String identificacao;
+  int prioridade;
   String tipoManutencao;
   String detalhes;
   String situacaoSolicitacao;
@@ -17,6 +18,7 @@ class SolicitacaoManutencao extends BaseModel {
 
   SolicitacaoManutencao.fromMap(DocumentSnapshot document) {
     this.identificacao = document.data["identificacao"];
+    this.prioridade = document.data['prioridade'];
     this.tipoManutencao = document.data['tipoManutencao'];
     this.detalhes = document.data["detalhes"];
     this.situacaoSolicitacao = document.data['situacaoSolicitacao'];
@@ -31,6 +33,7 @@ class SolicitacaoManutencao extends BaseModel {
     toMap() {
       var map = new Map<String, dynamic>();
       map['identificacao'] = this.identificacao;
+      map['prioridade'] = this.prioridade;
       map['tipoManutencao'] = this.tipoManutencao;
       map['detalhes'] = this.detalhes;
       map['situacaoSolicitacao'] = this.situacaoSolicitacao;

@@ -9,6 +9,7 @@ import 'package:smartlogproject/src/util/Componentes/appTextField.dart';
 import 'package:smartlogproject/src/util/Componentes/requiredLabel.dart';
 import 'package:smartlogproject/src/util/Listas%20de%20Valores/criaListaValoresCusto.dart';
 import 'package:smartlogproject/src/util/M%C3%A9todos%20de%20C%C3%A1lculo/calculaCustoSolicitacao.dart';
+import 'package:smartlogproject/src/util/M%C3%A9todos%20de%20Valida%C3%A7%C3%A3o/retornaPrioridade.dart';
 import '../Cards/Widgets/criaCardAuxiliar.dart';
 import 'screenPattern.dart';
 
@@ -72,6 +73,12 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
     'Efetivada',
   ];
 
+  List<String> prioridade = [
+    'Alta',
+    'Média',
+    'Baixa',
+  ];
+
   List<String> tipoCombustivel = [
     'Diesel',
     'Gasolina',
@@ -92,6 +99,7 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
   final tDataEfetivacao = TextEditingController();
   final tPosto = TextEditingController();
   final tTipoCombustivel = TextEditingController();
+  final tPrioridade = TextEditingController();
   final tPrecoLitro = TextEditingController();
   final tQuantidade = TextEditingController();
   final tCustoTotal = TextEditingController();
@@ -105,6 +113,8 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
   bool consultaSituacaoProg = true;
   String valorTipoCombustivel;
   bool consultaTipoCombustivel = true;
+  String valorPrioridade;
+  bool consultaPrioridade = true;
 
   bool preencheDadosIniciais = true;
 
@@ -116,16 +126,16 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
     final Firestore firestore = Firestore.instance;
     bool campoHabilitado = true;
 
-    final DateFormat formataData = DateFormat('dd/MM/yyyy H:mm');
+    final DateFormat formataData = DateFormat('dd/MM/yyyy HH:mm');
 
     if (codigoSolicitacao != null) {
       preencheDadosIniciais = false;
     }
 
-    if (codigoSolicitacao == null ||
-        (codigoSolicitacao != 'NULO' && preencheDadosIniciais == true)) {
+    if (codigoSolicitacao == null || (preencheDadosIniciais == true)) {
       tDataAbertura.text = formataData.format(DateTime.now());
       blocSolicitacaoAbastecimento.setDataAbertura(tDataAbertura.text);
+      blocSolicitacaoAbastecimento.setSituacaoSolicitacao(valorSituacaoProg);
     }
     void atualizaSituacaoProg(String valor, String origem) {
       if (valor.isNotEmpty) {
@@ -155,6 +165,19 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
           valorTipoCombustivel = valor;
           blocSolicitacaoAbastecimento.setCombustivel(valorTipoCombustivel);
           consultaTipoCombustivel = false;
+        });
+      }
+    }
+
+    void atualizaPrioridade(String valor) {
+      if (valor.isNotEmpty) {
+        setState(() {
+          valorPrioridade = valor;
+          print(valor);
+          print(retornaPrioridade('STRING', valor));
+          blocSolicitacaoAbastecimento
+              .setPrioridade(retornaPrioridade('STRING', valor));
+          consultaPrioridade = false;
         });
       }
     }
@@ -190,6 +213,12 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
       if (consultaTipoCombustivel == true) {
         tTipoCombustivel.text = coluna.data['tipoCombustivel'];
         atualizaTipoCombustivel(tTipoCombustivel.text);
+      }
+
+      if (consultaPrioridade == true) {
+        tPrioridade.text = retornaPrioridade('INT', coluna.data['prioridade']);
+
+        atualizaPrioridade(tPrioridade.text);
       }
 
       if (consultaSituacaoProg == true) {
@@ -292,6 +321,55 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
                                                   blocSolicitacaoAbastecimento
                                                       .setId(tId.text);
                                                 },
+                                              ),
+                                            ),
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                  left: 20.0),
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.start,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  RequiredLabel(
+                                                    'Prioridade',
+                                                    true,
+                                                  ),
+                                                  Container(
+                                                    height: 50.0,
+                                                    child: Column(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .start,
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: <Widget>[
+                                                        DropdownButton<String>(
+                                                          items:
+                                                              prioridade.map((
+                                                            String
+                                                                dropDownStringItem,
+                                                          ) {
+                                                            return DropdownMenuItem<
+                                                                String>(
+                                                              value:
+                                                                  dropDownStringItem,
+                                                              child: Text(
+                                                                  dropDownStringItem),
+                                                            );
+                                                          }).toList(),
+                                                          onChanged: (novoValorSelecionado) =>
+                                                              atualizaPrioridade(
+                                                                  novoValorSelecionado),
+                                                          value:
+                                                              valorPrioridade,
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ],
                                               ),
                                             ),
                                           ],

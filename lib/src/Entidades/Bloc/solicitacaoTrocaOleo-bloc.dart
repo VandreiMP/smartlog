@@ -18,6 +18,7 @@ class SolicitacaoTrocaOleoBloc extends BlocBase {
   */
 
   void setId(String value) => _idController.sink.add(value);
+  void setPrioridade(int value) => _prioridadeController.sink.add(value);
   void setDetalhes(String value) => _detalhesController.sink.add(value);
   void setSituacaoSolicitacao(String value) =>
       _situacaoSolicitacaoController.sink.add(value);
@@ -39,6 +40,9 @@ class SolicitacaoTrocaOleoBloc extends BlocBase {
 
   var _idController = BehaviorSubject<String>();
   Stream<String> get outId => _idController.stream;
+
+  var _prioridadeController = BehaviorSubject<int>();
+  Stream<int> get outPrioridade => _prioridadeController.stream;
 
   var _detalhesController = BehaviorSubject<String>();
   Stream<String> get outDetalhes => _detalhesController.stream;
@@ -85,6 +89,7 @@ class SolicitacaoTrocaOleoBloc extends BlocBase {
     var solicitacaoTrocaOleo = SolicitacaoTrocaOleo();
 
     solicitacaoTrocaOleo.identificacao = _idController.value;
+    solicitacaoTrocaOleo.prioridade = _prioridadeController.value;
     solicitacaoTrocaOleo.detalhes = _detalhesController.value;
     solicitacaoTrocaOleo.situacaoSolicitacao =
         _situacaoSolicitacaoController.value;
@@ -102,6 +107,9 @@ class SolicitacaoTrocaOleoBloc extends BlocBase {
         solicitacaoTrocaOleo.identificacao == null) {
       alert(contextoAplicacao, mensagemAlerta,
           'Para salvar a programação é necessário informar a identificação!');
+    } else if (solicitacaoTrocaOleo.prioridade == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para salvar a programação é necessário informar a prioridade!');
     } else if (solicitacaoTrocaOleo.detalhes == '' ||
         solicitacaoTrocaOleo.detalhes == null) {
       alert(contextoAplicacao, mensagemAlerta,
@@ -121,6 +129,7 @@ class SolicitacaoTrocaOleoBloc extends BlocBase {
             .document(solicitacaoTrocaOleo.identificacao)
             .setData({
           'identificacao': solicitacaoTrocaOleo.identificacao,
+          'prioridade': solicitacaoTrocaOleo.prioridade,
           'detalhes': solicitacaoTrocaOleo.detalhes,
           'situacaoSolicitacao': solicitacaoTrocaOleo.situacaoSolicitacao,
           'solicitante': solicitacaoTrocaOleo.solicitante,
@@ -178,6 +187,7 @@ class SolicitacaoTrocaOleoBloc extends BlocBase {
     var solicitacaoTrocaOleo = SolicitacaoTrocaOleo();
 
     solicitacaoTrocaOleo.identificacao = _idController.value;
+    solicitacaoTrocaOleo.prioridade = _prioridadeController.value;
     solicitacaoTrocaOleo.detalhes = _detalhesController.value;
     solicitacaoTrocaOleo.situacaoSolicitacao =
         _situacaoSolicitacaoController.value;
@@ -196,6 +206,9 @@ class SolicitacaoTrocaOleoBloc extends BlocBase {
         solicitacaoTrocaOleo.identificacao == null) {
       alert(contextoAplicacao, mensagemAlerta,
           'Para salvar a programação é necessário informar a identificação!');
+    } else if (solicitacaoTrocaOleo.prioridade == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para salvar a programação é necessário informar a prioridade!');
     } else if (solicitacaoTrocaOleo.detalhes == '' ||
         solicitacaoTrocaOleo.detalhes == null) {
       alert(contextoAplicacao, mensagemAlerta,
@@ -215,6 +228,7 @@ class SolicitacaoTrocaOleoBloc extends BlocBase {
             .document(solicitacaoTrocaOleo.identificacao)
             .updateData({
           'identificacao': solicitacaoTrocaOleo.identificacao,
+          'prioridade': solicitacaoTrocaOleo.prioridade,
           'detalhes': solicitacaoTrocaOleo.detalhes,
           'situacaoSolicitacao': solicitacaoTrocaOleo.situacaoSolicitacao,
           'solicitante': solicitacaoTrocaOleo.solicitante,

@@ -104,90 +104,92 @@ class _BuscaAbastecimentoState extends State<BuscaAbastecimento> {
                                       document['identificacao'];
                                   final dynamic custoTotal =
                                       document['custoTotal'];
-
-                                  return Container(
-                                    child: Row(
-                                      children: [
-                                        Padding(
-                                          padding:
-                                              const EdgeInsets.only(left: 10.0),
-                                          child: Container(
-                                            alignment: Alignment.topRight,
-                                            padding: EdgeInsets.all(10),
-                                            width: 200,
-                                            decoration: BoxDecoration(
-                                              color: Colors.white,
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(5)),
-                                              border: new Border.all(
-                                                color: Colors.black,
-                                              ),
-                                            ),
-                                            child: Text(identificacao),
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.all(2.0),
-                                          child: Container(
-                                            alignment: Alignment.topLeft,
-                                            padding: EdgeInsets.all(10),
-                                            width: 500,
-                                            decoration: BoxDecoration(
-                                              color: Colors.white,
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(5)),
-                                              border: new Border.all(
-                                                color: Colors.black,
-                                              ),
-                                            ),
-                                            child: Text(detalhes),
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.all(0.0),
-                                          child: Container(
-                                            alignment: Alignment.topRight,
-                                            padding: EdgeInsets.all(10),
-                                            width: 150,
-                                            decoration: BoxDecoration(
-                                              color: Colors.white,
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(5)),
-                                              border: new Border.all(
-                                                color: Colors.black,
-                                              ),
-                                            ),
-                                            child: Text(custoTotal.toString()),
-                                          ),
-                                        ),
-                                        GestureDetector(
-                                          onTap: () {
-                                            Navigator.of(context).pushNamed(
-                                                '/FormularioAbastecimento',
-                                                arguments: identificacao);
-                                          },
-                                          child: Padding(
+                                    return Container(
+                                      child: Row(
+                                        children: [
+                                          Padding(
                                             padding: const EdgeInsets.only(
-                                                left: 7.0),
+                                                left: 10.0),
                                             child: Container(
+                                              alignment: Alignment.topRight,
+                                              padding: EdgeInsets.all(10),
+                                              width: 200,
                                               decoration: BoxDecoration(
-                                                color: Colors.blue[900],
+                                                color: Colors.white,
                                                 borderRadius: BorderRadius.all(
-                                                  Radius.circular(2.0),
+                                                    Radius.circular(5)),
+                                                border: new Border.all(
+                                                  color: Colors.black,
                                                 ),
                                               ),
-                                              child: Icon(
-                                                Icons.search,
-                                                size: 30.0,
+                                              child: Text(identificacao),
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.all(2.0),
+                                            child: Container(
+                                              alignment: Alignment.topLeft,
+                                              padding: EdgeInsets.all(10),
+                                              width: 500,
+                                              decoration: BoxDecoration(
                                                 color: Colors.white,
+                                                borderRadius: BorderRadius.all(
+                                                    Radius.circular(5)),
+                                                border: new Border.all(
+                                                  color: Colors.black,
+                                                ),
+                                              ),
+                                              child: Text(detalhes),
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.all(0.0),
+                                            child: Container(
+                                              alignment: Alignment.topRight,
+                                              padding: EdgeInsets.all(10),
+                                              width: 150,
+                                              decoration: BoxDecoration(
+                                                color: Colors.white,
+                                                borderRadius: BorderRadius.all(
+                                                    Radius.circular(5)),
+                                                border: new Border.all(
+                                                  color: Colors.black,
+                                                ),
+                                              ),
+                                              child:
+                                                  Text(custoTotal.toString()),
+                                            ),
+                                          ),
+                                          GestureDetector(
+                                            onTap: () {
+                                              Navigator.of(context).pushNamed(
+                                                  '/FormularioAbastecimento',
+                                                  arguments: identificacao);
+                                            },
+                                            child: Padding(
+                                              padding: const EdgeInsets.only(
+                                                  left: 7.0),
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                  color: Colors.blue[900],
+                                                  borderRadius:
+                                                      BorderRadius.all(
+                                                    Radius.circular(2.0),
+                                                  ),
+                                                ),
+                                                child: Icon(
+                                                  Icons.search,
+                                                  size: 30.0,
+                                                  color: Colors.white,
+                                                ),
                                               ),
                                             ),
                                           ),
-                                        ),
-                                        SizedBox(height: 10),
-                                      ],
-                                    ),
-                                  );
+                                          SizedBox(height: 10),
+                                        ],
+                                      ),
+                                    );
+                              
                                 },
                               ),
                             ),

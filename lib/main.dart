@@ -79,5 +79,3 @@ class Main extends StatelessWidget {
     );
   }
 }
-
-class ScreenDespesasContrato {}

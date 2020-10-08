@@ -18,6 +18,7 @@ class SolicitacaoManutencaoBloc extends BlocBase {
   */
 
   void setId(String value) => _idController.sink.add(value);
+  void setPrioridade(int value) => _prioridadeController.sink.add(value);
   void setTipoManutencao(String value) =>
       _tipoManutencaoController.sink.add(value);
   void setDetalhes(String value) => _detalhesController.sink.add(value);
@@ -38,6 +39,9 @@ class SolicitacaoManutencaoBloc extends BlocBase {
 
   var _idController = BehaviorSubject<String>();
   Stream<String> get outId => _idController.stream;
+
+  var _prioridadeController = BehaviorSubject<int>();
+  Stream<int> get outPrioridade => _prioridadeController.stream;
 
   var _tipoManutencaoController = BehaviorSubject<String>();
   Stream<String> get outTipoManutencao => _tipoManutencaoController.stream;
@@ -78,6 +82,7 @@ class SolicitacaoManutencaoBloc extends BlocBase {
     var solicitacaoManutencao = SolicitacaoManutencao();
 
     solicitacaoManutencao.identificacao = _idController.value;
+    solicitacaoManutencao.prioridade = _prioridadeController.value;
     solicitacaoManutencao.tipoManutencao = _tipoManutencaoController.value;
     solicitacaoManutencao.detalhes = _detalhesController.value;
     solicitacaoManutencao.situacaoSolicitacao =
@@ -93,6 +98,9 @@ class SolicitacaoManutencaoBloc extends BlocBase {
         solicitacaoManutencao.identificacao == null) {
       alert(contextoAplicacao, mensagemAlerta,
           'Para salvar a programação é necessário informar a identificação!');
+    } else if (solicitacaoManutencao.prioridade == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para salvar a programação é necessário informar a prioridade!');
     } else if (solicitacaoManutencao.tipoManutencao == '' ||
         solicitacaoManutencao.tipoManutencao == null) {
       alert(contextoAplicacao, mensagemAlerta,
@@ -112,6 +120,7 @@ class SolicitacaoManutencaoBloc extends BlocBase {
             .document(solicitacaoManutencao.identificacao)
             .setData({
           'identificacao': solicitacaoManutencao.identificacao,
+          'prioridade': solicitacaoManutencao.prioridade,
           'tipoManutencao': solicitacaoManutencao.tipoManutencao,
           'detalhes': solicitacaoManutencao.detalhes,
           'situacaoSolicitacao': solicitacaoManutencao.situacaoSolicitacao,
@@ -150,10 +159,8 @@ class SolicitacaoManutencaoBloc extends BlocBase {
             (value) => alertFuncao(
                 contextoAplicacao, mensagemNotificacao, mensagemSucessoApagar,
                 () {
-              Navigator.of(contextoAplicacao).pushNamed(
-                '/FormularioManutencao',
-                arguments: 'NULO'
-              );
+              Navigator.of(contextoAplicacao)
+                  .pushNamed('/FormularioManutencao');
             }),
           )
           .catchError((ErrorAndStacktrace erro) {
@@ -168,6 +175,7 @@ class SolicitacaoManutencaoBloc extends BlocBase {
     var solicitacaoManutencao = SolicitacaoManutencao();
 
     solicitacaoManutencao.identificacao = _idController.value;
+    solicitacaoManutencao.prioridade = _prioridadeController.value;
     solicitacaoManutencao.tipoManutencao = _tipoManutencaoController.value;
     solicitacaoManutencao.detalhes = _detalhesController.value;
     solicitacaoManutencao.situacaoSolicitacao =
@@ -183,6 +191,9 @@ class SolicitacaoManutencaoBloc extends BlocBase {
         solicitacaoManutencao.identificacao == null) {
       alert(contextoAplicacao, mensagemAlerta,
           'Para salvar a programação é necessário informar a identificação!');
+    } else if (solicitacaoManutencao.prioridade == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para salvar a programação é necessário informar a prioridade!');
     } else if (solicitacaoManutencao.tipoManutencao == '' ||
         solicitacaoManutencao.tipoManutencao == null) {
       alert(contextoAplicacao, mensagemAlerta,
@@ -202,6 +213,7 @@ class SolicitacaoManutencaoBloc extends BlocBase {
             .document(solicitacaoManutencao.identificacao)
             .updateData({
           'identificacao': solicitacaoManutencao.identificacao,
+          'prioridade': solicitacaoManutencao.prioridade,
           'tipoManutencao': solicitacaoManutencao.tipoManutencao,
           'detalhes': solicitacaoManutencao.detalhes,
           'situacaoSolicitacao': solicitacaoManutencao.situacaoSolicitacao,

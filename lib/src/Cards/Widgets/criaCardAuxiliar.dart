@@ -1,5 +1,4 @@
 import 'package:bloc_pattern/bloc_pattern.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:smartlogproject/src/Cards/Bloc/card-ajuda-bloc.dart';
 import '../../screen/screenUser.dart';
@@ -101,9 +100,7 @@ class CardAjuda extends StatelessWidget {
                                   child: GestureDetector(
                                     onTap: () {
                                       if (origem == 'CARGA') {
-                                        Navigator.of(context).pushNamed(
-                                          '/ListaCargas',
-                                        );
+                                        Navigator.of(context).pop();
                                       } else if (origem == 'EMPRESA') {
                                         Navigator.of(context).pushNamed(
                                           '/ListaEmpresas',
@@ -133,18 +130,10 @@ class CardAjuda extends StatelessWidget {
                                         Navigator.of(context).pushNamed(
                                             '/FormularioCaminhao',
                                             arguments: chaveConsulta);
-                                      } else if (origem == 'COMBUSTIVEL') {
-                                        Navigator.of(context).pushNamed(
-                                            '/ListaAbastecimentos',
-                                            arguments: chaveConsulta);
-                                      } else if (origem == 'MANUTENCAO') {
-                                        Navigator.of(context).pushNamed(
-                                            '/ListaManutencao',
-                                            arguments: chaveConsulta);
-                                      } else if (origem == 'OLEO') {
-                                        Navigator.of(context).pushNamed(
-                                            '/ListaTrocaOleo',
-                                            arguments: chaveConsulta);
+                                      } else if (origem == 'COMBUSTIVEL' ||
+                                          origem == 'MANUTENCAO' ||
+                                          origem == 'OLEO') {
+                                        Navigator.of(context).pop();
                                       } else if (origem == 'ROMANEIO') {
                                         Navigator.pop(context);
                                       }

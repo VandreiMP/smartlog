@@ -1,4 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:smartlogproject/src/Components/scroll/scroll.dart';
+import 'package:smartlogproject/src/DashBoard/Componentes%20Auxiliares/legendaDashBoard.dart';
+import 'package:smartlogproject/src/DashBoard/Componentes%20de%20Lista/criaListaValoresAbastecimento.dart';
+import 'package:smartlogproject/src/DashBoard/Componentes%20de%20Lista/criaListaValoresCarga.dart';
+import 'package:smartlogproject/src/DashBoard/Componentes%20de%20Lista/criaListaValoresCustosporSolic.dart';
+import 'package:smartlogproject/src/DashBoard/Componentes%20de%20Lista/criaListaValoresManutencao.dart';
+import 'package:smartlogproject/src/DashBoard/Componentes%20de%20Lista/criaListaValoresTrocaOleo.dart';
+import 'package:smartlogproject/src/tabelas/Widget/tabelaCarregamentoMercadoria.dart';
+import 'package:smartlogproject/src/util/Componentes/appText.dart';
 import 'screenPattern.dart';
 
 class VisaoGeral extends StatefulWidget {
@@ -9,9 +18,6 @@ class VisaoGeral extends StatefulWidget {
 class _VisaoGeralState extends State<VisaoGeral> {
   @override
   Widget build(BuildContext context) {
-    //  print('validaAcessoUsuario()');
-    // validaAcessoUsuario().then((retornoValidacao) => print('retorno: $retornoValidacao'));
-
     return ScreenPattern(
       child: Body(),
     );
@@ -24,54 +30,80 @@ class Body extends StatefulWidget {
 }
 
 class _BodyState extends State<Body> {
+  Widget dashBoardCargas;
+  bool exibeDashBoardCargas = false;
+  String labelBotao = 'Exibir Cargas';
+  double larguraBotao = 120;
+  String origem = 'PROG';
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 1165,
-      alignment: Alignment.center,
-      child: Card(
-        //margin: EdgeInsets.only(left: 10.0, right: 10.0, top: 5.0),
-        child: Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.all(Radius.circular(5)),
-            border: new Border.all(
-              color: Colors.black,
-            ),
-          ),
-          // padding: EdgeInsets.all(16),
-          //height: 500,
-          // width: 1000,
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Container(
-                  //padding: const EdgeInsets.all(4.0),
-                  child: ConstrainedBox(
-                    constraints:
-                        BoxConstraints(maxWidth: 15000, maxHeight: 500),
-                    child: Image.asset(
-                      'Images/fundosistema.png',
-                      width: 700,
-                      height: 500,
+    return Scroll(
+      height: double.infinity,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          dashBoardCargas = ListaValoresCarga();
+                          exibeDashBoardCargas = !exibeDashBoardCargas;
+
+                          if (exibeDashBoardCargas == true) {
+                            labelBotao = 'Exibir Programações';
+                            larguraBotao = 170;
+                            origem = 'CARGA';
+                          } else {
+                            labelBotao = 'Exibir Cargas';
+                            larguraBotao = 120;
+                            origem = 'PROG';
+                          }
+                        });
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: Container(
+                            alignment: Alignment.center,
+                            height: 40,
+                            width: larguraBotao,
+                            decoration: BoxDecoration(
+                              color: Colors.blue[900],
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(2.0),
+                              ),
+                            ),
+                            child: Text(
+                              labelBotao,
+                              style:
+                                  TextStyle(fontSize: 16, color: Colors.white),
+                            )),
+                      ),
                     ),
-                  ),
+                    LegendaDashBoard(origem),
+                  ],
                 ),
-                Container(
-                  padding: const EdgeInsets.only(bottom: 15.0),
-                  child: Text(
-                    'Gerencie de forma estratégica a sua frota e reduza custos com atrasos na entrega',
-                    style: TextStyle(
-                      fontSize: 20.0,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                Scroll(
+                  child: exibeDashBoardCargas == true
+                      ? dashBoardCargas
+                      : Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            ListaValoresAbastecimento(),
+                            ListaValoresManutencao(),
+                            ListaValoresTrocadeOleo(),
+                          ],
+                        ),
                 ),
-              ],
-            ),
-          ),
-        ),
+              ]),
+        ],
       ),
     );
   }

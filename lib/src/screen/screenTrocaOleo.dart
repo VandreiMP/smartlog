@@ -9,6 +9,7 @@ import 'package:smartlogproject/src/util/Componentes/appTextField.dart';
 import 'package:smartlogproject/src/util/Componentes/requiredLabel.dart';
 import 'package:smartlogproject/src/util/Listas%20de%20Valores/criaListaValoresCusto.dart';
 import 'package:smartlogproject/src/util/M%C3%A9todos%20de%20C%C3%A1lculo/calculaCustoSolicitacao.dart';
+import 'package:smartlogproject/src/util/M%C3%A9todos%20de%20Valida%C3%A7%C3%A3o/retornaPrioridade.dart';
 import '../Cards/Widgets/criaCardAuxiliar.dart';
 import 'screenPattern.dart';
 
@@ -73,12 +74,19 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
     'Efetivada',
   ];
 
+  List<String> prioridade = [
+    'Alta',
+    'Média',
+    'Baixa',
+  ];
+
   /*
     Variáveis usadas para capturar o valor dos campos do formulário
     e salvar no banco
     */
   final tDetalhes = TextEditingController();
   final tId = TextEditingController();
+  final tPrioridade = TextEditingController();
   final tSituacao = TextEditingController();
   final tSolicitante = TextEditingController();
   final tDataAbertura = TextEditingController();
@@ -98,6 +106,9 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
   bool consultaSituacaoProg = true;
   String valorTipoCombustivel;
   bool consultaTipoCombustivel = true;
+  String valorPrioridade;
+  bool consultaPrioridade = true;
+  bool consultaFormulario = true;
 
   bool preencheDadosIniciais = true;
 
@@ -110,16 +121,16 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
     final Firestore firestore = Firestore.instance;
     bool campoHabilitado = true;
 
-    final DateFormat formataData = DateFormat('dd/MM/yyyy H:m');
+    final DateFormat formataData = DateFormat('dd/MM/yyyy HH:mm');
 
     if (codigoSolicitacao != null) {
       preencheDadosIniciais = false;
     }
 
-    if (codigoSolicitacao == null ||
-        (codigoSolicitacao != 'NULO' && preencheDadosIniciais == true)) {
+    if (codigoSolicitacao == null || (preencheDadosIniciais == true)) {
       tDataAbertura.text = formataData.format(DateTime.now());
       blocSolicitacaoTrocaOleo.setDataAbertura(tDataAbertura.text);
+      blocSolicitacaoTrocaOleo.setSituacaoSolicitacao(valorSituacaoProg);
     }
     void atualizaSituacaoProg(String valor, String origem) {
       if (valor.isNotEmpty) {
@@ -127,6 +138,7 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
           valorSituacaoProg = valor;
           blocSolicitacaoTrocaOleo.setSituacaoSolicitacao(valorSituacaoProg);
           consultaSituacaoProg = false;
+          consultaFormulario = false;
           if (origem == 'BOTAO') {
             if (valorSituacaoProg == 'Efetivada') {
               tDataEfetivacao.text = formataData.format(DateTime.now());
@@ -136,6 +148,18 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
               blocSolicitacaoTrocaOleo.setDataEfetivacao(tDataEfetivacao.text);
             }
           }
+        });
+      }
+    }
+
+    void atualizaPrioridade(String valor) {
+      if (valor.isNotEmpty) {
+        setState(() {
+          consultaFormulario = false;
+          valorPrioridade = valor;
+          blocSolicitacaoTrocaOleo
+              .setPrioridade(retornaPrioridade('STRING', valor));
+          consultaPrioridade = false;
         });
       }
     }
@@ -175,6 +199,11 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
         blocSolicitacaoTrocaOleo.setDataEfetivacao(tDataEfetivacao.text);
       }
 
+      if (consultaPrioridade == true) {
+        tPrioridade.text = retornaPrioridade('INT', coluna.data['prioridade']);
+        atualizaPrioridade(tPrioridade.text);
+      }
+
       consultaCusto();
 
       blocSolicitacaoTrocaOleo.setId(tId.text);
@@ -189,7 +218,7 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
       blocSolicitacaoTrocaOleo.setCustoVinculado(tCustoTotal.text);
     }
 
-    if (codigoSolicitacao != null) {
+    if (codigoSolicitacao != null && consultaFormulario) {
       campoHabilitado = false;
       firestore
           .collection("solicitacaoTrocaOleo")
@@ -265,6 +294,55 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
                                                   blocSolicitacaoTrocaOleo
                                                       .setId(tId.text);
                                                 },
+                                              ),
+                                            ),
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                  left: 20.0),
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.start,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  RequiredLabel(
+                                                    'Prioridade',
+                                                    true,
+                                                  ),
+                                                  Container(
+                                                    height: 50.0,
+                                                    child: Column(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .start,
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: <Widget>[
+                                                        DropdownButton<String>(
+                                                          items:
+                                                              prioridade.map((
+                                                            String
+                                                                dropDownStringItem,
+                                                          ) {
+                                                            return DropdownMenuItem<
+                                                                String>(
+                                                              value:
+                                                                  dropDownStringItem,
+                                                              child: Text(
+                                                                  dropDownStringItem),
+                                                            );
+                                                          }).toList(),
+                                                          onChanged: (novoValorSelecionado) =>
+                                                              atualizaPrioridade(
+                                                                  novoValorSelecionado),
+                                                          value:
+                                                              valorPrioridade,
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ],
                                               ),
                                             ),
                                           ],

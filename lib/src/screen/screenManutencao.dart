@@ -8,6 +8,7 @@ import 'package:smartlogproject/src/util/Componentes/appText.dart';
 import 'package:smartlogproject/src/util/Componentes/appTextField.dart';
 import 'package:smartlogproject/src/util/Componentes/requiredLabel.dart';
 import 'package:smartlogproject/src/util/Listas%20de%20Valores/criaListaValoresCusto.dart';
+import 'package:smartlogproject/src/util/M%C3%A9todos%20de%20Valida%C3%A7%C3%A3o/retornaPrioridade.dart';
 import '../Cards/Widgets/criaCardAuxiliar.dart';
 import 'screenPattern.dart';
 
@@ -71,6 +72,12 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
     'Efetivada',
   ];
 
+  List<String> prioridade = [
+    'Alta',
+    'Média',
+    'Baixa',
+  ];
+
   List<String> tipoManutencao = [
     'Troca de Peça',
     'Lavagem',
@@ -83,29 +90,18 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
   ];
 
   final tDetalhes = TextEditingController();
-
   final tId = TextEditingController();
-
   final tTipoManutencao = TextEditingController();
-
   final tSituacao = TextEditingController();
-
+  final tPrioridade = TextEditingController();
   final tSolicitante = TextEditingController();
-
   final tDataAbertura = TextEditingController();
-
   final tDataEfetivacao = TextEditingController();
-
   final tOficina = TextEditingController();
-
   final tFornecedor = TextEditingController();
-
   final tQuantidade = TextEditingController();
-
   final tCustoTotal = TextEditingController();
-
   final tCustoVinculado = TextEditingController();
-
   final tDsCusto = TextEditingController();
 
   /*
@@ -115,6 +111,8 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
   bool consultaSituacaoProg = true;
   String valorTipoManutencao;
   bool consultaTipoManutencao = true;
+  String valorPrioridade;
+  bool consultaPrioridade = true;
 
   bool preencheDadosIniciais = true;
 
@@ -127,16 +125,16 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
     final Firestore firestore = Firestore.instance;
     bool campoHabilitado = true;
 
-    final DateFormat formataData = DateFormat('dd/MM/yyyy H:m');
+    final DateFormat formataData = DateFormat('dd/MM/yyyy HH:mm');
 
     if (codigoSolicitacao != null) {
       preencheDadosIniciais = false;
     }
 
-    if (codigoSolicitacao == null ||
-        (codigoSolicitacao != 'NULO' && preencheDadosIniciais == true)) {
+    if (codigoSolicitacao == null || (preencheDadosIniciais == true)) {
       tDataAbertura.text = formataData.format(DateTime.now());
       blocSolicitacaoManutencao.setDataAbertura(tDataAbertura.text);
+      blocSolicitacaoManutencao.setSituacaoSolicitacao(valorSituacaoProg);
     }
     void atualizaSituacaoProg(String valor, String origem) {
       if (valor.isNotEmpty) {
@@ -163,6 +161,17 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
           valorTipoManutencao = valor;
           blocSolicitacaoManutencao.setTipoManutencao(valorTipoManutencao);
           consultaTipoManutencao = false;
+        });
+      }
+    }
+
+    void atualizaPrioridade(String valor) {
+      if (valor.isNotEmpty) {
+        setState(() {
+          valorPrioridade = valor;
+          blocSolicitacaoManutencao
+              .setPrioridade(retornaPrioridade('STRING', valor));
+          consultaPrioridade = false;
         });
       }
     }
@@ -197,6 +206,11 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
       if (consultaTipoManutencao == true) {
         tTipoManutencao.text = coluna.data['tipoManutencao'];
         atualizaTipoManutencao(tTipoManutencao.text);
+      }
+
+      if (consultaPrioridade == true) {
+        tPrioridade.text = retornaPrioridade('INT', coluna.data['prioridade']);
+        atualizaPrioridade(tPrioridade.text);
       }
 
       if (consultaSituacaoProg == true) {
@@ -294,6 +308,55 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
                                                   blocSolicitacaoManutencao
                                                       .setId(tId.text);
                                                 },
+                                              ),
+                                            ),
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                  left: 20.0),
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.start,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  RequiredLabel(
+                                                    'Prioridade',
+                                                    true,
+                                                  ),
+                                                  Container(
+                                                    height: 50.0,
+                                                    child: Column(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .start,
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: <Widget>[
+                                                        DropdownButton<String>(
+                                                          items:
+                                                              prioridade.map((
+                                                            String
+                                                                dropDownStringItem,
+                                                          ) {
+                                                            return DropdownMenuItem<
+                                                                String>(
+                                                              value:
+                                                                  dropDownStringItem,
+                                                              child: Text(
+                                                                  dropDownStringItem),
+                                                            );
+                                                          }).toList(),
+                                                          onChanged: (novoValorSelecionado) =>
+                                                              atualizaPrioridade(
+                                                                  novoValorSelecionado),
+                                                          value:
+                                                              valorPrioridade,
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ],
                                               ),
                                             ),
                                             Padding(

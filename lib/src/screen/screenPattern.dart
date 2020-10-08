@@ -21,8 +21,11 @@ class ScreenPattern extends StatelessWidget {
         elevation: 0.1,
         backgroundColor: Colors.blueGrey[800],
         title: Text(
-          '/*SmartLog*/',
-          style: TextStyle(color: Colors.white),
+          'SmartLog - Sistemas Logísticos para Aviários',
+          style: TextStyle(
+            color: Colors.white,
+            fontStyle: FontStyle.italic,
+          ),
         ),
       ),
       body: Row(

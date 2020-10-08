@@ -105,8 +105,10 @@ class _BuscaCaminhaoState extends State<BuscaCaminhao> {
                                 itemBuilder: (BuildContext context, int index) {
                                   final DocumentSnapshot document =
                                       snapshot.data.documents[index];
+
                                   final dynamic descricao =
                                       document['descricao'];
+
                                   final dynamic placa = document['placa'];
                                   final dynamic identificacao =
                                       document['identificacao'];
@@ -151,6 +153,7 @@ class _BuscaCaminhaoState extends State<BuscaCaminhao> {
                                         GestureDetector(
                                           onTap: () {
                                             if (origem == 'CARGA') {
+                                              print(pesoCarregado);
                                               if (pesoCarregado != null) {
                                                 Firestore.instance
                                                     .collection("fichaCaminhao")
@@ -169,6 +172,9 @@ class _BuscaCaminhaoState extends State<BuscaCaminhao> {
                                                             'O peso carregado excede a capacidade máxima do caminhão!')
                                                         : Navigator.pop(context,
                                                             identificacao));
+                                              } else {
+                                                Navigator.pop(
+                                                    context, identificacao);
                                               }
                                             } else {
                                               Navigator.of(context).pushNamed(
