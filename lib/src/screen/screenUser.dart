@@ -38,7 +38,7 @@ class Body extends StatelessWidget {
               children: <Widget>[
                 CriaCardAuxiliar(
                   caminhoImagem: "Images/user_logo.png",
-                  nomeFormulario: "Cadastro de Usuários",
+                  nomeFormulario: "CADASTRO DE USUÁRIOS",
                   origem: 'USUARIO',
                   origemDado: 'USUARIO',
                   chaveConsulta: ModalRoute.of(context).settings.arguments,
@@ -67,21 +67,13 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
   ];
 
   final tNome = TextEditingController();
-
-  final tId = TextEditingController();
-
+  final tId = MaskedTextController(mask: mascaraIdentificao);
   final tTpUsuario = TextEditingController();
-
   final tEmailLogin = TextEditingController();
-
   final tSenha = TextEditingController();
-
   final tEmail = TextEditingController();
-
   final tTelefone = MaskedTextController(mask: mascaraTelefone);
-
   final tCelular = MaskedTextController(mask: mascaraCelular);
-
   final tRamal = TextEditingController();
 
   /*
@@ -91,6 +83,8 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
   bool consultaListaTipoUsuario = true;
 
   bool editaCredenciais = true;
+  bool consultaFormulario = true;
+  bool campoHabilitado = true;
 
   @override
   Widget build(BuildContext context) {
@@ -98,11 +92,11 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
 
     final Firestore firestore = Firestore.instance;
     String idFuncionario = ModalRoute.of(context).settings.arguments;
-    bool campoHabilitado = true;
 
     void atualizaTipoUsuario(String valor) {
       if (valor.isNotEmpty) {
         setState(() {
+          consultaFormulario = false;
           valorSelecionadoTipoUsuario = valor;
           blocFuncionario.setTpUsuario(valorSelecionadoTipoUsuario);
           consultaListaTipoUsuario = false;
@@ -142,7 +136,7 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
     para exibir no formulário. Também seta no objeto através dos setters
     para atualizar os dados no banco, caso sejam alterados.
     */
-    if (idFuncionario != null) {
+    if (idFuncionario != null && consultaFormulario) {
       campoHabilitado = false;
       firestore
           .collection("usuario")
@@ -266,6 +260,12 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
                                                               .center,
                                                       children: <Widget>[
                                                         DropdownButton<String>(
+                                                          style: TextStyle(
+                                                              fontFamily:
+                                                                  'Cardo',
+                                                              fontSize: 17,
+                                                              color:
+                                                                  Colors.black),
                                                           items: usuarios.map((
                                                             String
                                                                 dropDownStringItem,
@@ -350,20 +350,28 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
                                                     GestureDetector(
                                                       onTap: () async {
                                                         if (editaCredenciais) {
-                                                          blocFuncionario
-                                                              .criaAlteraUsuario(
-                                                                  context,
-                                                                  tEmailLogin
-                                                                      .text,
-                                                                  tSenha.text,
-                                                                  'INSERIR')
-                                                              .then((retornoBloc) =>
-                                                                  retornoBloc ==
-                                                                          true
-                                                                      ? editaCredenciais =
-                                                                          false
-                                                                      : editaCredenciais =
-                                                                          true);
+                                                          if (idFuncionario ==
+                                                              null) {
+                                                            alert(
+                                                                context,
+                                                                mensagemAlerta,
+                                                                'Para realizar esta operação é necessário salvar o usuário no sistema!');
+                                                          } else {
+                                                            blocFuncionario
+                                                                .criaAlteraUsuario(
+                                                                    context,
+                                                                    tEmailLogin
+                                                                        .text,
+                                                                    tSenha.text,
+                                                                    'INSERIR')
+                                                                .then((retornoBloc) =>
+                                                                    retornoBloc ==
+                                                                            true
+                                                                        ? editaCredenciais =
+                                                                            false
+                                                                        : editaCredenciais =
+                                                                            true);
+                                                          }
                                                         } else {
                                                           alert(
                                                               context,
@@ -374,7 +382,8 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
                                                       child: Container(
                                                         decoration:
                                                             BoxDecoration(
-                                                          color: Colors.red,
+                                                          color:
+                                                              Colors.blue[900],
                                                           borderRadius:
                                                               BorderRadius.all(
                                                             Radius.circular(
@@ -572,10 +581,13 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
               controller: controller,
               onChanged: onChanged,
               style: TextStyle(
-                fontSize: 16,
+                fontFamily: 'Cardo',
+                fontSize: 17,
                 color: Colors.black,
               ),
-              decoration: InputDecoration(),
+              decoration: InputDecoration(
+                contentPadding: EdgeInsets.fromLTRB(1, 0, 2, 10),
+              ),
             ),
           ),
           SizedBox(

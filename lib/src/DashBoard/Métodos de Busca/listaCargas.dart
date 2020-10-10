@@ -33,7 +33,9 @@ class _DashBoardCargaState extends State<DashBoardCarga> {
                         Text(
                           'Consultando cargas pendentes...',
                           style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 15),
+                              fontFamily: 'Cardo',
+                              fontWeight: FontWeight.bold,
+                              fontSize: 15),
                         ),
                         SizedBox(
                           height: 10,
@@ -120,6 +122,9 @@ class _DashBoardCargaState extends State<DashBoardCarga> {
                                                               .toString()
                                                               .toUpperCase(),
                                                           style: TextStyle(
+                                                              fontFamily:
+                                                                  'Cardo',
+                                                              fontSize: 14,
                                                               fontWeight:
                                                                   FontWeight
                                                                       .bold,
@@ -144,12 +149,13 @@ class _DashBoardCargaState extends State<DashBoardCarga> {
                                                           Text(
                                                             'Data Entrega',
                                                             style: TextStyle(
+                                                              fontFamily: 'Cardo',
+                                                              fontSize: 15,
                                                                 fontWeight:
                                                                     FontWeight
                                                                         .bold,
                                                                 color: Colors
-                                                                        .blueGrey[
-                                                                    900]),
+                                                                    .black),
                                                           ),
                                                           SizedBox(
                                                             height: 8,
@@ -164,7 +170,8 @@ class _DashBoardCargaState extends State<DashBoardCarga> {
                                                               dataEntrega
                                                                   .toString(),
                                                               style: TextStyle(
-                                                                  fontSize: 15,
+                                                                fontFamily: 'Cardo',
+                                                                  fontSize: 14,
                                                                   fontWeight:
                                                                       FontWeight
                                                                           .bold,

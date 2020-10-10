@@ -1,8 +1,10 @@
 import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:smartlogproject/src/Components/scroll/scroll.dart';
 import 'package:smartlogproject/src/Entidades/Bloc/custo-bloc.dart';
+import 'package:smartlogproject/src/constantes/mascaras.dart';
 import 'package:smartlogproject/src/util/Componentes/appText.dart';
 import 'package:smartlogproject/src/util/Componentes/requiredLabel.dart';
 import '../Cards/Widgets/criaCardAuxiliar.dart';
@@ -44,7 +46,7 @@ class _BodyState extends State<Body> {
                 children: <Widget>[
                   CriaCardAuxiliar(
                     caminhoImagem: "Images/money.png",
-                    nomeFormulario: "Cadastro de Custos",
+                    nomeFormulario: "CONTROLE DE CUSTOS",
                     origem: 'CUSTOS',
                     origemDado: 'CUSTOS',
                     chaveConsulta: ModalRoute.of(context).settings.arguments,
@@ -93,12 +95,12 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
   */
 
   final tDetalhes = TextEditingController();
-  final tId = TextEditingController();
+  final tId = MaskedTextController(mask: mascaraIdentificao);
   final tModalidade = TextEditingController();
   final tPeriodicidade = TextEditingController();
   final tAnaliseGerencial = TextEditingController();
   final tValor = TextEditingController();
-
+  bool campoHabilitado = true;
   /*
   Variáveis de Controle para exibição das listas.
   */
@@ -109,16 +111,17 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
   String valorAgr;
   bool consultaAgr = true;
 
+  bool consultaFormulario = true;
+
   @override
   Widget build(BuildContext context) {
     CustoBloc blocCusto = BlocProvider.of<CustoBloc>(context);
-
     final Firestore firestore = Firestore.instance;
     String identificacaoCusto = ModalRoute.of(context).settings.arguments;
-    bool campoHabilitado = true;
 
     void atualizaModalidadeCusto(String valor) {
       if (valor.isNotEmpty) {
+        consultaFormulario = false;
         setState(() {
           valorModalidadeCusto = valor;
           blocCusto.setModalidade(valorModalidadeCusto);
@@ -129,6 +132,7 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
 
     void atualizaPeriodoCusto(String valor) {
       if (valor.isNotEmpty) {
+        consultaFormulario = false;
         setState(() {
           valorPeriodoCusto = valor;
           blocCusto.setPeriodicidade(valorPeriodoCusto);
@@ -139,6 +143,7 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
 
     void atualizaAgr(String valor) {
       if (valor.isNotEmpty) {
+        consultaFormulario = false;
         setState(() {
           valorAgr = valor;
           blocCusto.setAnaliseGerencial(valorAgr);
@@ -152,8 +157,11 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
         tId.text = identificacaoCusto;
       }
       tDetalhes.text = coluna.data['detalhes'];
-      tValor.text = coluna.data['valor'].toString();
-
+      if (coluna.data['valor'] != null) {
+        tValor.text = coluna.data['valor'].toString();
+      } else {
+        tValor.text = '0.00';
+      }
       if (consultaModalidadeCusto == true) {
         tModalidade.text = coluna.data['modalidade'];
         atualizaModalidadeCusto(tModalidade.text);
@@ -179,7 +187,7 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
     para exibir no formulário. Também seta no objeto através dos setters
     para atualizar os dados no banco, caso sejam alterados.
     */
-    if (identificacaoCusto != null) {
+    if (identificacaoCusto != null && consultaFormulario) {
       campoHabilitado = false;
       firestore
           .collection("custos")
@@ -315,6 +323,12 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
                                                         children: <Widget>[
                                                           DropdownButton<
                                                               String>(
+                                                            style: TextStyle(
+                                                                fontFamily:
+                                                                    'Cardo',
+                                                                fontSize: 17,
+                                                                color: Colors
+                                                                    .black),
                                                             items:
                                                                 modalidadeCusto
                                                                     .map((
@@ -375,6 +389,13 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
                                                           children: <Widget>[
                                                             DropdownButton<
                                                                     String>(
+                                                                style: TextStyle(
+                                                                    fontFamily:
+                                                                        'Cardo',
+                                                                    fontSize:
+                                                                        17,
+                                                                    color: Colors
+                                                                        .black),
                                                                 items:
                                                                     periodoCusto
                                                                         .map((
@@ -440,6 +461,13 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
                                                             children: <Widget>[
                                                               DropdownButton<
                                                                       String>(
+                                                                  style: TextStyle(
+                                                                      fontFamily:
+                                                                          'Cardo',
+                                                                      fontSize:
+                                                                          17,
+                                                                      color: Colors
+                                                                          .black),
                                                                   items:
                                                                       consideraAgr
                                                                           .map((
@@ -548,10 +576,13 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
               onChanged: onChanged,
               enabled: enabled,
               style: TextStyle(
-                fontSize: 16,
+                fontFamily: 'Cardo',
+                fontSize: 17,
                 color: Colors.black,
               ),
-              decoration: InputDecoration(),
+              decoration: InputDecoration(
+                contentPadding: EdgeInsets.fromLTRB(1, 0, 2, 10),
+              ),
             ),
           ),
           SizedBox(

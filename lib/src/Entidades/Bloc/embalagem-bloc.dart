@@ -101,26 +101,35 @@ class EmbalagemBloc extends BlocBase {
     } else {
       try {
         await Firestore.instance
-            .collection('embalagem')
+            .collection("empresa")
             .document(embalagem.identificacao)
-            .setData({
-          'identificacao': embalagem.identificacao,
-          'embalagem': embalagem.identificacao,
-          'descricao': embalagem.descricao,
-          'categoriaEmbalagem': embalagem.categoriaEmbalagem,
-          'capacidade': embalagem.capacidade,
-          'tipoUnidade': embalagem.tipoUnidade,
-          'largura': embalagem.largura,
-          'comprimento': embalagem.comprimento,
-          'altura': embalagem.altura,
-          'cubagem': embalagem.cubagem,
-          'tara': embalagem.tara,
-        }).then((value) async => await alert(
-                contextoAplicacao,
-                'Notificação de Sucesso',
-                'Os dados do formulário foram salvos com sucesso no banco de dados!'));
+            .get()
+            .then((coluna) async => coluna.exists == true
+                ? alert(contextoAplicacao, mensagemAlerta,
+                    'Este código de embalagem já existe. Favor alterar!')
+                : await Firestore.instance
+                    .collection('embalagem')
+                    .document(embalagem.identificacao)
+                    .setData({
+                    'identificacao': embalagem.identificacao,
+                    'embalagem': embalagem.identificacao,
+                    'descricao': embalagem.descricao,
+                    'categoriaEmbalagem': embalagem.categoriaEmbalagem,
+                    'capacidade': embalagem.capacidade,
+                    'tipoUnidade': embalagem.tipoUnidade,
+                    'largura': embalagem.largura,
+                    'comprimento': embalagem.comprimento,
+                    'altura': embalagem.altura,
+                    'cubagem': embalagem.cubagem,
+                    'tara': embalagem.tara,
+                  }).then((value) async => await alertFuncao(contextoAplicacao,
+                            mensagemNotificacao, mensagemSucessoApagar, () {
+                          Navigator.of(contextoAplicacao).pushNamed(
+                              '/FormularioEmbalagem',
+                              arguments: embalagem.identificacao);
+                        })));
       } catch (on) {
-        TextError('Erro ao salvar os dados do formulário no banco de dados!');
+        TextError(mensagemErroSalvar);
       }
     }
   }
@@ -143,9 +152,7 @@ class EmbalagemBloc extends BlocBase {
           .document(embalagem.identificacao)
           .delete()
           .then((value) => alertFuncao(
-                  contextoAplicacao,
-                  'Notificação de Sucesso',
-                  'Os dados do formulário foram apagados com sucesso no banco de dados!',
+                  contextoAplicacao, mensagemNotificacao, mensagemSucessoApagar,
                   () {
                 Navigator.of(contextoAplicacao).pushNamed(
                   '/FormularioEmbalagem',
@@ -155,7 +162,7 @@ class EmbalagemBloc extends BlocBase {
         print(erro.error);
       });
     } catch (on) {
-      TextError('Erro ao apagar os dados do formulário no banco de dados!');
+      TextError(mensagemErroApagar);
     }
   }
 
@@ -202,19 +209,11 @@ class EmbalagemBloc extends BlocBase {
           'cubagem': embalagem.cubagem,
           'tara': embalagem.tara,
         }).then((value) async => await alert(
-                contextoAplicacao,
-                'Notificação de Sucesso',
-                'Os dados do formulário foram atualizados com sucesso no banco de dados!'));
+                contextoAplicacao, mensagemNotificacao, mensagemSucessoSalvar));
       } catch (on) {
-        TextError(
-            'Erro ao atualizar os dados do formulário no banco de dados!');
+        TextError(mensagemErroApagar);
       }
     }
-  }
-
-  Future<void> eventoAlteralista(String valor) async {
-    _controllerValorLista.add(_controllerValorLista.value);
-    // print(_controllerValorLista.stream);
   }
 
   @override

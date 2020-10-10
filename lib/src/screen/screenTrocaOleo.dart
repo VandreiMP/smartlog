@@ -45,7 +45,7 @@ class _BodyState extends State<Body> {
               children: <Widget>[
                 CriaCardAuxiliar(
                   caminhoImagem: "Images/oleo.png",
-                  nomeFormulario: "Programação de Troca de Óleo",
+                  nomeFormulario: "PROGRAMAÇÃO DE TROCA DE ÓLEO",
                   origem: 'OLEO',
                   origemDado: 'OLEO',
                   chaveConsulta: ModalRoute.of(context).settings.arguments,
@@ -186,9 +186,21 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
       tDataAbertura.text = coluna.data['dataAbertura'];
       tOficina.text = coluna.data['oficina'];
       tFornecedor.text = coluna.data['fornecedor'];
-      tPrecoLitro.text = coluna.data['precoLitro'].toString();
-      tQuantidade.text = coluna.data['quantidade'].toString();
-      tCustoTotal.text = coluna.data['custoTotal'].toString();
+      if (coluna.data['precoLitro'] != null) {
+        tPrecoLitro.text = coluna.data['precoLitro'].toString();
+      } else {
+        tPrecoLitro.text = '0.00';
+      }
+      if (coluna.data['quantidade'] != null) {
+        tQuantidade.text = coluna.data['quantidade'].toString();
+      } else {
+        tQuantidade.text = '0.00';
+      }
+      if (coluna.data['custoTotal'] != null) {
+        tCustoTotal.text = coluna.data['custoTotal'].toString();
+      } else {
+        tCustoTotal.text = '0.00';
+      }
       tCustoTotal.text = coluna.data['custoVinculado'];
 
       if (consultaSituacaoProg == true) {
@@ -320,6 +332,12 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
                                                               .start,
                                                       children: <Widget>[
                                                         DropdownButton<String>(
+                                                          style: TextStyle(
+                                                              fontFamily:
+                                                                  'Cardo',
+                                                              fontSize: 17,
+                                                              color:
+                                                                  Colors.black),
                                                           items:
                                                               prioridade.map((
                                                             String
@@ -392,6 +410,12 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
                                                               .start,
                                                       children: <Widget>[
                                                         DropdownButton<String>(
+                                                            style: TextStyle(
+                                                                fontFamily:
+                                                                    'Cardo',
+                                                                fontSize: 17,
+                                                                color: Colors
+                                                                    .black),
                                                             items:
                                                                 situacaoSolicitacao
                                                                     .map((
@@ -442,7 +466,7 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
                                                                   false;
                                                               blocSolicitacaoTrocaOleo
                                                                   .verificaAlteracaoSituacao(
-                                                                      tId.text,
+                                                                      codigoSolicitacao,
                                                                       context,
                                                                       'EFETIVAR')
                                                                   .then((mensagemRetorno) => mensagemRetorno ==
@@ -497,7 +521,7 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
                                                             onTap: () {
                                                               blocSolicitacaoTrocaOleo
                                                                   .verificaAlteracaoSituacao(
-                                                                      tId.text,
+                                                                      codigoSolicitacao,
                                                                       context,
                                                                       'NEGAR')
                                                                   .then((mensagemRetorno) => mensagemRetorno ==

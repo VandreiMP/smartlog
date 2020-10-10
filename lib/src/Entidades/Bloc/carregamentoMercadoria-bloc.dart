@@ -9,7 +9,6 @@ import 'package:smartlogproject/src/util/Componentes/alertErro.dart';
 import 'package:smartlogproject/src/util/Componentes/alertFuncao.dart';
 
 class CarregamentoMercadoriaBloc extends BlocBase {
-
   BuildContext contextoAplicacao;
 
   CarregamentoMercadoriaBloc(BuildContext contextoAplicacao);
@@ -161,31 +160,45 @@ class CarregamentoMercadoriaBloc extends BlocBase {
     } else {
       try {
         await Firestore.instance
-            .collection('carregamentoMercadoria')
+            .collection("carregamentoMercadoria")
             .document(carregamentoMercadoria.carga)
-            .setData({
-          'carga': carregamentoMercadoria.carga,
-          'saidaCaminhao': carregamentoMercadoria.saidaCaminhao,
-          'numeroRomaneio': carregamentoMercadoria.numeroRomaneio,
-          'situacaoExpedicao': carregamentoMercadoria.situacaoExpedicao,
-          'caminhao': carregamentoMercadoria.caminhao,
-          'motorista': carregamentoMercadoria.motorista,
-          'comprador': carregamentoMercadoria.comprador,
-          'telefone': carregamentoMercadoria.telefone,
-          'dataEntrega': carregamentoMercadoria.dataEntrega,
-          'situacaoEntrega': carregamentoMercadoria.situacaoEntrega,
-          'produto': carregamentoMercadoria.produto,
-          'embalagem': carregamentoMercadoria.embalagem,
-          'quantidadeEmbalagem': carregamentoMercadoria.quantidadeEmbalagem,
-          'pesoBruto': carregamentoMercadoria.pesoBruto,
-          'pesoLiquido': carregamentoMercadoria.pesoLiquido,
-          'cubagemCarga': carregamentoMercadoria.cubagemCarga,
-          'quantidade': carregamentoMercadoria.quantidade,
-          'precoLiquido': carregamentoMercadoria.precoLiquido,
-          'totalDesp': carregamentoMercadoria.totalDesp,
-          'totalCarga': carregamentoMercadoria.totalCarga
-        }).then((value) async => await alert(
-                contextoAplicacao, mensagemNotificacao, mensagemSucessoSalvar));
+            .get()
+            .then((coluna) async => coluna.exists == true
+                ? alert(contextoAplicacao, mensagemAlerta,
+                    'Este código de carga já existe. Favor alterar!')
+                : await Firestore.instance
+                    .collection('carregamentoMercadoria')
+                    .document(carregamentoMercadoria.carga)
+                    .setData({
+                    'carga': carregamentoMercadoria.carga,
+                    'saidaCaminhao': carregamentoMercadoria.saidaCaminhao,
+                    'numeroRomaneio': carregamentoMercadoria.numeroRomaneio,
+                    'situacaoExpedicao':
+                        carregamentoMercadoria.situacaoExpedicao,
+                    'caminhao': carregamentoMercadoria.caminhao,
+                    'motorista': carregamentoMercadoria.motorista,
+                    'comprador': carregamentoMercadoria.comprador,
+                    'telefone': carregamentoMercadoria.telefone,
+                    'dataEntrega': carregamentoMercadoria.dataEntrega,
+                    'situacaoEntrega': carregamentoMercadoria.situacaoEntrega,
+                    'produto': carregamentoMercadoria.produto,
+                    'embalagem': carregamentoMercadoria.embalagem,
+                    'quantidadeEmbalagem':
+                        carregamentoMercadoria.quantidadeEmbalagem,
+                    'pesoBruto': carregamentoMercadoria.pesoBruto,
+                    'pesoLiquido': carregamentoMercadoria.pesoLiquido,
+                    'cubagemCarga': carregamentoMercadoria.cubagemCarga,
+                    'quantidade': carregamentoMercadoria.quantidade,
+                    'precoLiquido': carregamentoMercadoria.precoLiquido,
+                    'totalDesp': carregamentoMercadoria.totalDesp,
+                    'totalCarga': carregamentoMercadoria.totalCarga
+                  }).then((value) async => await alertFuncao(contextoAplicacao,
+                            mensagemNotificacao, mensagemSucessoSalvar, () {
+                          Navigator.of(contextoAplicacao).pushNamed(
+                            '/FormularioCarga',
+                            arguments: carregamentoMercadoria.carga,
+                          );
+                        })));
       } catch (on) {
         TextError(mensagemErroSalvar);
       }
@@ -352,25 +365,18 @@ class CarregamentoMercadoriaBloc extends BlocBase {
       }
     }
 
-    if (numeroCarga.isNotEmpty) {
+    if (numeroCarga != null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para realizar esta operação é necessário gravar a carga no sistema!');
+    } else {
       await Firestore.instance
           .collection("carregamentoMercadoria")
           .document(numeroCarga)
           .get()
           .then(
-            (coluna) async => coluna.exists == false
-                ? mensagemRetorno = 'SEM_DADOS'
-                : validaExpedicao(coluna, origem),
+            (coluna) async => validaExpedicao(coluna, origem),
           );
-    } else {
-      mensagemRetorno = 'SEM_DADOS';
     }
-
-    if (mensagemRetorno == 'SEM_DADOS') {
-      alert(contextoAplicacao, mensagemAlerta,
-          'Para realizar esta operação é necessário gravar a carga no sistema!');
-    }
-
     return mensagemRetorno;
   }
 
@@ -399,7 +405,6 @@ class CarregamentoMercadoriaBloc extends BlocBase {
     String mensagemRetorno = 'OK';
     print(pesoCarga);
     if (pesoCarga != null) {
-     
       await Firestore.instance
           .collection("fichaCaminhao")
           .document(codigoCaminhao)
@@ -413,7 +418,7 @@ class CarregamentoMercadoriaBloc extends BlocBase {
             'O peso informado excede a capacidade máxima do caminhão!');
       }
     }
-      print(mensagemRetorno);
+    print(mensagemRetorno);
     return mensagemRetorno;
   }
 

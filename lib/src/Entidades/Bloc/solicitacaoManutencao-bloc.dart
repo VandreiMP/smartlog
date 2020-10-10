@@ -116,24 +116,43 @@ class SolicitacaoManutencaoBloc extends BlocBase {
     } else {
       try {
         await Firestore.instance
-            .collection('solicitacaoManutencao')
+            .collection("solicitacaoManutencao")
             .document(solicitacaoManutencao.identificacao)
-            .setData({
-          'identificacao': solicitacaoManutencao.identificacao,
-          'prioridade': solicitacaoManutencao.prioridade,
-          'tipoManutencao': solicitacaoManutencao.tipoManutencao,
-          'detalhes': solicitacaoManutencao.detalhes,
-          'situacaoSolicitacao': solicitacaoManutencao.situacaoSolicitacao,
-          'solicitante': solicitacaoManutencao.solicitante,
-          'dataAbertura': solicitacaoManutencao.dataAbertura,
-          'dataEfetivacao': solicitacaoManutencao.dataEfetivacao,
-          'oficina': solicitacaoManutencao.oficina,
-          'custoTotal': solicitacaoManutencao.custoTotal,
-          'custoVinculado': solicitacaoManutencao.custoVinculado
-        }).then((value) async => await alert(
-                contextoAplicacao, mensagemNotificacao, mensagemSucessoSalvar));
+            .get()
+            .then(
+              (coluna) async => coluna.exists == true
+                  ? alert(contextoAplicacao, mensagemAlerta,
+                      'Esta programação já existe. Favor alterar!')
+                  : await Firestore.instance
+                      .collection('solicitacaoManutencao')
+                      .document(solicitacaoManutencao.identificacao)
+                      .setData({
+                      'identificacao': solicitacaoManutencao.identificacao,
+                      'prioridade': solicitacaoManutencao.prioridade,
+                      'tipoManutencao': solicitacaoManutencao.tipoManutencao,
+                      'detalhes': solicitacaoManutencao.detalhes,
+                      'situacaoSolicitacao':
+                          solicitacaoManutencao.situacaoSolicitacao,
+                      'solicitante': solicitacaoManutencao.solicitante,
+                      'dataAbertura': solicitacaoManutencao.dataAbertura,
+                      'dataEfetivacao': solicitacaoManutencao.dataEfetivacao,
+                      'oficina': solicitacaoManutencao.oficina,
+                      'custoTotal': solicitacaoManutencao.custoTotal,
+                      'custoVinculado': solicitacaoManutencao.custoVinculado
+                    }).then(
+                      (value) async => await alertFuncao(
+                        contextoAplicacao,
+                        mensagemNotificacao,
+                        mensagemSucessoSalvar,
+                        () {
+                          Navigator.of(contextoAplicacao)
+                              .pushNamed('/FormularioManutencao');
+                        },
+                      ),
+                    ),
+            );
       } catch (on) {
-        TextError('Erro ao salvar os dados do formulário no banco de dados!');
+        TextError(mensagemErroSalvar);
       }
     }
   }
@@ -226,8 +245,7 @@ class SolicitacaoManutencaoBloc extends BlocBase {
         }).then((value) async => await alert(
                 contextoAplicacao, mensagemNotificacao, mensagemSucessoSalvar));
       } catch (on) {
-        TextError(
-            'Erro ao atualizar os dados do formulário no banco de dados!');
+        TextError(mensagemErroSalvar);
       }
     }
   }
@@ -260,28 +278,31 @@ class SolicitacaoManutencaoBloc extends BlocBase {
       }
     }
 
-    if (numeroSolicitiacao.isNotEmpty) {
-      await Firestore.instance
-          .collection("solicitacaoManutencao")
-          .document(numeroSolicitiacao)
-          .get()
-          .then(
-            (coluna) async => coluna.exists == false
-                ? mensagemRetorno = 'SEM_DADOS'
-                : validaSituacao(coluna, origem),
-          );
-    } else {
-      mensagemRetorno = 'SEM_DADOS';
-    }
-
-    if (mensagemRetorno == 'SEM_DADOS') {
+    if (numeroSolicitiacao != null) {
       alert(contextoAplicacao, mensagemAlerta,
-          'Para realizar esta operação é necessário gravar a programação no sistema!');
+          'Para realizar esta operação é necessário gravar a carga no sistema!');
+      if (numeroSolicitiacao.isNotEmpty) {
+        await Firestore.instance
+            .collection("solicitacaoManutencao")
+            .document(numeroSolicitiacao)
+            .get()
+            .then(
+              (coluna) async => validaSituacao(coluna, origem),
+            );
+      } else {
+        alert(contextoAplicacao, mensagemAlerta,
+            'Para realizar esta operação é necessário gravar a programação no sistema!');
+      }
+
+      return mensagemRetorno;
     }
 
-    return mensagemRetorno;
+    @override
+    void dispose() {}
   }
 
   @override
-  void dispose() {}
+  void dispose() {
+    // TODO: implement dispose
+  }
 }

@@ -81,8 +81,11 @@ class _BodyState extends State<Body> {
                             ),
                             child: Text(
                               labelBotao,
-                              style:
-                                  TextStyle(fontSize: 16, color: Colors.white),
+                              style: TextStyle(
+                                  fontFamily: 'Cardo',
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white),
                             )),
                       ),
                     ),

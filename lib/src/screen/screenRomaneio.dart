@@ -47,7 +47,7 @@ class _BodyState extends State<Body> {
                 children: <Widget>[
                   CriaCardAuxiliar(
                     caminhoImagem: "Images/romaneio.png",
-                    nomeFormulario: "Geração do Romaneio da Carga",
+                    nomeFormulario: "GERAÇÃO DO ROMANEIO DA CARGA",
                     origem: 'ROMANEIO',
                     origemDado: 'ROMANEIO',
                     chaveConsulta: null,
@@ -278,6 +278,13 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
                                                             children: <Widget>[
                                                               DropdownButton<
                                                                   String>(
+                                                                style: TextStyle(
+                                                                    fontFamily:
+                                                                        'Cardo',
+                                                                    fontSize:
+                                                                        17,
+                                                                    color: Colors
+                                                                        .black),
                                                                 items:
                                                                     modalidadeFrete
                                                                         .map((

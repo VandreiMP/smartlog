@@ -1,8 +1,10 @@
 import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:smartlogproject/src/Components/scroll/scroll.dart';
 import 'package:smartlogproject/src/Entidades/Bloc/embalagem-bloc.dart';
+import 'package:smartlogproject/src/constantes/mascaras.dart';
 import 'package:smartlogproject/src/util/Componentes/appText.dart';
 import 'package:smartlogproject/src/util/Componentes/requiredLabel.dart';
 import 'package:smartlogproject/src/util/M%C3%A9todos%20de%20C%C3%A1lculo/calculaCubagem.dart';
@@ -43,7 +45,7 @@ class _BodyState extends State<Body> {
               children: <Widget>[
                 CriaCardAuxiliar(
                   caminhoImagem: "Images/embalagem.png",
-                  nomeFormulario: "Cadastro de Embalagens",
+                  nomeFormulario: "CADASTRO DE EMBALAGENS",
                   origem: 'EMBALAGEM',
                   origemDado: 'EMBALAGEM',
                   chaveConsulta: ModalRoute.of(context).settings.arguments,
@@ -80,23 +82,14 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
   ];
 
   final tDescricao = TextEditingController();
-
-  final tId = TextEditingController();
-
+  final tId = MaskedTextController(mask: mascaraIdentificao);
   final tCategoriaEmbalagem = TextEditingController();
-
   final tCapacidade = TextEditingController();
-
   final tTipoUnidade = TextEditingController();
-
   final tLargura = TextEditingController();
-
   final tComprimento = TextEditingController();
-
   final tAltura = TextEditingController();
-
   final tCubagem = TextEditingController();
-
   final tTara = TextEditingController();
 
   /*
@@ -106,17 +99,20 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
   bool consultaListaUnidade = true;
   String valorSelecionadoCategoria;
   bool consultaListaCategoria = true;
+  bool consultaFormulario = true;
+
+  bool campoHabilitado = true;
 
   @override
   Widget build(BuildContext context) {
     String codigoEmbalagem = ModalRoute.of(context).settings.arguments;
     EmbalagemBloc blocEmbalagem = BlocProvider.of<EmbalagemBloc>(context);
     final Firestore firestore = Firestore.instance;
-    bool campoHabilitado = true;
 
     void atualizaTipoUnidade(String valor) {
       if (valor.isNotEmpty) {
         setState(() {
+          consultaFormulario = false;
           valorSelecionadoUnidade = valor;
           blocEmbalagem.setTipoUnidade(valorSelecionadoUnidade);
           consultaListaUnidade = false;
@@ -133,6 +129,7 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
     void atualizaCategoria(String valor) {
       if (valor.isNotEmpty) {
         setState(() {
+          consultaFormulario = false;
           valorSelecionadoCategoria = valor;
           blocEmbalagem.setcategoriaEmbalagem(valorSelecionadoCategoria);
           consultaListaCategoria = false;
@@ -145,7 +142,12 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
         tId.text = codigoEmbalagem;
       }
       tDescricao.text = coluna.data['descricao'];
-      tCapacidade.text = coluna.data['capacidade'].toString();
+      if (coluna.data['capacidade'] != null) {
+        tCapacidade.text = coluna.data['capacidade'].toString();
+      } else {
+        tCapacidade.text = '0.00';
+      }
+
       if (consultaListaUnidade == true) {
         tTipoUnidade.text = coluna.data['tipoUnidade'];
         atualizaTipoUnidade(tTipoUnidade.text);
@@ -154,11 +156,31 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
         tCategoriaEmbalagem.text = coluna.data['categoriaEmbalagem'];
         atualizaCategoria(tCategoriaEmbalagem.text);
       }
-      tLargura.text = coluna.data['largura'].toString();
-      tComprimento.text = coluna.data['comprimento'].toString();
-      tAltura.text = coluna.data['altura'].toString();
-      tCubagem.text = coluna.data['cubagem'].toString();
-      tTara.text = coluna.data['tara'].toString();
+      if (coluna.data['largura'] != null) {
+        tLargura.text = coluna.data['largura'].toString();
+      } else {
+        tLargura.text = '0.00';
+      }
+      if (coluna.data['comprimento'] != null) {
+        tComprimento.text = coluna.data['comprimento'].toString();
+      } else {
+        tComprimento.text = '0.00';
+      }
+      if (coluna.data['altura'] != null) {
+        tAltura.text = coluna.data['altura'].toString();
+      } else {
+        tAltura.text = '0.00';
+      }
+      if (coluna.data['cubagem'] != null) {
+        tCubagem.text = coluna.data['cubagem'].toString();
+      } else {
+        tCubagem.text = '0.00';
+      }
+      if (coluna.data['tara'] != null) {
+        tTara.text = coluna.data['tara'].toString();
+      } else {
+        tTara.text = '0.00';
+      }
 
       blocEmbalagem.setId(tId.text);
       blocEmbalagem.setDescricao(tDescricao.text);
@@ -169,7 +191,7 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
       blocEmbalagem.setTara(double.tryParse(tTara.text));
     }
 
-    if (codigoEmbalagem != null) {
+    if (codigoEmbalagem != null && consultaFormulario) {
       campoHabilitado = false;
       firestore
           .collection("embalagem")
@@ -287,6 +309,12 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
                                                           children: <Widget>[
                                                             DropdownButton<
                                                                 String>(
+                                                              style: TextStyle(
+                                                                  fontFamily:
+                                                                      'Cardo',
+                                                                  fontSize: 17,
+                                                                  color: Colors
+                                                                      .black),
                                                               items:
                                                                   tipoEmbalagens
                                                                       .map((
@@ -395,6 +423,12 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
                                                               .center,
                                                       children: <Widget>[
                                                         DropdownButton<String>(
+                                                          style: TextStyle(
+                                                              fontFamily:
+                                                                  'Cardo',
+                                                              fontSize: 17,
+                                                              color:
+                                                                  Colors.black),
                                                           items: tipoCapacidade
                                                               .map((
                                                             String
@@ -611,7 +645,6 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
     bool enabled,
     TextEditingController controller,
     String valorInicial,
-    //int tamanhoMaximo,
   }) {
     return Form(
       child: Column(
@@ -628,10 +661,13 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
               controller: controller,
               onChanged: onChanged,
               style: TextStyle(
+                fontFamily: 'Cardo',
                 fontSize: 16,
                 color: Colors.black,
               ),
-              decoration: InputDecoration(),
+              decoration: InputDecoration(
+                contentPadding: EdgeInsets.fromLTRB(1, 0, 2, 10),
+              ),
             ),
           ),
           SizedBox(

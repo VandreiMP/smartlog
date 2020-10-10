@@ -3,8 +3,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:smartlogproject/src/Entidades/classes/responsavelEmpresa.dart';
+import 'package:smartlogproject/src/constantes/mensagens.dart';
 import 'package:smartlogproject/src/util/Componentes/alert.dart';
 import 'package:smartlogproject/src/util/Componentes/alertErro.dart';
+import 'package:smartlogproject/src/util/Componentes/alertFuncao.dart';
 
 class ResponsavelEmpresaBloc extends BlocBase {
   BuildContext contextoAplicacao;
@@ -56,8 +58,6 @@ class ResponsavelEmpresaBloc extends BlocBase {
   Future<void> insereDados(BuildContext contextoAplicacao) async {
     var responsavelEmpresa = ResponsavelEmpresa();
 
-
-
     responsavelEmpresa.identificacaoEmpresa =
         _idResponsavelEmpresaController.value;
     responsavelEmpresa.nome = _nomeController.value;
@@ -76,10 +76,14 @@ class ResponsavelEmpresaBloc extends BlocBase {
       'cpf': responsavelEmpresa.cpf,
       'cargo': responsavelEmpresa.cargo,
       'email': responsavelEmpresa.email,
-    }).then((value) async => await alert(
-            contextoAplicacao,
-            'Notificação de Sucesso',
-            'Os dados do formulário foram salvos com sucesso no banco de dados!'));
+    }).then((value) async => alertFuncao(
+                contextoAplicacao, mensagemNotificacao, mensagemSucessoApagar,
+                () {
+              Navigator.of(contextoAplicacao).pushNamed(
+                '/FormularioEmpresaDetalhes',
+                arguments: responsavelEmpresa.identificacaoEmpresa,
+              );
+            }));
   }
 
   /*

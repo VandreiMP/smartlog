@@ -130,24 +130,42 @@ class SolicitacaoAbastecimentoBloc extends BlocBase {
     } else {
       try {
         await Firestore.instance
-            .collection('solicitacaoAbastecimento')
+            .collection("solicitacaoAbastecimento")
             .document(solicitacaoAbastecimento.identificacao)
-            .setData({
-          'identificacao': solicitacaoAbastecimento.identificacao,
-          'prioridade': solicitacaoAbastecimento.prioridade,
-          'detalhes': solicitacaoAbastecimento.detalhes,
-          'situacaoSolicitacao': solicitacaoAbastecimento.situacaoSolicitacao,
-          'solicitante': solicitacaoAbastecimento.solicitante,
-          'dataAbertura': solicitacaoAbastecimento.dataAbertura,
-          'dataEfetivacao': solicitacaoAbastecimento.dataEfetivacao,
-          'posto': solicitacaoAbastecimento.posto,
-          'tipoCombustivel': solicitacaoAbastecimento.tipoCombustivel,
-          'precoLitro': solicitacaoAbastecimento.precoLitro,
-          'quantidade': solicitacaoAbastecimento.quantidade,
-          'custoTotal': solicitacaoAbastecimento.custoTotal,
-          'custoVinculado': solicitacaoAbastecimento.custoVinculado
-        }).then((value) async => await alert(
-                contextoAplicacao, mensagemNotificacao, mensagemSucessoSalvar));
+            .get()
+            .then((coluna) async => coluna.exists == true
+                ? alert(contextoAplicacao, mensagemAlerta,
+                    'Esta programação já existe. Favor alterar!')
+                : await Firestore.instance
+                    .collection('solicitacaoAbastecimento')
+                    .document(solicitacaoAbastecimento.identificacao)
+                    .setData({
+                    'identificacao': solicitacaoAbastecimento.identificacao,
+                    'prioridade': solicitacaoAbastecimento.prioridade,
+                    'detalhes': solicitacaoAbastecimento.detalhes,
+                    'situacaoSolicitacao':
+                        solicitacaoAbastecimento.situacaoSolicitacao,
+                    'solicitante': solicitacaoAbastecimento.solicitante,
+                    'dataAbertura': solicitacaoAbastecimento.dataAbertura,
+                    'dataEfetivacao': solicitacaoAbastecimento.dataEfetivacao,
+                    'posto': solicitacaoAbastecimento.posto,
+                    'tipoCombustivel': solicitacaoAbastecimento.tipoCombustivel,
+                    'precoLitro': solicitacaoAbastecimento.precoLitro,
+                    'quantidade': solicitacaoAbastecimento.quantidade,
+                    'custoTotal': solicitacaoAbastecimento.custoTotal,
+                    'custoVinculado': solicitacaoAbastecimento.custoVinculado
+                  }).then(
+                    (value) async => await alertFuncao(
+                      contextoAplicacao,
+                      mensagemNotificacao,
+                      mensagemSucessoSalvar,
+                      () {
+                        Navigator.of(contextoAplicacao).pushNamed(
+                            '/FormularioAbastecimento',
+                            arguments: solicitacaoAbastecimento.identificacao);
+                      },
+                    ),
+                  ));
       } catch (on) {
         TextError(mensagemErroSalvar);
       }
@@ -283,21 +301,15 @@ class SolicitacaoAbastecimentoBloc extends BlocBase {
       }
     }
 
-    if (numeroSolicitiacao.isNotEmpty) {
+    if (numeroSolicitiacao != null) {
       await Firestore.instance
           .collection("solicitacaoAbastecimento")
           .document(numeroSolicitiacao)
           .get()
           .then(
-            (coluna) async => coluna.exists == false
-                ? mensagemRetorno = 'SEM_DADOS'
-                : validaSituacao(coluna, origem),
+            (coluna) async => validaSituacao(coluna, origem),
           );
     } else {
-      mensagemRetorno = 'SEM_DADOS';
-    }
-
-    if (mensagemRetorno == 'SEM_DADOS') {
       alert(contextoAplicacao, mensagemAlerta,
           'Para realizar esta operação é necessário gravar a programação no sistema!');
     }

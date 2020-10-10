@@ -58,11 +58,12 @@ class AppTextField extends StatelessWidget {
       width: width ?? double.maxFinite,
       child: TextFormField(
         maxLengthEnforced: true,
+        maxLines: 1,
         cursorColor: Colors.black,
         initialValue: valorInicial,
         enabled: enabled,
         controller: controller,
-        
+        strutStyle: StrutStyle(fontFamily: 'Cardo'),
         obscureText: password,
         validator: validator,
         keyboardType: TextInputType.datetime,
@@ -75,10 +76,13 @@ class AppTextField extends StatelessWidget {
           }
         },
         style: TextStyle(
-          fontSize: 16,
+          fontSize: 17,
+          fontFamily: 'Cardo',
           color: Colors.black,
         ),
-        decoration: InputDecoration(),
+        decoration: InputDecoration(
+          contentPadding: EdgeInsets.fromLTRB(1, 0, 2, 10),
+        ),
       ),
     );
   }

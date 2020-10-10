@@ -125,24 +125,45 @@ class SolicitacaoTrocaOleoBloc extends BlocBase {
     } else {
       try {
         await Firestore.instance
-            .collection('solicitacaoTrocaOleo')
+            .collection("solicitacaoTrocaOleo")
             .document(solicitacaoTrocaOleo.identificacao)
-            .setData({
-          'identificacao': solicitacaoTrocaOleo.identificacao,
-          'prioridade': solicitacaoTrocaOleo.prioridade,
-          'detalhes': solicitacaoTrocaOleo.detalhes,
-          'situacaoSolicitacao': solicitacaoTrocaOleo.situacaoSolicitacao,
-          'solicitante': solicitacaoTrocaOleo.solicitante,
-          'dataAbertura': solicitacaoTrocaOleo.dataAbertura,
-          'dataEfetivacao': solicitacaoTrocaOleo.dataEfetivacao,
-          'oficina': solicitacaoTrocaOleo.oficina,
-          'fornecedor': solicitacaoTrocaOleo.fornecedor,
-          'precoLitro': solicitacaoTrocaOleo.precoLitro,
-          'quantidade': solicitacaoTrocaOleo.quantidade,
-          'custoTotal': solicitacaoTrocaOleo.custoTotal,
-          'custoVinculado': solicitacaoTrocaOleo.custoVinculado
-        }).then((value) async => await alert(
-                contextoAplicacao, mensagemNotificacao, mensagemSucessoSalvar));
+            .get()
+            .then(
+              (coluna) async => coluna.exists == true
+                  ? alert(contextoAplicacao, mensagemAlerta,
+                      'Esta programação já existe. Favor alterar!')
+                  : await Firestore.instance
+                      .collection('solicitacaoTrocaOleo')
+                      .document(solicitacaoTrocaOleo.identificacao)
+                      .setData({
+                      'identificacao': solicitacaoTrocaOleo.identificacao,
+                      'prioridade': solicitacaoTrocaOleo.prioridade,
+                      'detalhes': solicitacaoTrocaOleo.detalhes,
+                      'situacaoSolicitacao':
+                          solicitacaoTrocaOleo.situacaoSolicitacao,
+                      'solicitante': solicitacaoTrocaOleo.solicitante,
+                      'dataAbertura': solicitacaoTrocaOleo.dataAbertura,
+                      'dataEfetivacao': solicitacaoTrocaOleo.dataEfetivacao,
+                      'oficina': solicitacaoTrocaOleo.oficina,
+                      'fornecedor': solicitacaoTrocaOleo.fornecedor,
+                      'precoLitro': solicitacaoTrocaOleo.precoLitro,
+                      'quantidade': solicitacaoTrocaOleo.quantidade,
+                      'custoTotal': solicitacaoTrocaOleo.custoTotal,
+                      'custoVinculado': solicitacaoTrocaOleo.custoVinculado
+                    }).then(
+                      (value) async => alertFuncao(
+                        contextoAplicacao,
+                        mensagemNotificacao,
+                        mensagemSucessoApagar,
+                        () {
+                          Navigator.of(contextoAplicacao).pushNamed(
+                            '/FormularioTrocaDeOleo',
+                            arguments: solicitacaoTrocaOleo.identificacao,
+                          );
+                        },
+                      ),
+                    ),
+            );
       } catch (on) {
         TextError(mensagemErroSalvar);
       }
@@ -276,21 +297,15 @@ class SolicitacaoTrocaOleoBloc extends BlocBase {
       }
     }
 
-    if (numeroSolicitiacao.isNotEmpty) {
+    if (numeroSolicitiacao != null) {
       await Firestore.instance
           .collection("solicitacaoTrocaOleo")
           .document(numeroSolicitiacao)
           .get()
           .then(
-            (coluna) async => coluna.exists == false
-                ? mensagemRetorno = 'SEM_DADOS'
-                : validaSituacao(coluna, origem),
+            (coluna) async => validaSituacao(coluna, origem),
           );
     } else {
-      mensagemRetorno = 'SEM_DADOS';
-    }
-
-    if (mensagemRetorno == 'SEM_DADOS') {
       alert(contextoAplicacao, mensagemAlerta,
           'Para realizar esta operação é necessário gravar a programação no sistema!');
     }

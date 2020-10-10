@@ -54,7 +54,7 @@ class _BodyState extends State<Body> {
                 children: <Widget>[
                   CriaCardAuxiliar(
                     caminhoImagem: "Images/carga.png",
-                    nomeFormulario: "Carregamento de Mercadoria",
+                    nomeFormulario: "MONTAGEM DE CARGA",
                     origem: 'CARGA',
                     origemDado: 'CARGA',
                     chaveConsulta: ModalRoute.of(context).settings.arguments,
@@ -112,18 +112,19 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
   final tTotalDesp = MaskedTextController(mask: mascaraPreco);
   final tTotalCarga = MaskedTextController(mask: mascaraPreco);
 
+  bool campoHabilitado = true;
+
   /*
   Variáveis de Controle para exibição das listas.
   */
   String valorSituacaoCarga = 'Montagem da Carga';
   bool consultaSituacaoCarga = true;
+  bool consultaFormulario = true;
 
   @override
   Widget build(BuildContext context) {
     CarregamentoMercadoriaBloc blocCarregamentoMercadoria =
         BlocProvider.of<CarregamentoMercadoriaBloc>(context);
-
-    print(valorSituacaoCarga);
 
     blocCarregamentoMercadoria.setSituacaoExpedicao(valorSituacaoCarga);
 
@@ -157,6 +158,7 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
     void atualizaSituacaoCarga(String valor) {
       if (valor.isNotEmpty) {
         setState(() {
+          consultaFormulario = false;
           valorSituacaoCarga = valor;
           print(valorSituacaoCarga);
           blocCarregamentoMercadoria.setSituacaoExpedicao(valorSituacaoCarga);
@@ -181,17 +183,47 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
       tCodEmbalagem.text = campo.data['embalagem'];
       tCodCaminhao.text = campo.data['caminhao'];
 
-      tQuantidadeEmbalagem.text = campo.data['quantidadeEmbalagem'].toString();
-      tPesoBruto.text = campo.data['pesoBruto'].toString();
-
-      tPesoLiquido.text = campo.data['pesoLiquido'].toString();
-      tCubagemCarga.text = campo.data['cubagemCarga'].toString();
-      tPrecoLiquido.text = campo.data['precoLiquido'].toString();
-      tQuantidade.text = campo.data['quantidade'].toString();
-      tTotalDesp.text = campo.data['totalDesp'].toString();
-      tCubagemCarga.text = campo.data['cubagemCarga'].toString();
-      tTotalCarga.text = campo.data['totalCarga'].toString();
-
+      if (campo.data['quantidadeEmbalagem'] != null) {
+        tQuantidadeEmbalagem.text =
+            campo.data['quantidadeEmbalagem'].toString();
+      } else {
+        tQuantidadeEmbalagem.text = '0.00';
+      }
+      if (campo.data['pesoBruto'] != null) {
+        tPesoBruto.text = campo.data['pesoBruto'].toString();
+      } else {
+        tPesoBruto.text = '0.00';
+      }
+      if (campo.data['pesoLiquido'] != null) {
+        tPesoLiquido.text = campo.data['pesoLiquido'].toString();
+      } else {
+        tPesoLiquido.text = '0.00';
+      }
+      if (campo.data['cubagemCarga'] != null) {
+        tCubagemCarga.text = campo.data['cubagemCarga'].toString();
+      } else {
+        tCubagemCarga.text = '0.00';
+      }
+      if (campo.data['precoLiquido'] != null) {
+        tPrecoLiquido.text = campo.data['precoLiquido'].toString();
+      } else {
+        tPrecoLiquido.text = '0.00';
+      }
+      if (campo.data['quantidade'] != null) {
+        tQuantidade.text = campo.data['quantidade'].toString();
+      } else {
+        tQuantidade.text = '0.00';
+      }
+      if (campo.data['totalDesp'] != null) {
+        tTotalDesp.text = campo.data['totalDesp'].toString();
+      } else {
+        tTotalDesp.text = '0.00';
+      }
+      if (campo.data['totalCarga'] != null) {
+        tTotalCarga.text = campo.data['totalCarga'].toString();
+      } else {
+        tTotalCarga.text = '0.00';
+      }
       if (consultaSituacaoCarga == true) {
         tSituacaoExpedicao.text = campo.data['situacaoExpedicao'];
         atualizaSituacaoCarga(tSituacaoExpedicao.text);
@@ -231,7 +263,8 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
           .setCubagemCarga(double.tryParse(tCubagemCarga.text));
     }
 
-    if (numeroCarga != null) {
+    if (numeroCarga != null && consultaFormulario) {
+      campoHabilitado = false;
       firestore
           .collection("carregamentoMercadoria")
           .document(numeroCarga)
@@ -303,6 +336,7 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
                                               largura: 85,
                                               altura: 30,
                                               controller: tCarga,
+                                              enabled: campoHabilitado,
                                               onChanged: (String valor) {
                                                 blocCarregamentoMercadoria
                                                     .setCarga(tCarga.text);
@@ -339,18 +373,20 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
                                                   children: [
                                                     GestureDetector(
                                                       onTap: () {
-                                                        blocCarregamentoMercadoria
-                                                            .verificaCarga(
-                                                                tCarga.text,
-                                                                context,
-                                                                () =>
-                                                                    Navigator.of(
-                                                                            context)
-                                                                        .pushNamed(
-                                                                      '/FormularioRomaneio',
-                                                                      arguments:
-                                                                          numeroCarga,
-                                                                    ));
+                                                        if (numeroCarga !=
+                                                            null) {
+                                                          Navigator.of(context)
+                                                              .pushNamed(
+                                                            '/FormularioRomaneio',
+                                                            arguments:
+                                                                numeroCarga,
+                                                          );
+                                                        } else {
+                                                          alert(
+                                                              context,
+                                                              mensagemAlerta,
+                                                              'Para realizar esta operação é necessário gravar a carga no sistema!');
+                                                        }
                                                       },
                                                       child: Container(
                                                         decoration:
@@ -398,6 +434,12 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
                                                               .start,
                                                       children: <Widget>[
                                                         DropdownButton<String>(
+                                                            style: TextStyle(
+                                                                fontFamily:
+                                                                    'Cardo',
+                                                                fontSize: 17,
+                                                                color: Colors
+                                                                    .black),
                                                             items: situacaoCarga
                                                                 .map((
                                                               String
@@ -445,8 +487,7 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
                                                             onTap: () {
                                                               blocCarregamentoMercadoria
                                                                   .verificaAlteracaoExpedicao(
-                                                                      tCarga
-                                                                          .text,
+                                                                      numeroCarga,
                                                                       context,
                                                                       'TRANSITO')
                                                                   .then((mensagemRetorno) => mensagemRetorno ==
@@ -876,7 +917,7 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
                                                   left: 25.0),
                                               child: constroiCampo(
                                                 labelCampo: 'Previsão Entrega',
-                                                largura: 85,
+                                                largura: 90,
                                                 altura: 30,
                                                 controller: tDataEntrega,
                                                 onChanged: (String valor) {
@@ -1294,46 +1335,6 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
                                                                   .text));
                                                 },
                                                 obrigaCampo: false,
-                                              ),
-                                            ),
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.all(20.0),
-                                              child: Container(
-                                                alignment:
-                                                    Alignment.bottomCenter,
-                                                child: Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.center,
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    GestureDetector(
-                                                      onTap: () {
-                                                        Navigator.of(context)
-                                                            .pushNamed(
-                                                                '/FormularioDespesasContrato');
-                                                      },
-                                                      child: Container(
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          color:
-                                                              Colors.blue[900],
-                                                          borderRadius:
-                                                              BorderRadius.all(
-                                                            Radius.circular(
-                                                                2.0),
-                                                          ),
-                                                        ),
-                                                        child: Icon(
-                                                          Icons.attach_money,
-                                                          size: 25.0,
-                                                          color: Colors.white,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
                                               ),
                                             ),
                                             Padding(

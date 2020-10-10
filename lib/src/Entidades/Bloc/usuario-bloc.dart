@@ -115,28 +115,40 @@ class UsuarioBloc extends BlocBase {
     } else {
       try {
         await Firestore.instance
-                .collection('usuario')
-                .document(usuario.identificacao)
-                .setData({
-          'identificacao': usuario.identificacao,
-          'nome': usuario.nome,
-          'tipoUsuario': usuario.tpUsuario,
-          'email': usuario.email,
-          'emailLogin': usuario.emailLogin,
-          'senha': usuario.senha,
-          'telefone': usuario.telefone,
-          'celular': usuario.celular,
-          'ramal': usuario.ramal
-        }).then((value) async => await alert(contextoAplicacao,
-                    mensagemNotificacao, mensagemSucessoSalvar))
-            // .whenComplete(() async => await instanciaFirebaseAuth
-            //         .createUserWithEmailAndPassword(
-            //             email: usuario.emailLogin, password: usuario.senha)
-            //         .whenComplete(() async {
-            //       await alert(contextoAplicacao, 'Notificação de Sucesso',
-            //           'As credenciais de acesso ao sistema foram criadas para o usuário informado. Para realizar o acesso devem ser informados o E-Mail Acesso e a Senha na tela de Autenticação.');
-            //     }))
-            ;
+            .collection("usuario")
+            .document(usuario.identificacao)
+            .get()
+            .then(
+              (coluna) async => coluna.exists == true
+                  ? alert(contextoAplicacao, mensagemAlerta,
+                      'Este código de usuário já existe. Favor alterar!')
+                  : Firestore.instance
+                      .collection('usuario')
+                      .document(usuario.identificacao)
+                      .setData({
+                      'identificacao': usuario.identificacao,
+                      'nome': usuario.nome,
+                      'tipoUsuario': usuario.tpUsuario,
+                      'email': usuario.email,
+                      'emailLogin': usuario.emailLogin,
+                      'senha': usuario.senha,
+                      'telefone': usuario.telefone,
+                      'celular': usuario.celular,
+                      'ramal': usuario.ramal
+                    }).then(
+                      (value) async => await alertFuncao(
+                        contextoAplicacao,
+                        mensagemNotificacao,
+                        mensagemSucessoSalvar,
+                        () {
+                          Navigator.of(contextoAplicacao).pushNamed(
+                            '/FormularioUsuario',
+                            arguments: usuario.identificacao,
+                          );
+                        },
+                      ),
+                    ),
+            );
       } catch (on) {
         TextError(mensagemErroSalvar);
       }
@@ -269,15 +281,12 @@ class UsuarioBloc extends BlocBase {
               .collection('usuario')
               .document(usuario.identificacao)
               .get()
-              .then((coluna) => coluna.exists == true
-                  ? instanciaFirebaseAuth
+              .then((coluna) => instanciaFirebaseAuth
                       .createUserWithEmailAndPassword(
                           email: emailAcesso, password: senhaAcesso)
                       .whenComplete(() async {
-                      criouUsuario = true;
-                    })
-                  : alert(contextoAplicacao, mensagemNotificacao,
-                      'Para realizar esta operação é necessário salvar o usuário no sistema!'));
+                    criouUsuario = true;
+                  }));
         } catch (on) {
           TextError(
               'Erro ao criar o usuário. Favor verificar se este e-mail e senha já estão em uso no sistema!');

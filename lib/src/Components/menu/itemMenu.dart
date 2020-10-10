@@ -98,7 +98,8 @@ class _ItemMenuState extends State<ItemMenu> {
                     child: Text(
                       widget.title,
                       style: TextStyle(
-                        fontSize: 15,
+                        fontFamily: 'Cardo',
+                        fontSize: 17,
                         fontWeight: fontWeight,
                         color: colorMenu,
                       ),

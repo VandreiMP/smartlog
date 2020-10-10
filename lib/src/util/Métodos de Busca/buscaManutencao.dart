@@ -31,7 +31,9 @@ class _BuscaManutencaoState extends State<BuscaManutencao> {
                       Text(
                         'Consultando registros existentes...',
                         style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 15),
+                            fontFamily: 'Cardo',
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15),
                       ),
                       SizedBox(
                         height: 10,
@@ -40,8 +42,7 @@ class _BuscaManutencaoState extends State<BuscaManutencao> {
                     ],
                   ));
 
-                final int manutencaoContador =
-                    snapshot.data.documents.length;
+                final int manutencaoContador = snapshot.data.documents.length;
                 if (manutencaoContador > 0) {
                   return Container(
                     decoration: BoxDecoration(
@@ -61,7 +62,7 @@ class _BuscaManutencaoState extends State<BuscaManutencao> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Padding(
-                                padding: const EdgeInsets.only(left: 30.0),
+                                padding: const EdgeInsets.only(left: 23.0),
                                 child: AppText(
                                   'Código',
                                   bold: true,
@@ -78,7 +79,7 @@ class _BuscaManutencaoState extends State<BuscaManutencao> {
                                 ),
                               ),
                               Padding(
-                                padding: const EdgeInsets.only(left: 493.0),
+                                padding: const EdgeInsets.only(left: 485.0),
                                 child: AppText(
                                   'Custo Total',
                                   bold: true,
@@ -123,7 +124,13 @@ class _BuscaManutencaoState extends State<BuscaManutencao> {
                                                 color: Colors.black,
                                               ),
                                             ),
-                                            child: Text(identificacao),
+                                            child: Text(
+                                              identificacao,
+                                              style: TextStyle(
+                                                fontFamily: 'Cardo',
+                                                fontSize: 16,
+                                              ),
+                                            ),
                                           ),
                                         ),
                                         Padding(
@@ -140,7 +147,13 @@ class _BuscaManutencaoState extends State<BuscaManutencao> {
                                                 color: Colors.black,
                                               ),
                                             ),
-                                            child: Text(detalhes),
+                                            child: Text(
+                                              detalhes,
+                                              style: TextStyle(
+                                                fontFamily: 'Cardo',
+                                                fontSize: 16,
+                                              ),
+                                            ),
                                           ),
                                         ),
                                         Padding(
@@ -149,7 +162,7 @@ class _BuscaManutencaoState extends State<BuscaManutencao> {
                                             alignment: Alignment.topRight,
                                             padding: EdgeInsets.all(10),
                                             width: 150,
-                                            decoration: BoxDecoration(  
+                                            decoration: BoxDecoration(
                                               color: Colors.white,
                                               borderRadius: BorderRadius.all(
                                                   Radius.circular(5)),
@@ -157,7 +170,15 @@ class _BuscaManutencaoState extends State<BuscaManutencao> {
                                                 color: Colors.black,
                                               ),
                                             ),
-                                            child: Text(custoTotal.toString()),
+                                            child: Text(
+                                              document['custoTotal'] != null
+                                                  ? custoTotal.toString()
+                                                  : '0.00',
+                                              style: TextStyle(
+                                                fontFamily: 'Cardo',
+                                                fontSize: 16,
+                                              ),
+                                            ),
                                           ),
                                         ),
                                         GestureDetector(

@@ -33,7 +33,9 @@ class _BuscaCarregamentoMercadoriaState
                       Text(
                         'Consultando registros existentes...',
                         style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 15),
+                            fontFamily: 'Cardo',
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15),
                       ),
                       SizedBox(
                         height: 10,
@@ -56,7 +58,7 @@ class _BuscaCarregamentoMercadoriaState
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.only(left: 162.0, top: 15),
+                          padding: const EdgeInsets.only(left: 159.0, top: 15),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -83,7 +85,7 @@ class _BuscaCarregamentoMercadoriaState
                                 ),
                               ),
                               Padding(
-                                padding: const EdgeInsets.only(left: 25.0),
+                                padding: const EdgeInsets.only(left: 15.0),
                                 child: AppText(
                                   'Sit. Expedição',
                                   bold: true,
@@ -133,7 +135,13 @@ class _BuscaCarregamentoMercadoriaState
                                                 color: Colors.black,
                                               ),
                                             ),
-                                            child: Text(carga.toString()),
+                                            child: Text(
+                                              carga.toString(),
+                                              style: TextStyle(
+                                                fontFamily: 'Cardo',
+                                                fontSize: 16,
+                                              ),
+                                            ),
                                           ),
                                         ),
                                         Padding(
@@ -149,7 +157,13 @@ class _BuscaCarregamentoMercadoriaState
                                                 color: Colors.black,
                                               ),
                                             ),
-                                            child: Text(comprador.toString()),
+                                            child: Text(
+                                              comprador.toString(),
+                                              style: TextStyle(
+                                                fontFamily: 'Cardo',
+                                                fontSize: 16,
+                                              ),
+                                            ),
                                           ),
                                         ),
                                         Padding(
@@ -165,7 +179,13 @@ class _BuscaCarregamentoMercadoriaState
                                                 color: Colors.black,
                                               ),
                                             ),
-                                            child: Text(dataEntrega.toString()),
+                                            child: Text(
+                                              dataEntrega.toString(),
+                                              style: TextStyle(
+                                                fontFamily: 'Cardo',
+                                                fontSize: 16,
+                                              ),
+                                            ),
                                           ),
                                         ),
                                         Padding(
@@ -182,7 +202,12 @@ class _BuscaCarregamentoMercadoriaState
                                               ),
                                             ),
                                             child: Text(
-                                                situacaoExpedicao.toString()),
+                                              situacaoExpedicao.toString(),
+                                              style: TextStyle(
+                                                fontFamily: 'Cardo',
+                                                fontSize: 16,
+                                              ),
+                                            ),
                                           ),
                                         ),
                                         GestureDetector(

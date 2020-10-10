@@ -137,24 +137,43 @@ class CaminhaoBloc extends BlocBase {
     } else {
       try {
         await Firestore.instance
-            .collection('caminhao')
+            .collection("usuario")
             .document(caminhao.identificacao)
-            .setData({
-          'identificacao': caminhao.identificacao,
-          'placa': caminhao.placa,
-          'anoFabricacao': caminhao.anoFabricacao,
-          'uf': caminhao.uf,
-          'descricao': caminhao.descricao,
-          'modeloCaminhao': caminhao.modeloCaminhao,
-          'fabricante': caminhao.fabricante,
-          'tipoCarroceria': caminhao.tipoCarroceria,
-          'categoriaCaminhao': caminhao.categoriaCaminhao,
-          'chassiCaminhao': caminhao.chassiCaminhao,
-          'numeroRenavam': caminhao.numeroRenavam,
-          'numeroRntrc': caminhao.numeroRntrc,
-          'tipoCombustivel': caminhao.tipoCombustivel,
-        }).then((value) async => await alert(
-                contextoAplicacao, mensagemNotificacao, mensagemSucessoSalvar));
+            .get()
+            .then(
+              (coluna) async => coluna.exists == true
+                  ? alert(contextoAplicacao, mensagemAlerta,
+                      'Este código de caminhão já existe. Favor alterar!')
+                  : await Firestore.instance
+                      .collection('caminhao')
+                      .document(caminhao.identificacao)
+                      .setData({
+                      'identificacao': caminhao.identificacao,
+                      'placa': caminhao.placa,
+                      'anoFabricacao': caminhao.anoFabricacao,
+                      'uf': caminhao.uf,
+                      'descricao': caminhao.descricao,
+                      'modeloCaminhao': caminhao.modeloCaminhao,
+                      'fabricante': caminhao.fabricante,
+                      'tipoCarroceria': caminhao.tipoCarroceria,
+                      'categoriaCaminhao': caminhao.categoriaCaminhao,
+                      'chassiCaminhao': caminhao.chassiCaminhao,
+                      'numeroRenavam': caminhao.numeroRenavam,
+                      'numeroRntrc': caminhao.numeroRntrc,
+                      'tipoCombustivel': caminhao.tipoCombustivel,
+                    }).then(
+                      (value) async => await alertFuncao(
+                        contextoAplicacao,
+                        mensagemNotificacao,
+                        mensagemSucessoSalvar,
+                        () {
+                          Navigator.of(contextoAplicacao).pushNamed(
+                              '/FormularioCaminhao',
+                              arguments: caminhao.identificacao);
+                        },
+                      ),
+                    ),
+            );
       } catch (on) {
         TextError(mensagemErroSalvar);
       }

@@ -106,12 +106,12 @@ class CriaCardFormulario extends StatelessWidget {
                     SizedBox(
                       height: 20.0,
                     ),
-                    Container(
-                      child: AppText(
-                        'Lista de Cargas',
-                        bold: true,
-                      ),
-                    ),
+                    // Container(
+                    //   child: AppText(
+                    //     'Lista de Cargas',
+                    //     bold: true,
+                    //   ),
+                    // ),
                     SizedBox(
                       height: 10.0,
                     ),

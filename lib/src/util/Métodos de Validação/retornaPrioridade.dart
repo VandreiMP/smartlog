@@ -2,8 +2,6 @@ dynamic retornaPrioridade(String origem, dynamic prioridade) {
   dynamic retorno;
 
   if (origem == 'INT') {
-    print('metodo');
-    print(prioridade);
     if (prioridade == 1) {
       retorno = 'Alta';
     } else if (prioridade == 2) {

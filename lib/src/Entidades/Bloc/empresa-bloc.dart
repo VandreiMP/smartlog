@@ -153,8 +153,18 @@ class EmpresaBloc extends BlocBase {
                     'bairro': empresa.bairro,
                     'uf': empresa.uf,
                     'cep': empresa.cep
-                  }).then((value) async => await alert(contextoAplicacao,
-                        mensagemNotificacao, mensagemSucessoSalvar)),
+                  }).then(
+                    (value) async => await alertFuncao(
+                      contextoAplicacao,
+                      mensagemNotificacao,
+                      mensagemSucessoSalvar,
+                      () {
+                        Navigator.of(contextoAplicacao).pushNamed(
+                            '/FormularioEmpresa',
+                            arguments: empresa.identificacao);
+                      },
+                    ),
+                  ),
           );
     }
   }
@@ -189,8 +199,9 @@ class EmpresaBloc extends BlocBase {
               mensagemNotificacao,
               mensagemSucessoApagar,
               () {
-                Navigator.of(contextoAplicacao)
-                    .pushNamed('/FormularioEmpresa', arguments: 'NULO');
+                Navigator.of(contextoAplicacao).pushNamed(
+                  '/FormularioEmpresa',
+                );
               },
             ),
           )
@@ -293,8 +304,6 @@ class EmpresaBloc extends BlocBase {
           'Para abrir as informações do responsável, é necessário salvar os dados do formulario!');
     }
   }
-
-  
 
   @override
   void dispose() {}

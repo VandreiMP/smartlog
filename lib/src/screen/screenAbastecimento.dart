@@ -45,7 +45,7 @@ class _BodyState extends State<Body> {
               children: <Widget>[
                 CriaCardAuxiliar(
                   caminhoImagem: "Images/combustivel.png",
-                  nomeFormulario: "Programação de Abastecimento",
+                  nomeFormulario: "PROGRAMAÇÃO DE ABASTECIMENTO",
                   origem: 'COMBUSTIVEL',
                   origemDado: 'COMBUSTIVEL',
                   chaveConsulta: ModalRoute.of(context).settings.arguments,
@@ -115,7 +115,9 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
   bool consultaTipoCombustivel = true;
   String valorPrioridade;
   bool consultaPrioridade = true;
+  bool campoHabilitado = true;
 
+  bool consultaFormulario = true;
   bool preencheDadosIniciais = true;
 
   @override
@@ -124,7 +126,6 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
         BlocProvider.of<SolicitacaoAbastecimentoBloc>(context);
     String codigoSolicitacao = ModalRoute.of(context).settings.arguments;
     final Firestore firestore = Firestore.instance;
-    bool campoHabilitado = true;
 
     final DateFormat formataData = DateFormat('dd/MM/yyyy HH:mm');
 
@@ -140,6 +141,7 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
     void atualizaSituacaoProg(String valor, String origem) {
       if (valor.isNotEmpty) {
         setState(() {
+          consultaFormulario = false;
           valorSituacaoProg = valor;
           blocSolicitacaoAbastecimento
               .setSituacaoSolicitacao(valorSituacaoProg);
@@ -162,6 +164,7 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
     void atualizaTipoCombustivel(String valor) {
       if (valor.isNotEmpty) {
         setState(() {
+          consultaFormulario = false;
           valorTipoCombustivel = valor;
           blocSolicitacaoAbastecimento.setCombustivel(valorTipoCombustivel);
           consultaTipoCombustivel = false;
@@ -172,6 +175,7 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
     void atualizaPrioridade(String valor) {
       if (valor.isNotEmpty) {
         setState(() {
+          consultaFormulario = false;
           valorPrioridade = valor;
           print(valor);
           print(retornaPrioridade('STRING', valor));
@@ -205,9 +209,23 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
       tDataAbertura.text = coluna.data['dataAbertura'];
 
       tPosto.text = coluna.data['posto'];
-      tPrecoLitro.text = coluna.data['precoLitro'].toString();
-      tQuantidade.text = coluna.data['quantidade'].toString();
-      tCustoTotal.text = coluna.data['custoTotal'].toString();
+
+      if (coluna.data['precoLitro'] != null) {
+        tPrecoLitro.text = coluna.data['precoLitro'].toString();
+      } else {
+        tPrecoLitro.text = '0.00';
+      }
+      if (coluna.data['quantidade'] != null) {
+        tQuantidade.text = coluna.data['quantidade'].toString();
+      } else {
+        tQuantidade.text = '0.00';
+      }
+      if (coluna.data['custoTotal'] != null) {
+        tCustoTotal.text = coluna.data['custoTotal'].toString();
+      } else {
+        tCustoTotal.text = '0.00';
+      }
+
       tCustoVinculado.text = coluna.data['custoVinculado'];
 
       if (consultaTipoCombustivel == true) {
@@ -245,7 +263,7 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
           .setCustoTotal(double.tryParse(tCustoTotal.text));
     }
 
-    if (codigoSolicitacao != null) {
+    if (codigoSolicitacao != null && consultaFormulario) {
       campoHabilitado = false;
       firestore
           .collection("solicitacaoAbastecimento")
@@ -347,6 +365,12 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
                                                               .start,
                                                       children: <Widget>[
                                                         DropdownButton<String>(
+                                                          style: TextStyle(
+                                                              fontFamily:
+                                                                  'Cardo',
+                                                              fontSize: 17,
+                                                              color:
+                                                                  Colors.black),
                                                           items:
                                                               prioridade.map((
                                                             String
@@ -419,6 +443,12 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
                                                               .start,
                                                       children: <Widget>[
                                                         DropdownButton<String>(
+                                                            style: TextStyle(
+                                                                fontFamily:
+                                                                    'Cardo',
+                                                                fontSize: 17,
+                                                                color: Colors
+                                                                    .black),
                                                             items:
                                                                 situacaoSolicitacao
                                                                     .map((
@@ -469,7 +499,7 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
                                                                   false;
                                                               blocSolicitacaoAbastecimento
                                                                   .verificaAlteracaoSituacao(
-                                                                      tId.text,
+                                                                      codigoSolicitacao,
                                                                       context,
                                                                       'EFETIVAR')
                                                                   .then((mensagemRetorno) => mensagemRetorno ==
@@ -524,7 +554,7 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
                                                             onTap: () {
                                                               blocSolicitacaoAbastecimento
                                                                   .verificaAlteracaoSituacao(
-                                                                      tId.text,
+                                                                      codigoSolicitacao,
                                                                       context,
                                                                       'NEGAR')
                                                                   .then((mensagemRetorno) => mensagemRetorno ==
@@ -698,6 +728,12 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
                                                         children: <Widget>[
                                                           DropdownButton<
                                                               String>(
+                                                            style: TextStyle(
+                                                                fontFamily:
+                                                                    'Cardo',
+                                                                fontSize: 17,
+                                                                color: Colors
+                                                                    .black),
                                                             items:
                                                                 tipoCombustivel
                                                                     .map((

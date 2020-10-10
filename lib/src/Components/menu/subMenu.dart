@@ -35,6 +35,7 @@ class SubMenu extends StatelessWidget {
                 child: Text(
                   title,
                   style: TextStyle(
+                    fontFamily: 'Cardo',
                     fontSize: 15,
                     color: Colors.black,
                     fontWeight: FontWeight.bold

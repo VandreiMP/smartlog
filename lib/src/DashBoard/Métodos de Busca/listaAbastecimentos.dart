@@ -35,7 +35,9 @@ class _DashBoardAbastecimentoState extends State<DashBoardAbastecimento> {
                         Text(
                           'Consultando programações pendentes...',
                           style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 15),
+                              fontFamily: 'Cardo',
+                              fontWeight: FontWeight.bold,
+                              fontSize: 15),
                         ),
                         SizedBox(
                           height: 10,
@@ -123,10 +125,13 @@ class _DashBoardAbastecimentoState extends State<DashBoardAbastecimento> {
                                                         decoration:
                                                             BoxDecoration(),
                                                         child: Text(
+                                                          
                                                           detalhes
                                                               .toString()
                                                               .toUpperCase(),
                                                           style: TextStyle(
+                                                            fontFamily: 'Cardo',
+                                                            fontSize: 14,
                                                               fontWeight:
                                                                   FontWeight
                                                                       .bold,
@@ -151,12 +156,13 @@ class _DashBoardAbastecimentoState extends State<DashBoardAbastecimento> {
                                                           Text(
                                                             'Data Abertura',
                                                             style: TextStyle(
+                                                              fontFamily: 'Cardo',
+                                                              fontSize: 15,
                                                                 fontWeight:
                                                                     FontWeight
                                                                         .bold,
                                                                 color: Colors
-                                                                        .blueGrey[
-                                                                    900]),
+                                                                        .black),
                                                           ),
                                                           SizedBox(
                                                             height: 8,
@@ -171,7 +177,8 @@ class _DashBoardAbastecimentoState extends State<DashBoardAbastecimento> {
                                                               dataAbertura
                                                                   .toString(),
                                                               style: TextStyle(
-                                                                  fontSize: 15,
+                                                                fontFamily: 'Cardo',
+                                                                  fontSize: 14,
                                                                   fontWeight:
                                                                       FontWeight
                                                                           .bold,

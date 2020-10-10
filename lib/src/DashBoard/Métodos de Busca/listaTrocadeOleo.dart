@@ -36,7 +36,9 @@ class _DashBoardTrocadeOleoState extends State<DashBoardTrocadeOleo> {
                         Text(
                           'Consultando programações pendentes...',
                           style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 15),
+                              fontFamily: 'Cardo',
+                              fontWeight: FontWeight.bold,
+                              fontSize: 15),
                         ),
                         SizedBox(
                           height: 10,
@@ -131,6 +133,9 @@ class _DashBoardTrocadeOleoState extends State<DashBoardTrocadeOleo> {
                                                                 .toString()
                                                                 .toUpperCase(),
                                                             style: TextStyle(
+                                                                fontFamily:
+                                                                    'Cardo',
+                                                                fontSize: 14,
                                                                 fontWeight:
                                                                     FontWeight
                                                                         .bold,
@@ -155,6 +160,9 @@ class _DashBoardTrocadeOleoState extends State<DashBoardTrocadeOleo> {
                                                             Text(
                                                               'Data Abertura',
                                                               style: TextStyle(
+                                                                  fontFamily:
+                                                                      'Cardo',
+                                                                  fontSize: 15,
                                                                   fontWeight:
                                                                       FontWeight
                                                                           .bold,
@@ -176,8 +184,10 @@ class _DashBoardTrocadeOleoState extends State<DashBoardTrocadeOleo> {
                                                                 dataAbertura
                                                                     .toString(),
                                                                 style: TextStyle(
+                                                                    fontFamily:
+                                                                        'Cardo',
                                                                     fontSize:
-                                                                        15,
+                                                                        14,
                                                                     fontWeight:
                                                                         FontWeight
                                                                             .bold,

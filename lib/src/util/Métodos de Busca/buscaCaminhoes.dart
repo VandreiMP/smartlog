@@ -48,7 +48,9 @@ class _BuscaCaminhaoState extends State<BuscaCaminhao> {
                       Text(
                         'Consultando registros existentes...',
                         style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 15),
+                            fontFamily: 'Cardo',
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15),
                       ),
                       SizedBox(
                         height: 10,
@@ -131,7 +133,13 @@ class _BuscaCaminhaoState extends State<BuscaCaminhao> {
                                                 color: Colors.black,
                                               ),
                                             ),
-                                            child: Text(placa.toString()),
+                                            child: Text(
+                                              placa.toString(),
+                                              style: TextStyle(
+                                                fontFamily: 'Cardo',
+                                                fontSize: 16,
+                                              ),
+                                            ),
                                           ),
                                         ),
                                         Padding(
@@ -147,7 +155,13 @@ class _BuscaCaminhaoState extends State<BuscaCaminhao> {
                                                 color: Colors.black,
                                               ),
                                             ),
-                                            child: Text(descricao.toString()),
+                                            child: Text(
+                                              descricao.toString(),
+                                              style: TextStyle(
+                                                fontFamily: 'Cardo',
+                                                fontSize: 16,
+                                              ),
+                                            ),
                                           ),
                                         ),
                                         GestureDetector(

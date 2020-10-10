@@ -43,7 +43,9 @@ class _BuscaEmbalagensState extends State<BuscaEmbalagens> {
                       Text(
                         'Consultando registros existentes...',
                         style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 15),
+                            fontFamily: 'Cardo',
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15),
                       ),
                       SizedBox(
                         height: 10,
@@ -66,7 +68,7 @@ class _BuscaEmbalagensState extends State<BuscaEmbalagens> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Padding(
-                        padding: const EdgeInsets.only(left: 111.0, top: 15),
+                        padding: const EdgeInsets.only(left: 108.0, top: 15),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -126,7 +128,13 @@ class _BuscaEmbalagensState extends State<BuscaEmbalagens> {
                                               color: Colors.black,
                                             ),
                                           ),
-                                          child: Text(identificacao.toString()),
+                                          child: Text(
+                                            identificacao.toString(),
+                                            style: TextStyle(
+                                              fontFamily: 'Cardo',
+                                              fontSize: 16,
+                                            ),
+                                          ),
                                         ),
                                       ),
                                       Padding(
@@ -142,7 +150,13 @@ class _BuscaEmbalagensState extends State<BuscaEmbalagens> {
                                               color: Colors.black,
                                             ),
                                           ),
-                                          child: Text(descricao.toString()),
+                                          child: Text(
+                                            descricao.toString(),
+                                            style: TextStyle(
+                                              fontFamily: 'Cardo',
+                                              fontSize: 16,
+                                            ),
+                                          ),
                                         ),
                                       ),
                                       GestureDetector(
@@ -153,7 +167,8 @@ class _BuscaEmbalagensState extends State<BuscaEmbalagens> {
                                           */
                                           ScreenCarga();
                                           if (origem == 'CARGA') {
-                                            Navigator.pop(context, identificacao);
+                                            Navigator.pop(
+                                                context, identificacao);
                                           } else {
                                             Navigator.of(context).pushNamed(
                                               '/FormularioEmbalagem',

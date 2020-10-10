@@ -44,7 +44,7 @@ class _BodyState extends State<Body> {
               children: <Widget>[
                 CriaCardAuxiliar(
                   caminhoImagem: "Images/enterprise.png",
-                  nomeFormulario: "Responsável pela Empresa",
+                  nomeFormulario: "RESPONSÁVEL PELA EMPRESA",
                   origem: 'RESPONSAVEL',
                   origemDado: 'RESPONSAVEL',
                   chaveConsulta: ModalRoute.of(context).settings.arguments,

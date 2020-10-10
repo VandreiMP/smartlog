@@ -87,17 +87,36 @@ class CustoBloc extends BlocBase {
     } else {
       try {
         await Firestore.instance
-            .collection('custos')
+            .collection("empresa")
             .document(custo.identificacao)
-            .setData({
-          'identificacao': custo.identificacao,
-          'detalhes': custo.detalhes,
-          'modalidade': custo.modalidade,
-          'periodicidade': custo.periodicidade,
-          'analiseGerencial': custo.analiseGerencial,
-          'valor': custo.valor,
-        }).then((value) async => await alert(
-                contextoAplicacao, mensagemNotificacao, mensagemSucessoSalvar));
+            .get()
+            .then(
+              (coluna) async => coluna.exists == true
+                  ? alert(contextoAplicacao, mensagemAlerta,
+                      'Este código de custo já existe. Favor alterar!')
+                  : await Firestore.instance
+                      .collection('custos')
+                      .document(custo.identificacao)
+                      .setData({
+                      'identificacao': custo.identificacao,
+                      'detalhes': custo.detalhes,
+                      'modalidade': custo.modalidade,
+                      'periodicidade': custo.periodicidade,
+                      'analiseGerencial': custo.analiseGerencial,
+                      'valor': custo.valor,
+                    }).then(
+                      (value) async => await alertFuncao(
+                        contextoAplicacao,
+                        mensagemNotificacao,
+                        mensagemSucessoApagar,
+                        () {
+                          Navigator.of(contextoAplicacao).pushNamed(
+                              '/FormularioCustos',
+                              arguments: custo.identificacao);
+                        },
+                      ),
+                    ),
+            );
       } catch (on) {
         TextError(mensagemErroApagar);
       }

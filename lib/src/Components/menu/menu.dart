@@ -134,7 +134,7 @@ class ConstroiMenu extends StatelessWidget {
                 return Center(
                   child: ItemMenu(
                     icon: Icons.settings,
-                    title: 'Solic.',
+                    title: 'Prog.',
                     onPress: () {},
                     subMenu: Column(
                       children: [
@@ -196,10 +196,12 @@ class ConstroiMenu extends StatelessWidget {
                 );
               }),
           ItemMenu(
-            icon: Icons.info,
-            title: 'Info',
+            icon: Icons.help,
+            title: 'Ajuda',
             onPress: () {
-              print('Info');
+              Navigator.of(context).pushNamed(
+                '/TelaAjuda',
+              );
             },
             arrowIcon: Icons.arrow_forward_ios,
             colorMenu: Colors.blueGrey[600],

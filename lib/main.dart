@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:smartlogproject/src/AcessoSistema/Widget/acesso-sistema-widget.dart';
+import 'package:smartlogproject/src/screen/screenAjuda.dart';
 import 'package:smartlogproject/src/screen/screenCarga.dart';
 import 'package:smartlogproject/src/screen/screenManutencao.dart';
 import 'package:smartlogproject/src/screen/screenRomaneio.dart';
@@ -68,6 +69,10 @@ class Main extends StatelessWidget {
         '/FormularioAbastecimento': (context) => ScreenAbastecimento(),
         '/FormularioTrocaDeOleo': (context) => ScreenTrocaOleo(),
         '/FormularioManutencao': (context) => ScreenManutencao(),
+        /*
+        Tela de ajuda
+        */
+        '/TelaAjuda': (context) => ScreenAjuda(),
         /*
         Listas de Valores p/ Formulários
         */

@@ -77,12 +77,14 @@ class CardAjuda extends StatelessWidget {
                           ),
                         ),
                         Padding(
-                          padding: const EdgeInsets.all(4.0),
+                          padding: const EdgeInsets.all(0.0),
                           child: Text(
                             nomeFormulario,
                             textAlign: TextAlign.center,
                             style: TextStyle(
+                              fontFamily: 'Cardo',
                               fontSize: 20,
+                              // height: 10,
                               fontWeight: FontWeight.bold,
                               color: Colors.black,
                             ),
@@ -100,7 +102,9 @@ class CardAjuda extends StatelessWidget {
                                   child: GestureDetector(
                                     onTap: () {
                                       if (origem == 'CARGA') {
-                                        Navigator.of(context).pop();
+                                        Navigator.of(context).pushNamed(
+                                          '/ListaCargas',
+                                        );
                                       } else if (origem == 'EMPRESA') {
                                         Navigator.of(context).pushNamed(
                                           '/ListaEmpresas',
@@ -130,12 +134,22 @@ class CardAjuda extends StatelessWidget {
                                         Navigator.of(context).pushNamed(
                                             '/FormularioCaminhao',
                                             arguments: chaveConsulta);
-                                      } else if (origem == 'COMBUSTIVEL' ||
-                                          origem == 'MANUTENCAO' ||
-                                          origem == 'OLEO') {
-                                        Navigator.of(context).pop();
+                                      } else if (origem == 'COMBUSTIVEL') {
+                                        Navigator.of(context).pushNamed(
+                                          '/ListaAbastecimentos',
+                                        );
+                                      } else if (origem == 'MANUTENCAO') {
+                                        Navigator.of(context).pushNamed(
+                                          '/ListaManutencao',
+                                        );
+                                      } else if (origem == 'OLEO') {
+                                        Navigator.of(context).pushNamed(
+                                          '/ListaTrocaOleo',
+                                        );
                                       } else if (origem == 'ROMANEIO') {
                                         Navigator.pop(context);
+                                      } else {
+                                        Navigator.of(context).pop();
                                       }
                                     },
                                     child: Container(
@@ -192,39 +206,6 @@ class CardAjuda extends StatelessWidget {
                                       ),
                                       child: Icon(
                                         Icons.home,
-                                        size: 25.0,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              GestureDetector(
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => ScreenUser(),
-                                    ),
-                                  );
-                                },
-                                child: Padding(
-                                  padding: const EdgeInsets.all(1.0),
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      color: Colors.blue[900],
-                                      borderRadius: BorderRadius.all(
-                                        Radius.circular(2.0),
-                                      ),
-                                    ),
-                                    child: GestureDetector(
-                                      // onTap: () {
-                                      //   blocAjuda.eventoCliqueBotaoAjuda();
-
-                                      //   selected = snapshot.data;
-                                      // },
-                                      child: Icon(
-                                        Icons.help,
                                         size: 25.0,
                                         color: Colors.white,
                                       ),

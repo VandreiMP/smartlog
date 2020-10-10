@@ -57,7 +57,9 @@ class _BuscaFuncionariosState extends State<BuscaFuncionarios> {
                       Text(
                         'Consultando registros existentes...',
                         style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 15),
+                            fontFamily: 'Cardo',
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15),
                       ),
                       SizedBox(
                         height: 10,
@@ -80,7 +82,7 @@ class _BuscaFuncionariosState extends State<BuscaFuncionarios> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.only(left: 111.0, top: 15),
+                          padding: const EdgeInsets.only(left: 108.0, top: 15),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -114,84 +116,100 @@ class _BuscaFuncionariosState extends State<BuscaFuncionarios> {
                                   final dynamic nome = document['nome'];
                                   final dynamic identificacao =
                                       document['identificacao'];
+                                  final dynamic tipoFuncionario =
+                                      document['tipoUsuario'];
                                   return Container(
-                                    child: Row(
-                                      children: [
-                                        Padding(
-                                          padding:
-                                              const EdgeInsets.only(left: 10.0),
-                                          child: Container(
-                                            alignment: Alignment.topRight,
-                                            padding: EdgeInsets.all(10),
-                                            width: 200,
-                                            decoration: BoxDecoration(
-                                              color: Colors.white,
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(5)),
-                                              border: new Border.all(
-                                                color: Colors.black,
-                                              ),
-                                            ),
-                                            child: Text(
-                                              nome != null
-                                                  ? identificacao.toString()
-                                                  : '<Identificação do funcionário não informado no cadastro>',
-                                            ),
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.all(2.0),
-                                          child: Container(
-                                            padding: EdgeInsets.all(10),
-                                            width: 400,
-                                            decoration: BoxDecoration(
-                                              color: Colors.white,
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(5)),
-                                              border: new Border.all(
-                                                color: Colors.black,
-                                              ),
-                                            ),
-                                            child: Text(
-                                              nome != null
-                                                  ? nome.toString()
-                                                  : '<Nome do funcionário não informado no cadastro>',
-                                            ),
-                                          ),
-                                        ),
-                                        GestureDetector(
-                                          onTap: () {
-                                            if (origem == 'CARGA') {
-                                              Navigator.pop(
-                                                  context, identificacao);
-                                            } else {
-                                              Navigator.of(context).pushNamed(
-                                                '/FormularioUsuario',
-                                                arguments: identificacao,
-                                              );
-                                            }
-                                          },
-                                          child: Padding(
-                                            padding: const EdgeInsets.only(
-                                                left: 7.0),
-                                            child: Container(
-                                              decoration: BoxDecoration(
-                                                color: Colors.blue[900],
-                                                borderRadius: BorderRadius.all(
-                                                  Radius.circular(2.0),
+                                    child: origem != 'CARGA' ||
+                                            (tipoFuncionario == 'Motorista' &&
+                                                origem == 'CARGA')
+                                        ? Row(
+                                            children: [
+                                              Padding(
+                                                padding: const EdgeInsets.only(
+                                                    left: 10.0),
+                                                child: Container(
+                                                  alignment: Alignment.topRight,
+                                                  padding: EdgeInsets.all(10),
+                                                  width: 200,
+                                                  decoration: BoxDecoration(
+                                                    color: Colors.white,
+                                                    borderRadius:
+                                                        BorderRadius.all(
+                                                            Radius.circular(5)),
+                                                    border: new Border.all(
+                                                      color: Colors.black,
+                                                    ),
+                                                  ),
+                                                  child: Text(
+                                                    identificacao.toString(),
+                                                    style: TextStyle(
+                                                      fontFamily: 'Cardo',
+                                                      fontSize: 16,
+                                                    ),
+                                                  ),
                                                 ),
                                               ),
-                                              child: Icon(
-                                                iconeLista,
-                                                size: 30.0,
-                                                color: Colors.white,
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.all(2.0),
+                                                child: Container(
+                                                  padding: EdgeInsets.all(10),
+                                                  width: 400,
+                                                  decoration: BoxDecoration(
+                                                    color: Colors.white,
+                                                    borderRadius:
+                                                        BorderRadius.all(
+                                                            Radius.circular(5)),
+                                                    border: new Border.all(
+                                                      color: Colors.black,
+                                                    ),
+                                                  ),
+                                                  child: Text(
+                                                    nome,
+                                                    style: TextStyle(
+                                                      fontFamily: 'Cardo',
+                                                      fontSize: 16,
+                                                    ),
+                                                  ),
+                                                ),
                                               ),
-                                            ),
-                                          ),
-                                        ),
-                                        SizedBox(height: 10),
-                                      ],
-                                    ),
+                                              GestureDetector(
+                                                onTap: () {
+                                                  if (origem == 'CARGA') {
+                                                    Navigator.pop(
+                                                        context, identificacao);
+                                                  } else {
+                                                    Navigator.of(context)
+                                                        .pushNamed(
+                                                      '/FormularioUsuario',
+                                                      arguments: identificacao,
+                                                    );
+                                                  }
+                                                },
+                                                child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          left: 7.0),
+                                                  child: Container(
+                                                    decoration: BoxDecoration(
+                                                      color: Colors.blue[900],
+                                                      borderRadius:
+                                                          BorderRadius.all(
+                                                        Radius.circular(2.0),
+                                                      ),
+                                                    ),
+                                                    child: Icon(
+                                                      iconeLista,
+                                                      size: 30.0,
+                                                      color: Colors.white,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                              SizedBox(height: 10),
+                                            ],
+                                          )
+                                        : null,
                                   );
                                 },
                               ),

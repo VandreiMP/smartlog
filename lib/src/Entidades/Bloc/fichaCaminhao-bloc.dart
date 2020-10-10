@@ -3,8 +3,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:smartlogproject/src/Entidades/classes/fichaCaminhao.dart';
+import 'package:smartlogproject/src/constantes/mensagens.dart';
 import 'package:smartlogproject/src/util/Componentes/alert.dart';
 import 'package:smartlogproject/src/util/Componentes/alertErro.dart';
+import 'package:smartlogproject/src/util/Componentes/alertFuncao.dart';
 
 class FichaCaminhaoBloc extends BlocBase {
   BuildContext contextoAplicacao;
@@ -97,8 +99,14 @@ class FichaCaminhaoBloc extends BlocBase {
       'larguraCarga': fichaCaminhao.larguraCarga,
       'alturaCarga': fichaCaminhao.alturaCarga,
       'cubagemCarga': fichaCaminhao.cubagemCarga
-    }).then((value) async => await alert(contextoAplicacao, 'Notificação',
-            'Os dados do formulário foram salvos com sucesso no banco de dados!'));
+    }).then((value) async => await alertFuncao(
+                contextoAplicacao, mensagemNotificacao, mensagemSucessoApagar,
+                () {
+              Navigator.of(contextoAplicacao).pushNamed(
+                '/FormularioCaminhaoDetalhes',
+                arguments: fichaCaminhao.idCaminhao,
+              );
+            }));
   }
 
   /*

@@ -31,7 +31,9 @@ class _BuscaTrocaOleoState extends State<BuscaTrocaOleo> {
                       Text(
                         'Consultando registros existentes...',
                         style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 15),
+                            fontFamily: 'Cardo',
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15),
                       ),
                       SizedBox(
                         height: 10,
@@ -60,7 +62,7 @@ class _BuscaTrocaOleoState extends State<BuscaTrocaOleo> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Padding(
-                                padding: const EdgeInsets.only(left: 30.0),
+                                padding: const EdgeInsets.only(left: 25.0),
                                 child: AppText(
                                   'Código',
                                   bold: true,
@@ -77,7 +79,7 @@ class _BuscaTrocaOleoState extends State<BuscaTrocaOleo> {
                                 ),
                               ),
                               Padding(
-                                padding: const EdgeInsets.only(left: 493.0),
+                                padding: const EdgeInsets.only(left: 485.0),
                                 child: AppText(
                                   'Custo Total',
                                   bold: true,
@@ -122,7 +124,13 @@ class _BuscaTrocaOleoState extends State<BuscaTrocaOleo> {
                                                 color: Colors.black,
                                               ),
                                             ),
-                                            child: Text(identificacao),
+                                            child: Text(
+                                              identificacao,
+                                              style: TextStyle(
+                                                fontFamily: 'Cardo',
+                                                fontSize: 16,
+                                              ),
+                                            ),
                                           ),
                                         ),
                                         Padding(
@@ -139,7 +147,13 @@ class _BuscaTrocaOleoState extends State<BuscaTrocaOleo> {
                                                 color: Colors.black,
                                               ),
                                             ),
-                                            child: Text(detalhes),
+                                            child: Text(
+                                              detalhes,
+                                              style: TextStyle(
+                                                fontFamily: 'Cardo',
+                                                fontSize: 16,
+                                              ),
+                                            ),
                                           ),
                                         ),
                                         Padding(
@@ -156,7 +170,15 @@ class _BuscaTrocaOleoState extends State<BuscaTrocaOleo> {
                                                 color: Colors.black,
                                               ),
                                             ),
-                                            child: Text(custoTotal.toString()),
+                                            child: Text(
+                                              document['custoTotal'] != null
+                                                  ? '0.00'
+                                                  : custoTotal.toString(),
+                                              style: TextStyle(
+                                                fontFamily: 'Cardo',
+                                                fontSize: 16,
+                                              ),
+                                            ),
                                           ),
                                         ),
                                         GestureDetector(

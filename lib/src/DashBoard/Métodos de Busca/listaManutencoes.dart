@@ -35,7 +35,9 @@ class _DashBoardManutencaoState extends State<DashBoardManutencao> {
                         Text(
                           'Consultando programações pendentes...',
                           style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 15),
+                              fontFamily: 'Cardo',
+                              fontWeight: FontWeight.bold,
+                              fontSize: 15),
                         ),
                         SizedBox(
                           height: 10,
@@ -129,6 +131,9 @@ class _DashBoardManutencaoState extends State<DashBoardManutencao> {
                                                                 .toString()
                                                                 .toUpperCase(),
                                                             style: TextStyle(
+                                                                fontFamily:
+                                                                    'Cardo',
+                                                                fontSize: 14,
                                                                 fontWeight:
                                                                     FontWeight
                                                                         .bold,
@@ -153,12 +158,14 @@ class _DashBoardManutencaoState extends State<DashBoardManutencao> {
                                                             Text(
                                                               'Data Abertura',
                                                               style: TextStyle(
+                                                                  fontFamily:
+                                                                      'Cardo',
+                                                                  fontSize: 15,
                                                                   fontWeight:
                                                                       FontWeight
                                                                           .bold,
                                                                   color: Colors
-                                                                          .blueGrey[
-                                                                      900]),
+                                                                      .black),
                                                             ),
                                                             SizedBox(
                                                               height: 8,
@@ -174,6 +181,8 @@ class _DashBoardManutencaoState extends State<DashBoardManutencao> {
                                                                 dataAbertura
                                                                     .toString(),
                                                                 style: TextStyle(
+                                                                    fontFamily:
+                                                                        'Cardo',
                                                                     fontSize:
                                                                         15,
                                                                     fontWeight:
@@ -263,7 +272,7 @@ class _DashBoardManutencaoState extends State<DashBoardManutencao> {
                                             //           ],
                                             //         ),
                                             //       )
-                                                : null,
+                                            : null,
                                       );
                                     }),
                               ),

@@ -8,7 +8,7 @@ class AppText extends StatelessWidget {
 
   AppText(
     this.text, {
-    this.fontSize = 16,
+    this.fontSize = 18,
     this.color = Colors.black,
     this.bold = false,
   });
@@ -17,7 +17,8 @@ class AppText extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       text ?? "",
-      style: TextStyle(
+      style: TextStyle( 
+        fontFamily: 'Cardo',
         fontSize: fontSize,
         color: color,
         fontWeight: bold ? FontWeight.bold : FontWeight.normal,

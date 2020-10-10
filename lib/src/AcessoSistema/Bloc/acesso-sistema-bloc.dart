@@ -59,11 +59,6 @@ class AcessoSistemaBloc extends BlocBase {
           Navigator.of(contextoAplicacao).pushNamed(
             '/VisaoGeral',
           );
-
-          alert(
-              contextoAplicacao,
-              'SmartLog - Sistemas Logísticos para Aviários',
-              'Bem vindo à area de trabalho do sistema. Em caso de dúvidas, favor entrar em contato com o suporte técnico pelo endereço "smartlogsuporte@outlook.com".');
         });
       } catch (on) {
         alert(contextoAplicacao, 'Inconsistência na validação',

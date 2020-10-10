@@ -42,7 +42,7 @@ class _BodyState extends State<Body> {
               children: <Widget>[
                 CriaCardAuxiliar(
                   caminhoImagem: "Images/veiculo.png",
-                  nomeFormulario: "Cadastro de Frota",
+                  nomeFormulario: "FICHA TÉCNICA DO CAMINHÃO",
                   origem: 'DETALHES_CAMINHAO',
                   origemDado: 'DETALHES_CAMINHAO',
                   chaveConsulta: ModalRoute.of(context).settings.arguments,
@@ -94,15 +94,47 @@ class CriaCardFormulario extends StatelessWidget {
     Future consultaDados(DocumentSnapshot coluna) async {
       if (coluna.exists == true) {
         tCor.text = coluna.data['cor'];
-        tQuilometragemLitro.text = coluna.data['quilometragemLitro'].toString();
-        tCapacidadeCarga.text = coluna.data['capacidadeCarga'].toString();
-        tPesoVazio.text = coluna.data['pesoVazio'].toString();
-        tNumeroEixos.text = coluna.data['numeroEixos'].toString();
-        tComprimentoCarga.text = coluna.data['comprimentoCarga'].toString();
-        tAlturaCarga.text = coluna.data['alturaCarga'].toString();
-        tLarguraCarga.text = coluna.data['larguraCarga'].toString();
-        tCubagem.text = coluna.data['cubagemCarga'].toString();
-
+        if (coluna.data['quilometragemLitro'] != null) {
+          tQuilometragemLitro.text =
+              coluna.data['quilometragemLitro'].toString();
+        } else {
+          tQuilometragemLitro.text = '0.00';
+        }
+        if (coluna.data['capacidadeCarga'] != null) {
+          tCapacidadeCarga.text = coluna.data['capacidadeCarga'].toString();
+        } else {
+          tCapacidadeCarga.text = '0.00';
+        }
+        if (coluna.data['pesoVazio'] != null) {
+          tPesoVazio.text = coluna.data['pesoVazio'].toString();
+        } else {
+          tPesoVazio.text = '0.00';
+        }
+        if (coluna.data['numeroEixos'] != null) {
+          tNumeroEixos.text = coluna.data['numeroEixos'].toString();
+        } else {
+          tNumeroEixos.text = '0';
+        }
+        if (coluna.data['comprimentoCarga'] != null) {
+          tComprimentoCarga.text = coluna.data['comprimentoCarga'].toString();
+        } else {
+          tComprimentoCarga.text = '0.00';
+        }
+        if (coluna.data['alturaCarga'] != null) {
+          tAlturaCarga.text = coluna.data['alturaCarga'].toString();
+        } else {
+          tAlturaCarga.text = '0.00';
+        }
+        if (coluna.data['larguraCarga'] != null) {
+          tLarguraCarga.text = coluna.data['larguraCarga'].toString();
+        } else {
+          tLarguraCarga.text = '0.00';
+        }
+        if (coluna.data['cubagemCarga'] != null) {
+          tCubagem.text = coluna.data['cubagemCarga'].toString();
+        } else {
+          tCubagem.text = '0.00';
+        }
         blocFichaCaminhao.setCor(tCor.text);
         blocFichaCaminhao
             .setQuilometragemLitro(double.parse(tQuilometragemLitro.text));

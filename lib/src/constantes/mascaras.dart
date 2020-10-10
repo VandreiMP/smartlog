@@ -50,3 +50,8 @@ const String mascaraQuantidade = '00000.00';
 Máscara para peso
 */
 const String mascaraPeso = '000000.000';
+
+/*
+Máscara para ano
+*/
+const String mascaraAno = '0000';

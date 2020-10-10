@@ -31,7 +31,9 @@ class _BuscaEmpresaState extends State<BuscaEmpresa> {
                       Text(
                         'Consultando registros existentes...',
                         style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 15),
+                            fontFamily: 'Cardo',
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15),
                       ),
                       SizedBox(
                         height: 10,
@@ -54,7 +56,7 @@ class _BuscaEmpresaState extends State<BuscaEmpresa> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.only(left: 111.0, top: 15),
+                          padding: const EdgeInsets.only(left: 108.0, top: 15),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -67,7 +69,7 @@ class _BuscaEmpresaState extends State<BuscaEmpresa> {
                                 width: 5.0,
                               ),
                               Padding(
-                                padding: const EdgeInsets.only(left: 2.0),
+                                padding: const EdgeInsets.only(left: 0.0),
                                 child: AppText(
                                   'Razão Social',
                                   bold: true,
@@ -110,8 +112,13 @@ class _BuscaEmpresaState extends State<BuscaEmpresa> {
                                                 color: Colors.black,
                                               ),
                                             ),
-                                            child:
-                                                Text(identificacao.toString()),
+                                            child: Text(
+                                              identificacao.toString(),
+                                              style: TextStyle(
+                                                fontFamily: 'Cardo',
+                                                fontSize: 16,
+                                              ),
+                                            ),
                                           ),
                                         ),
                                         Padding(
@@ -127,7 +134,13 @@ class _BuscaEmpresaState extends State<BuscaEmpresa> {
                                                 color: Colors.black,
                                               ),
                                             ),
-                                            child: Text(razaoSocial.toString()),
+                                            child: Text(
+                                              razaoSocial.toString(),
+                                              style: TextStyle(
+                                                fontFamily: 'Cardo',
+                                                fontSize: 16,
+                                              ),
+                                            ),
                                           ),
                                         ),
                                         GestureDetector(

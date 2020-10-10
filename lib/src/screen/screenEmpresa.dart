@@ -5,6 +5,7 @@ import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:smartlogproject/src/Components/scroll/scroll.dart';
 import 'package:smartlogproject/src/Entidades/Bloc/empresa-bloc.dart';
 import 'package:smartlogproject/src/constantes/mascaras.dart';
+import 'package:smartlogproject/src/constantes/mensagens.dart';
 import 'package:smartlogproject/src/util/Componentes/alert.dart';
 import 'package:smartlogproject/src/util/Componentes/appText.dart';
 import 'package:smartlogproject/src/util/Componentes/appTextField.dart';
@@ -46,7 +47,7 @@ class _BodyState extends State<Body> {
               children: <Widget>[
                 CriaCardAuxiliar(
                   caminhoImagem: "Images/enterprise.png",
-                  nomeFormulario: "Cadastro de Empresa",
+                  nomeFormulario: "CADASTRO DE EMPRESA",
                   origem: 'EMPRESA',
                   origemDado: 'EMPRESA',
                   chaveConsulta: ModalRoute.of(context).settings.arguments,
@@ -88,7 +89,7 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
     Variáveis usadas para capturar o valor dos colunas do formulário
     e salvar no banco
     */
-  final tId = TextEditingController();
+  final tId = MaskedTextController(mask: mascaraIdentificao);
   final tRazaoSocial = TextEditingController();
   final tNomeFantasia = TextEditingController();
   final tCnpj = MaskedTextController(mask: mascaraCnpj);
@@ -113,6 +114,9 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
   bool consultaListaAtividadeEmpresa = true;
   bool consultaListaTipoEmpresa = true;
 
+  bool preencheDadosIniciais = true;
+  bool consultaFormulario = true;
+
   @override
   Widget build(BuildContext context) {
     String codigoEmpresa = ModalRoute.of(context).settings.arguments;
@@ -122,6 +126,7 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
     void atualizaTipoEmpresa(String valor) {
       if (valor.isNotEmpty) {
         setState(() {
+          consultaFormulario = false;
           valorSelecionadoTipoEmpresa = valor;
           blocEmpresa.setMatrizFilial(valorSelecionadoTipoEmpresa);
           consultaListaTipoEmpresa = false;
@@ -132,6 +137,7 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
     void atualizaAtividadeEmpresa(String valor) {
       if (valor.isNotEmpty) {
         setState(() {
+          consultaFormulario = false;
           valorSelecionadoAtivideEmpresa = valor;
           blocEmpresa.setAtividadeEmpresa(valorSelecionadoAtivideEmpresa);
           consultaListaAtividadeEmpresa = false;
@@ -189,7 +195,7 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
       blocEmpresa.setCep(tCep.text);
     }
 
-    if (codigoEmpresa != null) {
+    if (codigoEmpresa != null && consultaFormulario) {
       firestore
           .collection("empresa")
           .document(codigoEmpresa)
@@ -264,17 +270,6 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
                                                 controller: tId,
                                                 onChanged:
                                                     (String valor) async {
-                                                  await Firestore.instance
-                                                      .collection("empresa")
-                                                      .document(tId.text)
-                                                      .get()
-                                                      .then((coluna) async =>
-                                                          coluna.exists == true
-                                                              ? alert(
-                                                                  context,
-                                                                  'Atenção',
-                                                                  'Este código de empresa já existe. Favor alterar!')
-                                                              : () {});
                                                   blocEmpresa.setId(tId.text);
                                                 },
                                                 obrigaCampo: true),
@@ -317,8 +312,20 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
                                                   left: 8.0),
                                               child: GestureDetector(
                                                 onTap: () {
-                                                  blocEmpresa.verificaEmpresa(
-                                                      tId.text, context);
+                                                  // blocEmpresa.verificaEmpresa(
+                                                  //     tId.text, context);
+                                                  if (codigoEmpresa == null) {
+                                                    alert(
+                                                        context,
+                                                        mensagemAlerta,
+                                                        'Para abrir as informações do responsável, é necessário salvar os dados do formulario!');
+                                                  } else {
+                                                    Navigator.of(context)
+                                                        .pushNamed(
+                                                      '/FormularioEmpresaDetalhes',
+                                                      arguments: codigoEmpresa,
+                                                    );
+                                                  }
                                                 },
                                                 child: Container(
                                                   decoration: BoxDecoration(
@@ -430,6 +437,12 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
                                                               .center,
                                                       children: <Widget>[
                                                         DropdownButton<String>(
+                                                          style: TextStyle(
+                                                              fontFamily:
+                                                                  'Cardo',
+                                                              fontSize: 17,
+                                                              color:
+                                                                  Colors.black),
                                                           items:
                                                               atividadeEmpresa
                                                                   .map((
@@ -477,6 +490,12 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
                                                               .center,
                                                       children: <Widget>[
                                                         DropdownButton<String>(
+                                                          style: TextStyle(
+                                                              fontFamily:
+                                                                  'Cardo',
+                                                              fontSize: 17,
+                                                              color:
+                                                                  Colors.black),
                                                           items:
                                                               matrizFilial.map((
                                                             String

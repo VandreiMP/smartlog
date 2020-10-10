@@ -1,8 +1,12 @@
 import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:smartlogproject/src/Components/scroll/scroll.dart';
 import 'package:smartlogproject/src/Entidades/Bloc/caminhao-bloc.dart';
+import 'package:smartlogproject/src/constantes/mascaras.dart';
+import 'package:smartlogproject/src/constantes/mensagens.dart';
+import 'package:smartlogproject/src/util/Componentes/alert.dart';
 import '../Cards/Widgets/criaCardAuxiliar.dart';
 import 'screenPattern.dart';
 import 'package:smartlogproject/src/util/Componentes/appText.dart';
@@ -44,7 +48,7 @@ class _BodyState extends State<Body> {
                   //height: double.infinity,
                   child: CriaCardAuxiliar(
                     caminhoImagem: "Images/veiculo.png",
-                    nomeFormulario: "Cadastro de Frota",
+                    nomeFormulario: "CADASTRO DE FROTA",
                     origem: 'CAMINHAO',
                     origemDado: 'CAMINHAO',
                     chaveConsulta: ModalRoute.of(context).settings.arguments,
@@ -110,9 +114,9 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
   e salvar no banco
   */
 
-  final tId = TextEditingController();
+  final tId = MaskedTextController(mask: mascaraIdentificao);
   final tPlaca = TextEditingController();
-  final tAnoFabricacao = TextEditingController();
+  final tAnoFabricacao = MaskedTextController(mask: mascaraAno);
   final tUf = TextEditingController();
   final tDescricao = TextEditingController();
   final tModeloCaminhao = TextEditingController();
@@ -134,15 +138,18 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
   String valorTipoCombustivel;
   bool consultaTipoCombustivel = true;
 
+  bool consultaFormulario = true;
+  bool campoHabilitado = true;
+
   @override
   Widget build(BuildContext context) {
     String codigoCaminhao = ModalRoute.of(context).settings.arguments;
     CaminhaoBloc blocCaminhao = BlocProvider.of<CaminhaoBloc>(context);
     final Firestore firestore = Firestore.instance;
-    bool campoHabilitado = true;
 
     void atualizaTipoCarroceria(String valor) {
       if (valor.isNotEmpty) {
+        consultaFormulario = false;
         setState(() {
           valorTipoCarroceria = valor;
           blocCaminhao.setTipoCarroceria(valorTipoCarroceria);
@@ -153,6 +160,7 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
 
     void atualizaTipoCaminhao(String valor) {
       if (valor.isNotEmpty) {
+        consultaFormulario = false;
         setState(() {
           valorTipoCaminhao = valor;
           blocCaminhao.setCategoriaCaminhao(valorTipoCaminhao);
@@ -163,6 +171,7 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
 
     void atualizaTipoCombustivel(String valor) {
       if (valor.isNotEmpty) {
+        consultaFormulario = false;
         setState(() {
           valorTipoCombustivel = valor;
           blocCaminhao.setTipoCombustivel(valorTipoCombustivel);
@@ -221,7 +230,7 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
       blocCaminhao.setNumeroRntrc(int.tryParse(tNumeroRntrc.text));
     }
 
-    if (codigoCaminhao != null) {
+    if (codigoCaminhao != null && consultaFormulario) {
       campoHabilitado = false;
       firestore
           .collection("caminhao")
@@ -375,6 +384,12 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
                                                               .center,
                                                       children: <Widget>[
                                                         DropdownButton<String>(
+                                                          style: TextStyle(
+                                                              fontFamily:
+                                                                  'Cardo',
+                                                              fontSize: 17,
+                                                              color:
+                                                                  Colors.black),
                                                           items:
                                                               tipoVeiculo.map((
                                                             String
@@ -437,9 +452,20 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
                                                     const EdgeInsets.all(2.0),
                                                 child: GestureDetector(
                                                   onTap: () {
-                                                    blocCaminhao
-                                                        .verificaCaminhao(
-                                                            tId.text, context);
+                                                    if (codigoCaminhao ==
+                                                        null) {
+                                                      alert(
+                                                          context,
+                                                          mensagemAlerta,
+                                                          'Para abrir a ficha técnica no caminhão, é necessário salvar os dados do formulario!');
+                                                    } else {
+                                                      Navigator.of(context)
+                                                          .pushNamed(
+                                                        '/FormularioCaminhaoDetalhes',
+                                                        arguments:
+                                                            codigoCaminhao,
+                                                      );
+                                                    }
                                                   },
                                                   child: Container(
                                                     decoration: BoxDecoration(
@@ -451,46 +477,6 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
                                                     ),
                                                     child: Icon(
                                                       Icons.local_shipping,
-                                                      size: 25.0,
-                                                      color: Colors.white,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                              Padding(
-                                                padding:
-                                                    const EdgeInsets.all(2.0),
-                                                child: GestureDetector(
-                                                  child: Container(
-                                                    decoration: BoxDecoration(
-                                                      color: Colors.blue[900],
-                                                      borderRadius:
-                                                          BorderRadius.all(
-                                                        Radius.circular(2.0),
-                                                      ),
-                                                    ),
-                                                    child: Icon(
-                                                      Icons.person,
-                                                      size: 25.0,
-                                                      color: Colors.white,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                              Padding(
-                                                padding:
-                                                    const EdgeInsets.all(2.0),
-                                                child: GestureDetector(
-                                                  child: Container(
-                                                    decoration: BoxDecoration(
-                                                      color: Colors.blue[900],
-                                                      borderRadius:
-                                                          BorderRadius.all(
-                                                        Radius.circular(2.0),
-                                                      ),
-                                                    ),
-                                                    child: Icon(
-                                                      Icons.attach_money,
                                                       size: 25.0,
                                                       color: Colors.white,
                                                     ),
@@ -574,6 +560,12 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
                                                           children: <Widget>[
                                                             DropdownButton<
                                                                 String>(
+                                                              style: TextStyle(
+                                                                  fontFamily:
+                                                                      'Cardo',
+                                                                  fontSize: 17,
+                                                                  color: Colors
+                                                                      .black),
                                                               items:
                                                                   tipoCarroceria
                                                                       .map((
@@ -726,6 +718,12 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
                                                               .start,
                                                       children: <Widget>[
                                                         DropdownButton<String>(
+                                                          style: TextStyle(
+                                                              fontFamily:
+                                                                  'Cardo',
+                                                              fontSize: 17,
+                                                              color:
+                                                                  Colors.black),
                                                           items: tipoCombustivel
                                                               .map((
                                                             String
@@ -810,10 +808,13 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
               onChanged: onChanged,
               enabled: enabled,
               style: TextStyle(
-                fontSize: 16,
+                fontFamily: 'Cardo',
+                fontSize: 17,
                 color: Colors.black,
               ),
-              decoration: InputDecoration(),
+              decoration: InputDecoration(
+                contentPadding: EdgeInsets.fromLTRB(1, 0, 2, 10),
+              ),
             ),
           ),
           SizedBox(
