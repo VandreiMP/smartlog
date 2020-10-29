@@ -222,7 +222,7 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
       }
 
       if (consultaSituacaoProg == true) {
-        preencheDadosIniciais = false;
+        // preencheDadosIniciais = false;
         tSituacao.text = coluna.data['situacaoSolicitacao'];
         atualizaSituacaoProg(tSituacao.text, 'CONSULTA');
         tDataEfetivacao.text = coluna.data['dataEfetivacao'];
@@ -654,6 +654,7 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
                                                 largura: 140,
                                                 altura: 30,
                                                 obrigaCampo: true,
+                                                enabled: false,
                                                 controller: tDataAbertura,
                                                 onChanged: (String valor) {
                                                   blocSolicitacaoManutencao
@@ -669,6 +670,7 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
                                                 labelCampo: 'Data Encerramento',
                                                 largura: 140,
                                                 altura: 30,
+                                                enabled: false,
                                                 obrigaCampo: false,
                                                 controller: tDataEfetivacao,
                                                 onChanged: (String valor) {

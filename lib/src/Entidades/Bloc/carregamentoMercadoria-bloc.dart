@@ -410,6 +410,8 @@ class CarregamentoMercadoriaBloc extends BlocBase {
           .document(codigoCaminhao)
           .get()
           .then((coluna) async => coluna.data['capacidadeCarga'] != null &&
+                  coluna.data['capacidadeCarga'] &&
+                  coluna.data['capacidadeCarga'] > 0 &&
                   coluna.data['capacidadeCarga'] < pesoCarga
               ? mensagemRetorno = 'CAPACIDADE_EXCEDIDA'
               : null);

@@ -279,7 +279,7 @@ class _DashBoardCargaState extends State<DashBoardCarga> {
                               style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 15,
-                                  color: Colors.red),
+                                  color: Colors.black),
                             ),
                           ),
                           SizedBox(height: 15),

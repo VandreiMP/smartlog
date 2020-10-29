@@ -145,8 +145,9 @@ class SolicitacaoManutencaoBloc extends BlocBase {
                         mensagemNotificacao,
                         mensagemSucessoSalvar,
                         () {
-                          Navigator.of(contextoAplicacao)
-                              .pushNamed('/FormularioManutencao');
+                          Navigator.of(contextoAplicacao).pushNamed(
+                              '/FormularioManutencao',
+                              arguments: solicitacaoManutencao.identificacao);
                         },
                       ),
                     ),
@@ -279,23 +280,20 @@ class SolicitacaoManutencaoBloc extends BlocBase {
     }
 
     if (numeroSolicitiacao != null) {
+      await Firestore.instance
+          .collection("solicitacaoManutencao")
+          .document(numeroSolicitiacao)
+          .get()
+          .then(
+            (coluna) async => validaSituacao(coluna, origem),
+          );
+    } else {
+      mensagemRetorno = 'SEM_DADOS';
       alert(contextoAplicacao, mensagemAlerta,
-          'Para realizar esta operação é necessário gravar a carga no sistema!');
-      if (numeroSolicitiacao.isNotEmpty) {
-        await Firestore.instance
-            .collection("solicitacaoManutencao")
-            .document(numeroSolicitiacao)
-            .get()
-            .then(
-              (coluna) async => validaSituacao(coluna, origem),
-            );
-      } else {
-        alert(contextoAplicacao, mensagemAlerta,
-            'Para realizar esta operação é necessário gravar a programação no sistema!');
-      }
-
-      return mensagemRetorno;
+          'Para realizar esta operação é necessário gravar a programação no sistema!');
     }
+
+    return mensagemRetorno;
 
     @override
     void dispose() {}

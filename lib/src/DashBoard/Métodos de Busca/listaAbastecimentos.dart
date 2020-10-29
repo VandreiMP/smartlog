@@ -287,7 +287,7 @@ class _DashBoardAbastecimentoState extends State<DashBoardAbastecimento> {
                               style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 15,
-                                  color: Colors.red),
+                                  color: Colors.black),
                             ),
                           ),
                           SizedBox(height: 15),

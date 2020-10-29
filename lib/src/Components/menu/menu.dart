@@ -208,6 +208,17 @@ class ConstroiMenu extends StatelessWidget {
             colorMenuSelected: Colors.white,
             fontWeight: FontWeight.normal,
           ),
+           ItemMenu(
+            icon: Icons.equalizer,
+            title: 'Paineis',
+            onPress: () {
+              Navigator.of(context).pushNamed('/Dashboards');
+            },
+            arrowIcon: Icons.arrow_forward_ios,
+            colorMenu: Colors.blueGrey[600],
+            colorMenuSelected: Colors.white,
+            fontWeight: FontWeight.normal,
+          ),
           ItemMenu(
             icon: Icons.exit_to_app,
             title: 'Sair',

@@ -87,7 +87,7 @@ class CustoBloc extends BlocBase {
     } else {
       try {
         await Firestore.instance
-            .collection("empresa")
+            .collection("custos")
             .document(custo.identificacao)
             .get()
             .then(
@@ -108,7 +108,7 @@ class CustoBloc extends BlocBase {
                       (value) async => await alertFuncao(
                         contextoAplicacao,
                         mensagemNotificacao,
-                        mensagemSucessoApagar,
+                        mensagemSucessoSalvar,
                         () {
                           Navigator.of(contextoAplicacao).pushNamed(
                               '/FormularioCustos',
@@ -118,7 +118,7 @@ class CustoBloc extends BlocBase {
                     ),
             );
       } catch (on) {
-        TextError(mensagemErroApagar);
+        TextError(mensagemErroSalvar);
       }
     }
   }

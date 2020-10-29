@@ -306,6 +306,7 @@ class SolicitacaoTrocaOleoBloc extends BlocBase {
             (coluna) async => validaSituacao(coluna, origem),
           );
     } else {
+      mensagemRetorno = 'SEM_DADOS';
       alert(contextoAplicacao, mensagemAlerta,
           'Para realizar esta operação é necessário gravar a programação no sistema!');
     }

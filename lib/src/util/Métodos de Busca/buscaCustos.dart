@@ -51,144 +51,164 @@ class _BuscaCustosState extends State<BuscaCustos> {
                     ],
                   ));
 
-                final int embalagemContador = snapshot.data.documents.length;
-                print(embalagemContador);
-                return Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.all(Radius.circular(5)),
-                    border: new Border.all(
-                      color: Colors.black,
+                final int custoContador = snapshot.data.documents.length;
+                if (custoContador > 0) {
+                  return Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.all(Radius.circular(5)),
+                      border: new Border.all(
+                        color: Colors.black,
+                      ),
                     ),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(left: 108.0, top: 15),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            AppText(
-                              'Identificação',
-                              bold: true,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 5.0),
-                              child: AppText(
-                                'Detalhes',
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(left: 108.0, top: 15),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              AppText(
+                                'Identificação',
                                 bold: true,
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 5.0),
+                                child: AppText(
+                                  'Detalhes',
+                                  bold: true,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Column(
+                          children: [
+                            Container(
+                              padding: EdgeInsets.only(bottom: 15),
+                              alignment: Alignment.topLeft,
+                              width: 670,
+                              child: ListView.builder(
+                                shrinkWrap: true,
+                                itemCount: custoContador,
+                                itemBuilder: (BuildContext context, int index) {
+                                  final DocumentSnapshot document =
+                                      snapshot.data.documents[index];
+                                  final dynamic descricao =
+                                      document['detalhes'];
+                                  final dynamic identificacao =
+                                      document['identificacao'];
+                                  return Container(
+                                    child: Row(
+                                      children: [
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(left: 10.0),
+                                          child: Container(
+                                            alignment: Alignment.topRight,
+                                            padding: EdgeInsets.all(10),
+                                            width: 200,
+                                            decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(5)),
+                                              border: new Border.all(
+                                                color: Colors.black,
+                                              ),
+                                            ),
+                                            child: Text(
+                                              identificacao.toString(),
+                                              style: TextStyle(
+                                                fontFamily: 'Cardo',
+                                                fontSize: 16,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.all(2.0),
+                                          child: Container(
+                                            padding: EdgeInsets.all(10),
+                                            width: 400,
+                                            decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(5)),
+                                              border: new Border.all(
+                                                color: Colors.black,
+                                              ),
+                                            ),
+                                            child: Text(
+                                              descricao.toString(),
+                                              style: TextStyle(
+                                                fontFamily: 'Cardo',
+                                                fontSize: 16,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        GestureDetector(
+                                          onTap: () {
+                                            if (origem == 'LISTA_REGISTROS') {
+                                              Navigator.of(context).pushNamed(
+                                                  '/FormularioCustos',
+                                                  arguments: identificacao);
+                                            } else {
+                                              Navigator.pop(
+                                                  context, identificacao);
+                                            }
+                                          },
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 7.0),
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                color: Colors.blue[900],
+                                                borderRadius: BorderRadius.all(
+                                                  Radius.circular(2.0),
+                                                ),
+                                              ),
+                                              child: Icon(
+                                                iconeLista,
+                                                size: 30.0,
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(height: 10),
+                                      ],
+                                    ),
+                                  );
+                                },
                               ),
                             ),
                           ],
                         ),
-                      ),
-                      Column(
-                        children: [
-                          Container(
-                            padding: EdgeInsets.only(bottom: 15),
-                            alignment: Alignment.topLeft,
-                            width: 670,
-                            child: ListView.builder(
-                              shrinkWrap: true,
-                              itemCount: embalagemContador,
-                              itemBuilder: (BuildContext context, int index) {
-                                final DocumentSnapshot document =
-                                    snapshot.data.documents[index];
-                                final dynamic descricao = document['detalhes'];
-                                final dynamic identificacao =
-                                    document['identificacao'];
-                                return Container(
-                                  child: Row(
-                                    children: [
-                                      Padding(
-                                        padding:
-                                            const EdgeInsets.only(left: 10.0),
-                                        child: Container(
-                                          alignment: Alignment.topRight,
-                                          padding: EdgeInsets.all(10),
-                                          width: 200,
-                                          decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(5)),
-                                            border: new Border.all(
-                                              color: Colors.black,
-                                            ),
-                                          ),
-                                          child: Text(
-                                            identificacao.toString(),
-                                            style: TextStyle(
-                                              fontFamily: 'Cardo',
-                                              fontSize: 16,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.all(2.0),
-                                        child: Container(
-                                          padding: EdgeInsets.all(10),
-                                          width: 400,
-                                          decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(5)),
-                                            border: new Border.all(
-                                              color: Colors.black,
-                                            ),
-                                          ),
-                                          child: Text(
-                                            descricao.toString(),
-                                            style: TextStyle(
-                                              fontFamily: 'Cardo',
-                                              fontSize: 16,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      GestureDetector(
-                                        onTap: () {
-                                          if (origem == 'LISTA_REGISTROS') {
-                                            Navigator.of(context).pushNamed(
-                                                '/FormularioCustos',
-                                                arguments: identificacao);
-                                          } else {
-                                            Navigator.pop(
-                                                context, identificacao);
-                                          }
-                                        },
-                                        child: Padding(
-                                          padding:
-                                              const EdgeInsets.only(left: 7.0),
-                                          child: Container(
-                                            decoration: BoxDecoration(
-                                              color: Colors.blue[900],
-                                              borderRadius: BorderRadius.all(
-                                                Radius.circular(2.0),
-                                              ),
-                                            ),
-                                            child: Icon(
-                                              iconeLista,
-                                              size: 30.0,
-                                              color: Colors.white,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      SizedBox(height: 10),
-                                    ],
-                                  ),
-                                );
-                              },
-                            ),
+                      ],
+                    ),
+                  );
+                } else {
+                  return Container(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(top: 2),
+                          child: Text(
+                            'Não há nenhum registro gravado no sistema.',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 15,
+                                color: Colors.red),
                           ),
-                        ],
-                      ),
-                    ],
-                  ),
-                );
+                        ),
+                      ],
+                    ),
+                  );
+                }
               },
             ),
           ],

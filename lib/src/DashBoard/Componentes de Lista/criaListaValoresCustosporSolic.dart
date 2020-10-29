@@ -1,16 +1,11 @@
 import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:flutter/material.dart';
-import 'package:smartlogproject/src/Components/scroll/scroll.dart';
-import 'package:smartlogproject/src/DashBoard/M%C3%A9todos%20de%20Busca/listaAbastecimentos.dart';
+import 'package:smartlogproject/src/DashBoard/M%C3%A9todos%20de%20Busca/listaCustosAbastecimentos.dart';
 import 'package:smartlogproject/src/DashBoard/M%C3%A9todos%20de%20Busca/listaCustosManutencao.dart';
-import 'package:smartlogproject/src/Entidades/Bloc/solicitacaoAbastecimento-bloc.dart';
 import 'package:smartlogproject/src/Entidades/Bloc/solicitacaoManutencao-bloc.dart';
-import 'package:smartlogproject/src/constantes/cores.dart';
 import 'package:smartlogproject/src/util/Componentes/appText.dart';
-import 'package:smartlogproject/src/util/M%C3%A9todos%20de%20Busca/buscaEmbalagens.dart';
-import 'package:smartlogproject/src/util/M%C3%A9todos%20de%20Busca/buscaSolicAbastecimento.dart';
 
-class ListaValoresCustoporManut extends StatelessWidget {
+class ListaValoresCustoProg extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -80,7 +75,7 @@ class CriaCardFormulario extends StatelessWidget {
                         padding: const EdgeInsets.only(left: 10.0),
                         child: Container(
                           child: AppText(
-                            'Resumo dos Custos por Manutenção',
+                            'Resumo de Custos',
                             bold: true,
                           ),
                         ),
@@ -91,9 +86,14 @@ class CriaCardFormulario extends StatelessWidget {
                     height: 15.0,
                   ),
                   Container(
-                    child: Row(
+                    child: Column(
                       children: [
-                        DashBoardCustosManutencao(),
+                        Column(
+                          children: [
+                            DashBoardCustosAbastecimento(),
+                            DashBoardCustosManutencao(),
+                          ],
+                        ),
                       ],
                     ),
                   )

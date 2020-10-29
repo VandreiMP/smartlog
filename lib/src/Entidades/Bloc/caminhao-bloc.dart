@@ -137,7 +137,7 @@ class CaminhaoBloc extends BlocBase {
     } else {
       try {
         await Firestore.instance
-            .collection("usuario")
+            .collection("caminhao")
             .document(caminhao.identificacao)
             .get()
             .then(

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:smartlogproject/src/AcessoSistema/Widget/acesso-sistema-widget.dart';
 import 'package:smartlogproject/src/screen/screenAjuda.dart';
 import 'package:smartlogproject/src/screen/screenCarga.dart';
+import 'package:smartlogproject/src/screen/screenDashboards.dart';
 import 'package:smartlogproject/src/screen/screenManutencao.dart';
 import 'package:smartlogproject/src/screen/screenRomaneio.dart';
 import 'package:smartlogproject/src/util/Listas%20de%20Valores/criaListaValoresCaminhao.dart';
@@ -73,6 +74,10 @@ class Main extends StatelessWidget {
         Tela de ajuda
         */
         '/TelaAjuda': (context) => ScreenAjuda(),
+        /*
+        Painel de dashboards
+        */
+        '/Dashboards': (context) => Dashboards(),
         /*
         Listas de Valores p/ Formulários
         */

@@ -2,13 +2,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:smartlogproject/src/Components/scroll/scroll.dart';
 
-class DashBoardCustosManutencao extends StatefulWidget {
+class DashBoardCustosAbastecimento extends StatefulWidget {
   @override
-  _DashBoardCustosManutencaoState createState() =>
-      _DashBoardCustosManutencaoState();
+  _DashBoardCustosAbastecimentoState createState() =>
+      _DashBoardCustosAbastecimentoState();
 }
 
-class _DashBoardCustosManutencaoState extends State<DashBoardCustosManutencao> {
+class _DashBoardCustosAbastecimentoState extends State<DashBoardCustosAbastecimento> {
   @override
   Widget build(BuildContext context) {
     final Firestore firestore = Firestore.instance;
@@ -21,7 +21,7 @@ class _DashBoardCustosManutencaoState extends State<DashBoardCustosManutencao> {
             children: [
               StreamBuilder<QuerySnapshot>(
                 stream: firestore
-                    .collection("solicitacaoManutencao")
+                    .collection("solicitacaoAbastecimento")
                     .orderBy("identificacao", descending: true)
                     .snapshots(),
                 builder: (BuildContext context,
@@ -84,7 +84,7 @@ class _DashBoardCustosManutencaoState extends State<DashBoardCustosManutencao> {
                                                   Row(
                                                     children: [
                                                       Text(
-                                                        'Custos com manutenção',
+                                                        'Custos com abastecimento',
                                                         style: TextStyle(
                                                             fontWeight:
                                                                 FontWeight.bold,
@@ -167,3 +167,4 @@ class _DashBoardCustosManutencaoState extends State<DashBoardCustosManutencao> {
     );
   }
 }
+

@@ -224,7 +224,7 @@ class _BuscaAbastecimentoState extends State<BuscaAbastecimento> {
                         Padding(
                           padding: const EdgeInsets.only(top: 2),
                           child: Text(
-                            'Não há nenhum registro salvo no banco de dados.',
+                            'Não há nenhum registro gravado no sistema.',
                             style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 15,

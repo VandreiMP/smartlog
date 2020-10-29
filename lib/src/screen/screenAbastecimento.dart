@@ -821,11 +821,7 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
                                                           double.tryParse(
                                                               tQuantidade
                                                                   .text));
-                                                  blocSolicitacaoAbastecimento
-                                                      .setCustoTotal(
-                                                          double.tryParse(
-                                                              tCustoTotal
-                                                                  .text));
+
                                                   tCustoTotal.text =
                                                       calculaValorTotalSolicitacao(
                                                     double.tryParse(
@@ -833,6 +829,11 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
                                                     double.tryParse(
                                                         tQuantidade.text),
                                                   ).toString();
+                                                  blocSolicitacaoAbastecimento
+                                                      .setCustoTotal(
+                                                          double.tryParse(
+                                                              tCustoTotal
+                                                                  .text));
                                                 },
                                                 obrigaCampo: false,
                                               ),
