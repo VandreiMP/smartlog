@@ -123,8 +123,8 @@ class SolicitacaoAbastecimentoBloc extends BlocBase {
         solicitacaoAbastecimento.posto == null) {
       alert(contextoAplicacao, mensagemAlerta,
           'Para salvar a programação é necessário informar o posto!');
-    } else if (solicitacaoAbastecimento.posto == '' ||
-        solicitacaoAbastecimento.posto == null) {
+    } else if (solicitacaoAbastecimento.tipoCombustivel == '' ||
+        solicitacaoAbastecimento.tipoCombustivel == null) {
       alert(contextoAplicacao, mensagemAlerta,
           'Para salvar a programação é necessário informar o combustível!');
     } else {
@@ -279,25 +279,15 @@ class SolicitacaoAbastecimentoBloc extends BlocBase {
 
     void validaSituacao(DocumentSnapshot coluna, String origem) {
       if (coluna.data['situacaoSolicitacao'] == 'Negada' &&
-          origem == 'EFETIVAR') {
+          (origem == 'EFETIVAR' || origem == 'NEGAR')) {
         alert(contextoAplicacao, mensagemAlerta,
             'Não é possível realizar esta operação, pois esta programação já foi negada!');
-        mensagemRetorno = 'PROG_NEGADA';
+        mensagemRetorno = 'PROG_ENCERRADA';
       } else if (coluna.data['situacaoSolicitacao'] == 'Efetivada' &&
-          origem == 'NEGAR') {
-        alert(contextoAplicacao, mensagemAlerta,
-            'Não é possível realizar esta operação, pois esta programação já foi efetivada!');
-        mensagemRetorno = 'PROG_EFETIVADA';
-      } else if (coluna.data['situacaoSolicitacao'] == 'Negada' &&
-          origem == 'NEGAR') {
-        alert(contextoAplicacao, mensagemAlerta,
-            'Não é possível realizar esta operação, pois esta programação já foi negada!');
-        mensagemRetorno = 'PROG_EFETIVADA';
-      } else if (coluna.data['situacaoSolicitacao'] == 'Efetivada' &&
-          origem == 'EFETIVAR') {
+          (origem == 'EFETIVAR' || origem == 'NEGAR')) {
         alert(contextoAplicacao, mensagemAlerta,
             'Não é possível realizar esta operação, pois esta programação já foi evetivada!');
-        mensagemRetorno = 'PROG_EFETIVADA';
+        mensagemRetorno = 'PROG_ENCERRADA';
       }
     }
 

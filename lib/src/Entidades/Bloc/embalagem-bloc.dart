@@ -123,7 +123,7 @@ class EmbalagemBloc extends BlocBase {
                     'cubagem': embalagem.cubagem,
                     'tara': embalagem.tara,
                   }).then((value) async => await alertFuncao(contextoAplicacao,
-                            mensagemNotificacao, mensagemSucessoApagar, () {
+                            mensagemNotificacao, mensagemSucessoSalvar, () {
                           Navigator.of(contextoAplicacao).pushNamed(
                               '/FormularioEmbalagem',
                               arguments: embalagem.identificacao);
@@ -211,7 +211,7 @@ class EmbalagemBloc extends BlocBase {
         }).then((value) async => await alert(
                 contextoAplicacao, mensagemNotificacao, mensagemSucessoSalvar));
       } catch (on) {
-        TextError(mensagemErroApagar);
+        TextError(mensagemSucessoSalvar);
       }
     }
   }

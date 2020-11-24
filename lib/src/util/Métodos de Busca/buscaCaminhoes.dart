@@ -177,6 +177,9 @@ class _BuscaCaminhaoState extends State<BuscaCaminhao> {
                                                                         .data[
                                                                     'capacidadeCarga'] !=
                                                                 null &&
+                                                                coluna.data[
+                                                                    'capacidadeCarga'] > 0
+                                                                    &&
                                                             coluna.data[
                                                                     'capacidadeCarga'] <
                                                                 pesoCarregado

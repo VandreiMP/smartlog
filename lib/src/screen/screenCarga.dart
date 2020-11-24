@@ -541,8 +541,7 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
                                                             onTap: () {
                                                               blocCarregamentoMercadoria
                                                                   .verificaAlteracaoExpedicao(
-                                                                      tCarga
-                                                                          .text,
+                                                                    numeroCarga,
                                                                       context,
                                                                       'ENTREGA')
                                                                   .then((mensagemRetorno) => mensagemRetorno ==

@@ -189,6 +189,7 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
       blocEmbalagem.setAltura(double.tryParse(tAltura.text));
       blocEmbalagem.setCubagem(double.tryParse(tCubagem.text));
       blocEmbalagem.setTara(double.tryParse(tTara.text));
+      blocEmbalagem.setCapacidade(double.tryParse(tCapacidade.text));
     }
 
     if (codigoEmbalagem != null && consultaFormulario) {

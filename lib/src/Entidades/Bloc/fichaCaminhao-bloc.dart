@@ -100,7 +100,7 @@ class FichaCaminhaoBloc extends BlocBase {
       'alturaCarga': fichaCaminhao.alturaCarga,
       'cubagemCarga': fichaCaminhao.cubagemCarga
     }).then((value) async => await alertFuncao(
-                contextoAplicacao, mensagemNotificacao, mensagemSucessoApagar,
+                contextoAplicacao, mensagemNotificacao, mensagemSucessoSalvar,
                 () {
               Navigator.of(contextoAplicacao).pushNamed(
                 '/FormularioCaminhaoDetalhes',
@@ -136,7 +136,7 @@ class FichaCaminhaoBloc extends BlocBase {
         print(erro.error);
       });
     } catch (on) {
-      TextError('Erro ao apagar os dados do formulário no banco de dados!');
+      TextError(mensagemErroApagar);
     }
   }
 
@@ -169,10 +169,10 @@ class FichaCaminhaoBloc extends BlocBase {
         'larguraCarga': fichaCaminhao.larguraCarga,
         'alturaCarga': fichaCaminhao.alturaCarga,
         'cubagemCarga': fichaCaminhao.cubagemCarga,
-      }).then((value) async => await alert(contextoAplicacao, 'Notificação',
-              'Os dados do formulário foram atualizados com sucesso no banco de dados!'));
+      }).then((value) async => await alert(contextoAplicacao, mensagemNotificacao,
+              mensagemSucessoSalvar));
     } catch (on) {
-      TextError('Erro ao atualizar os dados do formulário no banco de dados!');
+      TextError(mensagemErroSalvar);
     }
   }
 

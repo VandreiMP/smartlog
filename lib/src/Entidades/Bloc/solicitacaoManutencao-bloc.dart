@@ -113,6 +113,10 @@ class SolicitacaoManutencaoBloc extends BlocBase {
         solicitacaoManutencao.solicitante == null) {
       alert(contextoAplicacao, mensagemAlerta,
           'Para salvar a programação é necessário informar o nome do solicitante!');
+    } else if (solicitacaoManutencao.oficina == '' ||
+        solicitacaoManutencao.oficina == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para salvar a programação é necessário informar a oficina onde será feita a manutenção!');
     } else {
       try {
         await Firestore.instance
@@ -226,6 +230,10 @@ class SolicitacaoManutencaoBloc extends BlocBase {
         solicitacaoManutencao.solicitante == null) {
       alert(contextoAplicacao, mensagemAlerta,
           'Para salvar a programação é necessário informar o nome do solicitante!');
+    } else if (solicitacaoManutencao.oficina == '' ||
+        solicitacaoManutencao.oficina == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para salvar a programação é necessário informar a oficina onde será feita a manutenção!');
     } else {
       try {
         await Firestore.instance
@@ -257,25 +265,15 @@ class SolicitacaoManutencaoBloc extends BlocBase {
 
     void validaSituacao(DocumentSnapshot coluna, String origem) {
       if (coluna.data['situacaoSolicitacao'] == 'Negada' &&
-          origem == 'EFETIVAR') {
+          (origem == 'EFETIVAR' || origem == 'NEGAR')) {
         alert(contextoAplicacao, mensagemAlerta,
             'Não é possível realizar esta operação, pois esta programação já foi negada!');
-        mensagemRetorno = 'PROG_NEGADA';
+        mensagemRetorno = 'PROG_ENCERRADA';
       } else if (coluna.data['situacaoSolicitacao'] == 'Efetivada' &&
-          origem == 'NEGAR') {
-        alert(contextoAplicacao, mensagemAlerta,
-            'Não é possível realizar esta operação, pois esta programação já foi efetivada!');
-        mensagemRetorno = 'PROG_EFETIVADA';
-      } else if (coluna.data['situacaoSolicitacao'] == 'Negada' &&
-          origem == 'NEGAR') {
-        alert(contextoAplicacao, mensagemAlerta,
-            'Não é possível realizar esta operação, pois esta programação já foi negada!');
-        mensagemRetorno = 'PROG_EFETIVADA';
-      } else if (coluna.data['situacaoSolicitacao'] == 'Efetivada' &&
-          origem == 'EFETIVAR') {
+          (origem == 'EFETIVAR' || origem == 'NEGAR')) {
         alert(contextoAplicacao, mensagemAlerta,
             'Não é possível realizar esta operação, pois esta programação já foi evetivada!');
-        mensagemRetorno = 'PROG_EFETIVADA';
+        mensagemRetorno = 'PROG_ENCERRADA';
       }
     }
 
@@ -294,9 +292,6 @@ class SolicitacaoManutencaoBloc extends BlocBase {
     }
 
     return mensagemRetorno;
-
-    @override
-    void dispose() {}
   }
 
   @override

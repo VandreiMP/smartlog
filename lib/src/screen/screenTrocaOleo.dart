@@ -802,6 +802,7 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
                                               labelCampo: 'Custo Vinculado',
                                               largura: 450,
                                               altura: 30,
+                                              enabled: false,
                                               controller: tDsCusto,
                                               onChanged: (String valor) {
                                                 blocSolicitacaoTrocaOleo

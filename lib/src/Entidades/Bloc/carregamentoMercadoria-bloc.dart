@@ -365,9 +365,10 @@ class CarregamentoMercadoriaBloc extends BlocBase {
       }
     }
 
-    if (numeroCarga != null) {
+    if (numeroCarga == null) {
       alert(contextoAplicacao, mensagemAlerta,
           'Para realizar esta operação é necessário gravar a carga no sistema!');
+      mensagemRetorno = 'CARGA_NAO_SALVA';
     } else {
       await Firestore.instance
           .collection("carregamentoMercadoria")
@@ -410,7 +411,6 @@ class CarregamentoMercadoriaBloc extends BlocBase {
           .document(codigoCaminhao)
           .get()
           .then((coluna) async => coluna.data['capacidadeCarga'] != null &&
-                  coluna.data['capacidadeCarga'] &&
                   coluna.data['capacidadeCarga'] > 0 &&
                   coluna.data['capacidadeCarga'] < pesoCarga
               ? mensagemRetorno = 'CAPACIDADE_EXCEDIDA'

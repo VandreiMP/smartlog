@@ -775,6 +775,7 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
                                               largura: 450,
                                               controller: tDsCusto,
                                               altura: 30,
+                                              enabled: false,
                                               obrigaCampo: false,
                                             ),
                                             Padding(

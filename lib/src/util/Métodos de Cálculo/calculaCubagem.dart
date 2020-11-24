@@ -5,10 +5,13 @@ double calculaCubagem(
   double comprimento,
   double altura,
 ) {
-  double retorno;
+  double retorno = 0;
   NumberFormat formatter = NumberFormat("00000000000.00");
 
-  retorno = (largura * comprimento * altura);
-
+  if ((largura != null && largura >0)
+      &&(comprimento != null && comprimento > 0)
+      &&(altura != null && altura > 0)){
+    retorno = (largura * comprimento * altura);
+  }
   return double.parse(formatter.format(retorno));
 }

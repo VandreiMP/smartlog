@@ -83,7 +83,7 @@ class CustoBloc extends BlocBase {
     } else if (custo.modalidade == 'Fixo' &&
         (custo.valor == null || custo.valor == 0)) {
       alert(contextoAplicacao, mensagemAlerta,
-          'Para salvar o custo é necessário informar se o mesmo é considerado na análise gerencial!');
+          'Quando o custo estiver configurado com a modalidade "Fixo", o valor deve ser informado!');
     } else {
       try {
         await Firestore.instance
@@ -176,7 +176,7 @@ class CustoBloc extends BlocBase {
     } else if (custo.modalidade == 'Fixo' &&
         (custo.valor == null || custo.valor == 0)) {
       alert(contextoAplicacao, mensagemAlerta,
-          'Para salvar o custo é necessário informar se o mesmo é considerado na análise gerencial!');
+          'Quando o custo estiver configurado com a modalidade "Fixo", o valor deve ser informado!');
     } else {
       try {
         await Firestore.instance

@@ -174,6 +174,27 @@ class CaminhaoBloc extends BlocBase {
                       ),
                     ),
             );
+        await Firestore.instance
+            .collection("caminhao")
+            .document(caminhao.identificacao)
+            .get()
+            .then(
+              (coluna) async => await Firestore.instance
+                  .collection('fichaCaminhao')
+                  .document(caminhao.identificacao)
+                  .setData({
+                'idCaminhao': caminhao.identificacao,
+                'cor': '',
+                'quilometragemLitro': 0.00,
+                'capacidadeCarga': 0.00,
+                'pesoVazio': 0.00,
+                'numeroEixos': 0.00,
+                'comprimentoCarga': 0.00,
+                'larguraCarga': 0.00,
+                'alturaCarga': 0.00,
+                'cubagemCarga': 0.00,
+              }),
+            );
       } catch (on) {
         TextError(mensagemErroSalvar);
       }

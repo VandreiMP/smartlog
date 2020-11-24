@@ -446,7 +446,7 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
                                               MainAxisAlignment.spaceBetween,
                                           children: <Widget>[
                                             constroiCampo(
-                                              labelCampo: 'Cidade/UF Saída',
+                                              labelCampo: 'Cidade Saída',
                                               largura: 250,
                                               altura: 30,
                                               controller: tCidadeSaida,
@@ -462,6 +462,7 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
                                               child: constroiCampo(
                                                 largura: 30,
                                                 altura: 30,
+                                                labelCampo: 'UF Saída',
                                                 controller: tUfSaida,
                                                 onChanged: (String valor) {
                                                   blocRomaneio.setUfSaida(
@@ -491,6 +492,7 @@ class _CriaCardFormularioState extends State<CriaCardFormulario> {
                                               child: constroiCampo(
                                                 largura: 30,
                                                 altura: 30,
+                                                labelCampo: 'UF Dest.',
                                                 controller: tUfDestino,
                                                 onChanged: (String valor) {
                                                   blocRomaneio.setUfDestino(

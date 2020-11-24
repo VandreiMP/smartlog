@@ -92,29 +92,49 @@ class RomaneioBloc extends BlocBase {
     romaneioCarga.cidadeDestino = _cidadeDestinoController.value;
     romaneioCarga.ufDestino = _ufDestinoController.value;
 
-    try {
-      await Firestore.instance
-          .collection('romaneioCarga')
-          .document(romaneioCarga.carga)
-          .setData({
-        'carga': romaneioCarga.carga,
-        'observacao': romaneioCarga.observacao,
-        'modalidadeFrete': romaneioCarga.modalidadeFrete,
-        'dataSaidaViagem': romaneioCarga.dataSaidaViagem,
-        'dataRetornoViagem': romaneioCarga.dataRetornoViagem,
-        'diasRodados': romaneioCarga.diasRodados,
-        'quilometragemRodada': romaneioCarga.quilometragemRodada,
-        'cidadeSaida': romaneioCarga.cidadeSaida,
-        'ufSaida': romaneioCarga.ufSaida,
-        'cidadeDestino': romaneioCarga.cidadeDestino,
-        'ufDestino': romaneioCarga.ufDestino
-      }).then((value) async => await alert(
-              contextoAplicacao, mensagemNotificacao, mensagemSucessoSalvar));
-    } catch (on) {
-      TextError(mensagemErroApagar);
+    if (romaneioCarga.modalidadeFrete == '' ||
+        romaneioCarga.modalidadeFrete == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para gerar o romaneio da carga é necessário informar a modalidade do frete/entrega!');
+    } else if (romaneioCarga.cidadeSaida == '' ||
+        romaneioCarga.cidadeSaida == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para gerar o romaneio da carga é necessário informar a cidade de saída da viagem!');
+    } else if (romaneioCarga.ufSaida == '' || romaneioCarga.ufSaida == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para gerar o romaneio da carga é necessário informar a UF de saída da viagem!');
+    } else if (romaneioCarga.cidadeDestino == '' ||
+        romaneioCarga.cidadeDestino == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para gerar o romaneio da carga é necessário informar a cidade de destino da viagem!');
+    } else if (romaneioCarga.ufDestino == '' ||
+        romaneioCarga.ufDestino == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para gerar o romaneio da carga é necessário informar a UF de destino da viagem!');
+    } else {
+      try {
+        await Firestore.instance
+            .collection('romaneioCarga')
+            .document(romaneioCarga.carga)
+            .setData({
+          'carga': romaneioCarga.carga,
+          'observacao': romaneioCarga.observacao,
+          'modalidadeFrete': romaneioCarga.modalidadeFrete,
+          'dataSaidaViagem': romaneioCarga.dataSaidaViagem,
+          'dataRetornoViagem': romaneioCarga.dataRetornoViagem,
+          'diasRodados': romaneioCarga.diasRodados,
+          'quilometragemRodada': romaneioCarga.quilometragemRodada,
+          'cidadeSaida': romaneioCarga.cidadeSaida,
+          'ufSaida': romaneioCarga.ufSaida,
+          'cidadeDestino': romaneioCarga.cidadeDestino,
+          'ufDestino': romaneioCarga.ufDestino
+        }).then((value) async => await alert(
+                contextoAplicacao, mensagemNotificacao, mensagemSucessoSalvar));
+      } catch (on) {
+        TextError(mensagemErroApagar);
+      }
     }
   }
-
   /*
   Método que apaga os dados do formulário na tabela do Firebase.
   Primeiro busca a identificação informada no formulário através dos controllers,
@@ -160,29 +180,52 @@ class RomaneioBloc extends BlocBase {
     romaneioCarga.cidadeDestino = _cidadeDestinoController.value;
     romaneioCarga.ufDestino = _ufDestinoController.value;
 
-    try {
-      await Firestore.instance
-          .collection('romaneioCarga')
-          .document(romaneioCarga.carga)
-          .updateData({
-        'carga': romaneioCarga.carga,
-        'observacao': romaneioCarga.observacao,
-        'modalidadeFrete': romaneioCarga.modalidadeFrete,
-        'dataSaidaViagem': romaneioCarga.dataSaidaViagem,
-        'dataRetornoViagem': romaneioCarga.dataRetornoViagem,
-        'diasRodados': romaneioCarga.diasRodados,
-        'quilometragemRodada': romaneioCarga.quilometragemRodada,
-        'cidadeSaida': romaneioCarga.cidadeSaida,
-        'ufSaida': romaneioCarga.ufSaida,
-        'cidadeDestino': romaneioCarga.cidadeDestino,
-        'ufDestino': romaneioCarga.ufDestino
-      }).then((value) async => await alert(
-              contextoAplicacao, mensagemNotificacao, mensagemSucessoSalvar));
-    } catch (on) {
-      TextError(mensagemErroSalvar);
+    if (romaneioCarga.modalidadeFrete == '' ||
+        romaneioCarga.modalidadeFrete == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para gerar o romaneio da carga é necessário informar a modalidade do frete/entrega!');
+    } else if (romaneioCarga.cidadeSaida == '' ||
+        romaneioCarga.cidadeSaida == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para gerar o romaneio da carga é necessário informar a cidade de saída da viagem!');
+    } else if (romaneioCarga.ufSaida == '' || romaneioCarga.ufSaida == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para gerar o romaneio da carga é necessário informar a UF de saída da viagem!');
+    } else if (romaneioCarga.cidadeDestino == '' ||
+        romaneioCarga.cidadeDestino == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para gerar o romaneio da carga é necessário informar a cidade de destino da viagem!');
+    } else if (romaneioCarga.ufDestino == '' ||
+        romaneioCarga.ufDestino == null) {
+      alert(contextoAplicacao, mensagemAlerta,
+          'Para gerar o romaneio da carga é necessário informar a UF de destino da viagem!');
+    } else {
+      try {
+        await Firestore.instance
+            .collection('romaneioCarga')
+            .document(romaneioCarga.carga)
+            .updateData({
+          'carga': romaneioCarga.carga,
+          'observacao': romaneioCarga.observacao,
+          'modalidadeFrete': romaneioCarga.modalidadeFrete,
+          'dataSaidaViagem': romaneioCarga.dataSaidaViagem,
+          'dataRetornoViagem': romaneioCarga.dataRetornoViagem,
+          'diasRodados': romaneioCarga.diasRodados,
+          'quilometragemRodada': romaneioCarga.quilometragemRodada,
+          'cidadeSaida': romaneioCarga.cidadeSaida,
+          'ufSaida': romaneioCarga.ufSaida,
+          'cidadeDestino': romaneioCarga.cidadeDestino,
+          'ufDestino': romaneioCarga.ufDestino
+        }).then((value) async => await alert(
+                contextoAplicacao, mensagemNotificacao, mensagemSucessoSalvar));
+      } catch (on) {
+        TextError(mensagemErroSalvar);
+      }
     }
   }
 
   @override
-  void dispose() {}
+  void dispose() {
+    // TODO: implement dispose
+  }
 }

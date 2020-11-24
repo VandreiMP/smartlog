@@ -77,7 +77,7 @@ class ResponsavelEmpresaBloc extends BlocBase {
       'cargo': responsavelEmpresa.cargo,
       'email': responsavelEmpresa.email,
     }).then((value) async => alertFuncao(
-                contextoAplicacao, mensagemNotificacao, mensagemSucessoApagar,
+                contextoAplicacao, mensagemNotificacao, mensagemSucessoSalvar,
                 () {
               Navigator.of(contextoAplicacao).pushNamed(
                 '/FormularioEmpresaDetalhes',
@@ -114,7 +114,7 @@ class ResponsavelEmpresaBloc extends BlocBase {
         print(erro.error);
       });
     } catch (on) {
-      TextError('Erro ao apagar os dados do formulário no banco de dados!');
+      TextError(mensagemErroApagar);
     }
   }
 
@@ -142,10 +142,10 @@ class ResponsavelEmpresaBloc extends BlocBase {
         'email': responsavelEmpresa.email,
       }).then((value) async => await alert(
               contextoAplicacao,
-              'Notificação de Sucesso',
-              'Os dados do formulário foram atualizados com sucesso no banco de dados!'));
+              mensagemNotificacao,
+             mensagemSucessoSalvar));
     } catch (on) {
-      TextError('Erro ao atualizar os dados do formulário no banco de dados!');
+      TextError(mensagemErroSalvar);
     }
   }
 
